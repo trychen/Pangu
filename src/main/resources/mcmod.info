@@ -1,0 +1,15 @@
+[
+{
+  "modid": "pangucore",
+  "name": "Pangu Core",
+  "description": "the core mod of Pangu & it's child mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Trychen"],
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
