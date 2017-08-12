@@ -2,12 +2,15 @@ package cn.mccraft.pangu.core;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,7 +99,7 @@ public class PanguCore {
     /**
      * Log4j's logger of "Pangu Core",
      */
-    private static final Logger LOGGER = LogManager.getLogger(PanguCore.NAME);
+    private static final Logger LOGGER = LogManager.getLogger("Pangu");
 
     /**
      * get the logger of "Pangu Core"

@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.core.annotation;
+package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import net.minecraftforge.fml.common.LoaderState;
@@ -8,10 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 动态代理.
@@ -21,8 +18,17 @@ import java.util.Optional;
  * @since .2
  */
 public interface Proxy {
+    /**
+     * start invoking the opposite registered loader's
+     *
+     * @param event the instance of event
+     * @param state not all loader state will be invoke in the loader, just for {@link LoaderState#PREINITIALIZATION} to {@link LoaderState#AVAILABLE}
+     * @param side {@link Side}
+     * @param <T> The event invoked by {@link net.minecraftforge.fml.common.Mod.EventHandler}
+     */
     default <T extends FMLStateEvent> void invoke (T event, LoaderState state, Side side) {
         getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {
+            // 判断 Side 是否对应
             if (method.getAnnotation(Load.class).side().equals(side))
                 if (method.getParameterCount() == 0 && method.getAnnotation(Load.class).value().equals(state))
                     try {
@@ -39,9 +45,6 @@ public interface Proxy {
         }));
     }
 
-    Map<Class<?>, Object> getLoaderInstanceMap();
-
-    @SuppressWarnings("unchecked")
     default <T> Optional<T> getLoader(Class<T> loaderClass) {
         try {
             return Optional.of((T) getLoaderInstanceMap().get(loaderClass));
@@ -50,13 +53,23 @@ public interface Proxy {
         }
     }
 
+    /**
+     * Registering loader. You should noticed that if your loader is client only,
+     * you should register you loader in a {@code @SideOnly(Side.CLIENT)} class.
+     * The registering class should have a no-parameter and visible constructor.
+     * And the method that annotated by {@link Load} should be also visible, or
+     * it won't be register.
+     *
+     * @param loaderClass
+     */
     default void addLoader(Class<?> loaderClass) {
         try {
+            //加载所有方法
             for (Method method : loaderClass.getMethods())
                 for (Annotation annotation : method.getDeclaredAnnotations())
                     if (annotation.annotationType().equals(Load.class))
                         if (method.getParameterCount() <= 1) {
-                            Collection<Method> methods = getStateLoaderMap().getOrDefault(((Load) annotation).value(), new ArrayList<>());
+                            List<Method> methods = getStateLoaderMap().getOrDefault(((Load) annotation).value(), new ArrayList<>());
                             if (!methods.contains(method))
                                 methods.add(method);
                             getStateLoaderMap().put(((Load) annotation).value(), methods);
@@ -67,5 +80,19 @@ public interface Proxy {
         }
     }
 
-    Map<LoaderState, Collection<Method>> getStateLoaderMap();
+    /**
+     * Map that use to mapping the loader state to opposite loader's method,
+     * Using List instead of collection is to fake priority level.
+     *
+     * @return Map loader state to opposite loader's method
+     */
+    Map<LoaderState, List<Method>> getStateLoaderMap();
+
+    /**
+     * Map that use to mapping loader's class to instance
+     *
+     * @return Map Class2Object
+     */
+    Map<Class<?>, Object> getLoaderInstanceMap();
+
 }

@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.core.annotation;
+package cn.mccraft.pangu.core.loader;
 
 
 import net.minecraftforge.fml.common.LoaderState;
@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A annotation which can make auto invoke the annotated function with this class.
+ * A loader which can make auto invoke the annotated function (must be visible to core) with this class.
  * You should add your custom loader in {@link cn.mccraft.pangu.core.CommonProxy#loaders}.
  *
  * 被该注解注释的函数将被自动执行。
