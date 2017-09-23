@@ -6,7 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by trychen on 17/9/23.
+ * A base achievement of IRegister with base caching registering item
+ *
+ * @param <T> the registering item
+ * @param <A> the annotation for registering
  */
 public class BaseRegister<T, A> implements IRegister {
     protected Set<RegisteringItem<T, A>> itemSet = new HashSet<>();

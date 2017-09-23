@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * auto load
+ * auto load item with base info
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -26,5 +26,8 @@ public @interface RegItem {
      */
     String[] oreDict() default {};
 
+    /**
+     * if register render automatically
+     */
     boolean isRegisterRender() default true;
 }

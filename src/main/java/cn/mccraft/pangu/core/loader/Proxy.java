@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader;
 
+import cn.mccraft.pangu.core.CommonProxy;
 import cn.mccraft.pangu.core.PanguCore;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
@@ -17,7 +18,25 @@ import java.util.*;
  * @author LasmGratel
  * @since .2
  */
-public interface Proxy {
+public enum Proxy {
+    INSTANCE;
+
+    /**
+     * The default loaders by Pangu Core
+     */
+    private final Collection<Class<?>> loaders = Arrays.asList();
+
+    /**
+     * The implementation of {@link CommonProxy#getLoaderInstanceMap()}
+     */
+    private final Map<Class<?>, Object> loaderInstanceMap = new HashMap<>();
+
+    /**
+     * The implementation of {@link CommonProxy#getStateLoaderMap()}
+     */
+    private final Map<LoaderState, List<Method>> stateLoaderMap = new HashMap<>();
+
+
     /**
      * start invoking the opposite registered loader's
      *
@@ -28,7 +47,7 @@ public interface Proxy {
      *
      * @since .2
      */
-    default <T extends FMLStateEvent> void invoke (T event, LoaderState state, Side side) {
+    public <T extends FMLStateEvent> void invoke (T event, LoaderState state, Side side) {
         getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {
             // 判断 Side 是否对应
             if (method.getAnnotation(Load.class).side().equals(side))
@@ -47,7 +66,7 @@ public interface Proxy {
         }));
     }
 
-    default <T> Optional<T> getLoader(Class<T> loaderClass) {
+    public <T> Optional<T> getLoader(Class<T> loaderClass) {
         try {
             return Optional.of((T) getLoaderInstanceMap().get(loaderClass));
         } catch (ClassCastException ignored) {
@@ -64,7 +83,7 @@ public interface Proxy {
      *
      * @param loaderClass
      */
-    default void addLoader(Class<?> loaderClass) {
+    public void addLoader(Class<?> loaderClass) {
         try {
             //加载所有方法
             for (Method method : loaderClass.getMethods())
@@ -83,22 +102,20 @@ public interface Proxy {
     }
 
     /**
-     * Map that use to mapping the loader state to opposite loader's method,
-     * Using List instead of collection is to fake priority level.
+     * Map that use to mapping the loader state to opposite loader's method
      *
      * @return Map loader state to opposite loader's method
-     *
-     * @since .2
      */
-    Map<LoaderState, List<Method>> getStateLoaderMap();
+    public Map<LoaderState, List<Method>> getStateLoaderMap() {
+        return stateLoaderMap;
+    }
 
     /**
      * Map that use to mapping loader's class to instance
      *
      * @return Map Class2Object
-     *
-     * @since .2
      */
-    Map<Class<?>, Object> getLoaderInstanceMap();
-
+    public Map<Class<?>, Object> getLoaderInstanceMap() {
+        return loaderInstanceMap;
+    }
 }

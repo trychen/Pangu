@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +21,10 @@ import java.util.Set;
  */
 @Mod.EventBusSubscriber(modid = PanguCore.MODID)
 public class ItemRegister extends BaseRegister<Item, RegItem> {
+    /**
+     * forge build-in event holder
+     * @param event
+     */
     @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Item> event) {
         for (RegisteringItem<Item, RegItem> registeringItem : itemSet) {
@@ -33,6 +38,15 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                             registeringItem.buildRegistryName(regItem.value())
                     )
             );
+
+            // check if there contains ore dict
+            if (regItem.oreDict().length > 0) {
+                // for each all ore dict from RegItem
+                for (String oreName : regItem.oreDict()) {
+                    // registering ore dictionary to item
+                    OreDictionary.registerOre(oreName, item);
+                }
+            }
         }
     }
 }
