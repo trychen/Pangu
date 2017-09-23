@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader.annotation;
 
+import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
@@ -13,11 +14,11 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@RegisteringHandler
 public @interface RegBlock {
     /**
      * 该参数将自动设置方块的registryName和unlocalizedName
      * The params to build registryName and unlocalizedName.
-     * @see cn.mccraft.chinacraft.util.NameBuilder
      */
     String[] value();
 

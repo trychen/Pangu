@@ -25,6 +25,8 @@ public interface Proxy {
      * @param state not all loader state will be invoke in the loader, just for {@link LoaderState#PREINITIALIZATION} to {@link LoaderState#AVAILABLE}
      * @param side {@link Side}
      * @param <T> The event invoked by {@link net.minecraftforge.fml.common.Mod.EventHandler}
+     *
+     * @since .2
      */
     default <T extends FMLStateEvent> void invoke (T event, LoaderState state, Side side) {
         getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {
@@ -54,7 +56,7 @@ public interface Proxy {
     }
 
     /**
-     * Registering loader. You should noticed that if your loader is client only,
+     * RegisteringHandler loader. You should noticed that if your loader is client only,
      * you should register you loader in a {@code @SideOnly(Side.CLIENT)} class.
      * The registering class should have a no-parameter and visible constructor.
      * And the method that annotated by {@link Load} should be also visible, or
@@ -85,6 +87,8 @@ public interface Proxy {
      * Using List instead of collection is to fake priority level.
      *
      * @return Map loader state to opposite loader's method
+     *
+     * @since .2
      */
     Map<LoaderState, List<Method>> getStateLoaderMap();
 
@@ -92,6 +96,8 @@ public interface Proxy {
      * Map that use to mapping loader's class to instance
      *
      * @return Map Class2Object
+     *
+     * @since .2
      */
     Map<Class<?>, Object> getLoaderInstanceMap();
 

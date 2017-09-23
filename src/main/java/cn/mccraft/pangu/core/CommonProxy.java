@@ -21,7 +21,7 @@ import java.util.*;
 public class CommonProxy implements Proxy {
 
     public CommonProxy() {
-        addLoader(LoggerLoader.class);
+//        addLoader(LoggerLoader.class);
     }
 
     /**
@@ -39,6 +39,10 @@ public class CommonProxy implements Proxy {
      */
     private final Map<LoaderState, List<Method>> stateLoaderMap = new HashMap<>();
 
+    /**
+     *  ==============================
+     *        FML Initialization
+     */
     public void preInit(FMLPreInitializationEvent event) {
         invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);
     }
@@ -54,6 +58,10 @@ public class CommonProxy implements Proxy {
     public void loadComplete(FMLLoadCompleteEvent event) {
         invoke(event, LoaderState.AVAILABLE, Side.SERVER);
     }
+    /**
+     *        FML Initialization
+     *  ==============================
+     */
 
     /**
      * Map that use to mapping the loader state to opposite loader's method
