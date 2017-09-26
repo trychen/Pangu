@@ -3,11 +3,11 @@
   "modid": "pangu",
   "name": "Pangu Core",
   "description": "the core mod of Pangu & it's child mod.",
-  "version": "1.0.0 SnapShot",
+  "version": "1.0.0.2",
   "mcversion": "1.12",
   "url": "",
   "updateUrl": "",
-  "authorList": ["Trychen"],
+  "authorList": ["Trychen", "Lasm_Gratel"],
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

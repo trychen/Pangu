@@ -2,9 +2,14 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.buildin.IRegister;
+import org.objectweb.asm.*;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.util.ASMifier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +35,7 @@ public enum Register {
 
         // for all field to find registrable item
         // here is using getFields() which means that your item must be visible or it won't be register
+
         for (Field field : object.getClass().getFields()) {
             for (Annotation annotation : field.getAnnotations()) {
                 // find RegisteringHandler anno
