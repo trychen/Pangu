@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +27,19 @@ public enum Register {
      * @param object the instance of you items' class
      */
     public void register(Object object) {
-        Registering registering = object.getClass().getAnnotation(Registering.class);
+        boolean isStatic = object instanceof Class;
+        Class<?> parentClass = isStatic ? (Class) object : object.getClass();
+        Object owner = isStatic ? null : object;
+
+        Registering registering = parentClass.getAnnotation(Registering.class);
 
         // get resource domain
         String domain = registering == null || registering.value().isEmpty() ? PanguCore.MODID : registering.value();
 
         // for all field to find registrable item
         // here is using getFields() which means that your item must be visible or it won't be register
-        for (Field field : object.getClass().getFields()) {
+        for (Field field : parentClass.getFields()) {
+            if (isStatic && !Modifier.isStatic(field.getModifiers())) continue;
             for (Annotation annotation : field.getAnnotations()) {
                 // find RegisteringHandler anno
                 RegisteringHandler handler = annotation.annotationType().getAnnotation(RegisteringHandler.class);
@@ -46,7 +52,7 @@ public enum Register {
 
                 Object item;
                 try {
-                    item = field.get(object);
+                    item = field.get(owner);
                 } catch (Exception e) {
                     // catch all exception to make sure no effect other item
                     PanguCore.getLogger().error("Unable to get item's instance: " + field.getName(), e);
@@ -81,7 +87,7 @@ public enum Register {
             loadersInstanceMap.put(loaderClass, object);
 
             // subscribed to MinecraftForge.EVENT_BUS
-            if (needSubscribedEventBus(loaderClass)){
+            if (needSubscribedEventBus(loaderClass)) {
                 MinecraftForge.EVENT_BUS.register(object);
             }
         } catch (Exception e) {
@@ -96,7 +102,7 @@ public enum Register {
         return (IRegister) object;
     }
 
-    public static boolean needSubscribedEventBus(Class clazz){
+    public static boolean needSubscribedEventBus(Class clazz) {
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(SubscribeEvent.class)) return true;
         }
