@@ -2,9 +2,12 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.buildin.IRegister;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,17 +29,17 @@ public enum Register {
         Registering registering = object.getClass().getAnnotation(Registering.class);
 
         // get resource domain
-        String domain = registering == null || registering.value().isEmpty() ? null : registering.value();
+        String domain = registering == null || registering.value().isEmpty() ? PanguCore.MODID : registering.value();
 
         // for all field to find registrable item
         // here is using getFields() which means that your item must be visible or it won't be register
         for (Field field : object.getClass().getFields()) {
             for (Annotation annotation : field.getAnnotations()) {
                 // find RegisteringHandler anno
-                RegisteringHandler handler = annotation.getClass().getAnnotation(RegisteringHandler.class);
+                RegisteringHandler handler = annotation.annotationType().getAnnotation(RegisteringHandler.class);
 
                 // ignore item without loader
-                if (handler == null || handler.value().getClass().equals(IRegister.class)) continue;
+                if (handler == null || !IRegister.class.isAssignableFrom(handler.value())) continue;
 
                 // get the cached instance of loader
                 IRegister loader = getLoaderInstance(handler.value());
@@ -51,6 +54,7 @@ public enum Register {
                 }
 
                 loader.preRegister(new RegisteringItem<>(field, item, domain, annotation));
+
             }
         }
     }
@@ -75,6 +79,11 @@ public enum Register {
             object = loaderClass.newInstance();
             // put to map
             loadersInstanceMap.put(loaderClass, object);
+
+            // subscribed to MinecraftForge.EVENT_BUS
+            if (needSubscribedEventBus(loaderClass)){
+                MinecraftForge.EVENT_BUS.register(object);
+            }
         } catch (Exception e) {
             // catch all exception to make sure no effect other loader
             PanguCore.getLogger().error("Unable to init loader: " + loaderClass, e);
@@ -85,5 +94,12 @@ public enum Register {
 
         // cast to IRegister, here is safe
         return (IRegister) object;
+    }
+
+    public static boolean needSubscribedEventBus(Class clazz){
+        for (Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(SubscribeEvent.class)) return true;
+        }
+        return false;
     }
 }

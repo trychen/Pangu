@@ -12,7 +12,7 @@ import java.util.Set;
  * @param <T> the registering item
  * @param <A> the annotation for registering
  */
-public class BaseRegister<T, A extends Annotation> implements IRegister {
+public abstract class BaseRegister<T, A extends Annotation> implements IRegister {
     protected Set<RegisteringItem<T, A>> itemSet = new HashSet<>();
 
     @Override

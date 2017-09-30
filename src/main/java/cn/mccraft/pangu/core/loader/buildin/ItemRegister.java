@@ -1,17 +1,12 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
-import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Register to register item with RegItem
@@ -19,7 +14,6 @@ import java.util.Set;
  * @author trychen
  * @since .3
  */
-@Mod.EventBusSubscriber(modid = PanguCore.MODID)
 public class ItemRegister extends BaseRegister<Item, RegItem> {
     /**
      * forge build-in event holder.
@@ -43,7 +37,7 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                     // set registry name
                     item.setRegistryName(registeringItem.buildRegistryName(name))
                             // set unlocalized name
-                            .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name))
+                            .setUnlocalizedName(registeringItem.buildUnlocalizedName(name))
             );
 
             // check if there contains ore dict

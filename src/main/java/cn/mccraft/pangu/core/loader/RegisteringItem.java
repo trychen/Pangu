@@ -37,12 +37,8 @@ public class RegisteringItem<T, A extends Annotation> {
     public RegisteringItem(Field field, T key, String domain, A annotation) {
         this.field = field;
         this.key = key;
+        this.domain = domain;
         this.annotation = annotation;
-
-        // special domain
-        String parentDomain = ReflectUtils.invokeMethod(annotation, "domain", String.class);
-        if (parentDomain != null) this.domain = parentDomain;
-        else this.domain = domain;
     }
 
     public T getItem() {
@@ -85,5 +81,9 @@ public class RegisteringItem<T, A extends Annotation> {
     @Override
     public int hashCode() {
         return key.hashCode();
+    }
+
+    public String buildUnlocalizedName(String[] name) {
+        return NameBuilder.buildUnlocalizedName(name);
     }
 }

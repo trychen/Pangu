@@ -29,7 +29,7 @@ public interface ReflectUtils {
             if (field == null) return null;
 
             // check type
-            if (typeCheck != null && !field.getType().isAssignableFrom(typeCheck)) return null;
+            if (typeCheck != null && !typeCheck.isAssignableFrom(field.getType())) return null;
 
             // break access
             if (!field.isAccessible()) field.setAccessible(true);
@@ -94,7 +94,7 @@ public interface ReflectUtils {
             if (method == null) return null;
 
             // check type
-            if (returnTypeCheck != null && !method.getReturnType().isAssignableFrom(returnTypeCheck)) return null;
+            if (returnTypeCheck != null && !returnTypeCheck.isAssignableFrom(method.getReturnType())) return null;
 
             // break access
             if (!method.isAccessible()) method.setAccessible(true);
