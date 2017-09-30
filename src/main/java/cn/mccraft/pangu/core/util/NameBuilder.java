@@ -47,21 +47,36 @@ public interface NameBuilder {
         return stringBuilder.toString();
     }
 
+    /**
+     * apart name like "helloWorld", "hello_world", "HELLO_WORLD" to ["hello", "world"]
+     */
     static String[] apart(String name) {
-        return name.contains("_")? apartUnderline(name) : apartHump(name);
+        return name.contains("_") ? apartUnderline(name) : apartHump(name);
     }
 
+    /**
+     * apart hump to array, such as "helloWorld" 2 ["hello", "world"]
+     */
     static String[] apartHump(String name) {
         return humpToUnderline(name).split("_");
     }
 
+    /**
+     * apart name like "hello_world", "HELLO_WORLD" (with underline separated) to ["hello", "world"]
+     */
     static String[] apartUnderline(String name) {
-        return name.split("_");
+        return name.toLowerCase().split("_");
     }
 
+    /**
+     * the pattern to check upper case letter
+     */
     Pattern upperCasePattern = Pattern.compile("[A-Z]");
 
-        static String humpToUnderline(String str) {
+    /**
+     * convert hump to underline format, such as "helloWorld" 2 "hello_world"
+     */
+    static String humpToUnderline(String str) {
         Matcher matcher = upperCasePattern.matcher(str);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {

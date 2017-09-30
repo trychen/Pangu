@@ -50,7 +50,7 @@ public enum Register {
                     continue;
                 }
 
-                loader.preRegister(new RegisteringItem<>(item, domain, annotation));
+                loader.preRegister(new RegisteringItem<>(field, item, domain, annotation));
             }
         }
     }

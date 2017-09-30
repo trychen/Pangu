@@ -19,7 +19,7 @@ public @interface RegItem {
      * The params to build registryName and unlocalizedName,
      * using {@link cn.mccraft.pangu.core.util.NameBuilder}
      */
-    String[] value();
+    String[] value() default {};
 
     /**
      * The params to build registryName's domain, its priority is higher than {@link cn.mccraft.pangu.core.loader.Registering}

@@ -20,7 +20,7 @@ public @interface RegBlock {
      * 该参数将自动设置方块的registryName和unlocalizedName
      * The params to build registryName and unlocalizedName.
      */
-    String[] value();
+    String[] value() default {};
 
     /**
      * 添加矿物词典

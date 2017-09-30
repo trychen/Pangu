@@ -33,12 +33,17 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
             Item item = registeringItem.getItem();
             RegItem regItem = registeringItem.getAnnotation();
 
+            String[] name = regItem.value();
+            if (name.length == 0){
+                name = NameBuilder.apart(registeringItem.getField().getName());
+            }
+
             // start register
             event.getRegistry().register(
                     // set registry name
-                    item.setRegistryName(registeringItem.buildRegistryName(regItem.value()))
+                    item.setRegistryName(registeringItem.buildRegistryName(name))
                             // set unlocalized name
-                            .setUnlocalizedName(NameBuilder.buildUnlocalizedName(regItem.value()))
+                            .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name))
             );
 
             // check if there contains ore dict
