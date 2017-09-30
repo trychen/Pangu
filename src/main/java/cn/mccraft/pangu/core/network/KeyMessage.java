@@ -14,9 +14,13 @@ import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * A simple way to send a notice to server
+ *
+ * @since .4
+ * @author trychen
  */
 public final class KeyMessage {
     /**
@@ -37,9 +41,9 @@ public final class KeyMessage {
         PanguCore.getNetwork().registerMessage(Handler.class, Context.class, Network.getNextID(), Side.SERVER);
     }
 
-    private static Map<String, Recive> name2Recive = new HashMap();
+    private static Map<String, Consumer<MessageContext>> name2Recive = new HashMap();
 
-    public static Recive register(@Nonnull String name, @Nonnull Recive reciver){
+    public static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> reciver){
         return name2Recive.put(name, reciver);
     }
 
@@ -54,18 +58,14 @@ public final class KeyMessage {
          */
         @Override
         public Context onMessage(Context message, MessageContext ctx) {
-            Recive recive = name2Recive.get(message.key);
-            if (recive != null) {
-                recive.recived(message, ctx);
+            Consumer<MessageContext> receiver = name2Recive.get(message.key);
+            if (receiver != null) {
+                receiver.accept(ctx);
             } else {
                 PanguCore.getLogger().warn("Client is trying to send an unregistered packet");
             }
             return null;
         }
-    }
-
-    interface Recive {
-        void recived(Context message, MessageContext ctx);
     }
 
     /**

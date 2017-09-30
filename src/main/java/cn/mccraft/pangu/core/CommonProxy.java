@@ -21,7 +21,6 @@ import java.util.*;
 public class CommonProxy {
 
     public CommonProxy() {
-//        addLoader(LoggerLoader.class);
     }
 
     /*

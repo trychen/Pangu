@@ -3,6 +3,11 @@ package cn.mccraft.pangu.core.util;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 
+/**
+ * Class used to build registry name
+ *
+ * @since .3
+ */
 public interface NameBuilder {
     /**
      * Building the registry name, liking [hello, world] to hello_world

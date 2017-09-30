@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client;
 
 import cn.mccraft.pangu.core.CommonProxy;
+import cn.mccraft.pangu.core.loader.Proxy;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
@@ -18,28 +19,27 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        invoke(event, LoaderState.PREINITIALIZATION, Side.CLIENT);
+        Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.CLIENT);
     }
 
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        invoke(event, LoaderState.INITIALIZATION,Side.CLIENT);
+        Proxy.INSTANCE.invoke(event, LoaderState.INITIALIZATION,Side.CLIENT);
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
-        invoke(event, LoaderState.POSTINITIALIZATION,Side.CLIENT);
+        Proxy.INSTANCE.invoke(event, LoaderState.POSTINITIALIZATION,Side.CLIENT);
     }
 
     @Override
     public void loadComplete(FMLLoadCompleteEvent event) {
         super.loadComplete(event);
-        invoke(event, LoaderState.AVAILABLE,Side.CLIENT);
+        Proxy.INSTANCE.invoke(event, LoaderState.AVAILABLE,Side.CLIENT);
     }
 }
