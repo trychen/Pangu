@@ -41,10 +41,10 @@ public final class KeyMessage {
         PanguCore.getNetwork().registerMessage(Handler.class, Context.class, Network.getNextID(), Side.SERVER);
     }
 
-    private static Map<String, Consumer<MessageContext>> name2Recive = new HashMap();
+    private static Map<String, Consumer<MessageContext>> name2Receiver = new HashMap();
 
     public static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> reciver){
-        return name2Recive.put(name, reciver);
+        return name2Receiver.put(name, reciver);
     }
 
     static class Handler implements IMessageHandler<Context, Context> {
@@ -58,7 +58,7 @@ public final class KeyMessage {
          */
         @Override
         public Context onMessage(Context message, MessageContext ctx) {
-            Consumer<MessageContext> receiver = name2Recive.get(message.key);
+            Consumer<MessageContext> receiver = name2Receiver.get(message.key);
             if (receiver != null) {
                 receiver.accept(ctx);
             } else {
