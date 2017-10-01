@@ -22,7 +22,9 @@ import java.util.Set;
 @Mod.EventBusSubscriber(modid = PanguCore.MODID)
 public class ItemRegister extends BaseRegister<Item, RegItem> {
     /**
-     * forge build-in event holder
+     * forge build-in event holder.
+     * the achievement of {@link RegItem}
+     *
      * @param event
      */
     @SubscribeEvent
@@ -34,9 +36,9 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
             // start register
             event.getRegistry().register(
                     // set registry name
-                    item.setRegistryName(
-                            registeringItem.buildRegistryName(regItem.value())
-                    )
+                    item.setRegistryName(registeringItem.buildRegistryName(regItem.value()))
+                            // set unlocalized name
+                            .setUnlocalizedName(NameBuilder.buildUnlocalizedName(regItem.value()))
             );
 
             // check if there contains ore dict
