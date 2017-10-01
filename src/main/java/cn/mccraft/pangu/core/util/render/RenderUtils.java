@@ -75,7 +75,7 @@ public class RenderUtils {
     /**
      * a simple util to helper you rotate translate, and this is also a box render
      */
-    public static class Draw3D {
+    public static class Box {
 
         public static void rotateX() {
             rotate(180, 1, 0, 0);
