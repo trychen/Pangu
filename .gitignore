@@ -7,6 +7,7 @@
 !gradlew.bat
 !build.gradle
 !gradle.properties
+!settings.gradle
 
 # Description Files
 !README.md
