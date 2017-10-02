@@ -90,6 +90,10 @@ public enum Register {
             if (needSubscribedEventBus(loaderClass)) {
                 MinecraftForge.EVENT_BUS.register(object);
             }
+            // subscribed to Proxy
+            if (needSubscribedLoad(loaderClass)) Proxy.INSTANCE.addLoader(object);
+
+
         } catch (Exception e) {
             // catch all exception to make sure no effect other loader
             PanguCore.getLogger().error("Unable to init loader: " + loaderClass, e);
@@ -105,6 +109,13 @@ public enum Register {
     public static boolean needSubscribedEventBus(Class clazz) {
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(SubscribeEvent.class)) return true;
+        }
+        return false;
+    }
+
+    public static boolean needSubscribedLoad(Class clazz) {
+        for (Method method : clazz.getMethods()) {
+            if (method.isAnnotationPresent(Load.class)) return true;
         }
         return false;
     }

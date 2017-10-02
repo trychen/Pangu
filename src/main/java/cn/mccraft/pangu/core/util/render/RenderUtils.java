@@ -75,48 +75,48 @@ public class RenderUtils {
     /**
      * a simple util to helper you rotate translate, and this is also a box render
      */
-    public static class Box {
+    public static interface Box {
 
-        public static void rotateX() {
+        static void rotateX() {
             rotate(180, 1, 0, 0);
         }
 
-        public static void rotateY() {
+        static void rotateY() {
             rotate(180, 0, 1, 0);
         }
 
-        public static void rotateZ() {
+        static void rotateZ() {
             rotate(180, 0, 0, 1);
         }
 
-        public static void rotateX(float rot) {
+        static void rotateX(float rot) {
             rotate(rot, 1, 0, 0);
         }
 
-        public static void rotateY(float rot) {
+        static void rotateY(float rot) {
             rotate(rot, 0, 1, 0);
         }
 
-        public static void rotateZ(float rot) {
+        static void rotateZ(float rot) {
             rotate(rot, 0, 0, 1);
         }
 
-        public static void translate(Entity entity) {
+        static void translate(Entity entity) {
             GlStateManager.translate((float) entity.posX, (float) entity.posY, (float) entity.posZ);
         }
 
-        public static void translate(BlockPos pos) {
+        static void translate(BlockPos pos) {
             GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
         }
 
-        public static void translateCenter(BlockPos pos) {
+        static void translateCenter(BlockPos pos) {
             GlStateManager.translate(pos.getX() + .5F, pos.getY() + .5F, pos.getZ() + .5F);
         }
 
         /**
          * draw rectangle in face with the size of x, y, z
          */
-        public static void drawRectangle(float x, float y, float z, EnumFacing facing) {
+        static void drawRectangle(float x, float y, float z, EnumFacing facing) {
             glBegin(GL_QUADS);
             switch (facing) {
                 case UP:
@@ -203,7 +203,7 @@ public class RenderUtils {
         /**
          * Draw an cube with the size of x, y, z
          */
-        public static void drawCube(float x, float y, float z) {
+        static void drawCube(float x, float y, float z) {
             for (EnumFacing facing : EnumFacing.VALUES) drawRectangle(x, y, z, facing);
         }
 

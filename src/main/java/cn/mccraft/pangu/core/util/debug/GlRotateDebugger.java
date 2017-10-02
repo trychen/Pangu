@@ -15,7 +15,10 @@ import static org.lwjgl.input.Keyboard.*;
 
 @SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber
-public class GlRotateDebugger {
+public final class GlRotateDebugger {
+    private GlRotateDebugger(){
+    }
+
     /**
      * storage the offset data
      */
@@ -25,7 +28,7 @@ public class GlRotateDebugger {
      * if enable this debugger tools
      */
     public static boolean enable(){
-        return true;
+        return false;
     }
 
     /**
@@ -80,9 +83,10 @@ public class GlRotateDebugger {
     }
 
     private static final DecimalFormat dnf = new DecimalFormat ("##0.0");
+
     /**
      * get the offset message
-     * @return string like "x: 0, y: 1, z: 0"
+     * @return string like "[Debugger] x: 0, y: 1, z: 0"
      */
     public static String offsetMessage(){
         return String.format("[Debugger] x: %s, y: %s, z: %s", dnf.format(offsetX), dnf.format(offsetY), dnf.format(offsetZ));

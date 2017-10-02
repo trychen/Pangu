@@ -34,4 +34,11 @@ public interface Message {
     static void actionBar(String message){
         minecraft.ingameGUI.setOverlayMessage(message, false);
     }
+
+    /**
+     * display a title
+     */
+    static void subtitle(String title, String subTitle, int timeFadeIn, int displayTime, int timeFadeOut){
+        minecraft.ingameGUI.displayTitle(title, subTitle, timeFadeIn, displayTime, timeFadeOut);
+    }
 }

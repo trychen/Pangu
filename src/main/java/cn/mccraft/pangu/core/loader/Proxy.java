@@ -1,11 +1,11 @@
 package cn.mccraft.pangu.core.loader;
 
-import cn.mccraft.pangu.core.CommonProxy;
 import cn.mccraft.pangu.core.PanguCore;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,12 +27,12 @@ public enum Proxy {
     private final Collection<Class<?>> loaders = Arrays.asList();
 
     /**
-     * The implementation of {@link CommonProxy#getLoaderInstanceMap()}
+     * The implementation of {@link Proxy#getLoaderInstanceMap()}
      */
     private final Map<Class<?>, Object> loaderInstanceMap = new HashMap<>();
 
     /**
-     * The implementation of {@link CommonProxy#getStateLoaderMap()}
+     * The implementation of {@link Proxy#getStateLoaderMap()}
      */
     private final Map<LoaderState, List<Method>> stateLoaderMap = new HashMap<>();
 
@@ -81,10 +81,15 @@ public enum Proxy {
      * And the method that annotated by {@link Load} should be also visible, or
      * it won't be register.
      *
-     * @param loaderClass
+     * @param object registering object
      */
-    public void addLoader(Class<?> loaderClass) {
+    public void addLoader(@Nonnull Object object) {
         try {
+            boolean isStatic = object instanceof Class;
+            Class<?> loaderClass = isStatic ? (Class<?>) object : object.getClass();
+
+            getLoaderInstanceMap().put(loaderClass, isStatic?loaderClass.newInstance():object);
+
             //加载所有方法
             for (Method method : loaderClass.getMethods())
                 for (Annotation annotation : method.getDeclaredAnnotations())
@@ -95,9 +100,9 @@ public enum Proxy {
                                 methods.add(method);
                             getStateLoaderMap().put(((Load) annotation).value(), methods);
                         }
-            getLoaderInstanceMap().put(loaderClass, loaderClass.newInstance());
+
         } catch (Exception e) {
-            PanguCore.getLogger().error("Un-able to register loader " + loaderClass.getName() + ":" + e.getLocalizedMessage());
+            PanguCore.getLogger().error("Un-able to register loader " + object + ":" + e.getLocalizedMessage(), e);
         }
     }
 
