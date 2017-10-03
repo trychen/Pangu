@@ -17,7 +17,7 @@ import net.minecraftforge.oredict.OreDictionary;
 public class ItemRegister extends BaseRegister<Item, RegItem> {
     /**
      * forge build-in event holder.
-     * the achievement of {@link RegItem}
+     * the implementation of {@link RegItem}
      *
      * @param event
      */
