@@ -1,6 +1,10 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.capability.CapabilityLoader;
+import cn.mccraft.pangu.core.item.PanguItems;
 import cn.mccraft.pangu.core.loader.Proxy;
+import cn.mccraft.pangu.core.loader.Register;
+import cn.mccraft.pangu.core.loader.buildin.ItemRegister;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
@@ -21,6 +25,7 @@ import java.util.*;
 public class CommonProxy {
 
     public CommonProxy() {
+        Register.INSTANCE.register(PanguItems.INSTANCE);
     }
 
     /*
@@ -29,6 +34,8 @@ public class CommonProxy {
      */
     public void preInit(FMLPreInitializationEvent event) {
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);
+        // TODO
+        new CapabilityLoader().registerCapabilities();
     }
 
     public void init(FMLInitializationEvent event) {

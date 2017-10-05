@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.item.PanguItems;
 import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
 import cn.mccraft.pangu.core.util.NameBuilder;
@@ -50,5 +51,12 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void test(RegistryEvent.Register<Item> event) {
+        // TODO
+        System.out.println("Registered");
+        event.getRegistry().register(PanguItems.PANGU_FOOD.setRegistryName(PanguCore.MODID, "food"));
     }
 }
