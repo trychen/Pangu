@@ -1,16 +1,12 @@
 package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.util.ReflectUtils;
-import com.google.common.collect.ImmutableSet;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,7 +54,7 @@ public enum Proxy {
                 return;
 
             // get instance to invoke method
-            Object instance = InstanceHolder.getIntance(method.getDeclaringClass());
+            Object instance = InstanceHolder.getInstance(method.getDeclaringClass());
 
             // trying to invoke method
             try {
@@ -93,7 +89,7 @@ public enum Proxy {
             // get the class with diff status
             Class<?> loaderClass = isStatic ? (Class<?>) object : object.getClass();
 
-            Object instance = InstanceHolder.getIntance(object);
+            Object instance = InstanceHolder.getInstance(object);
 
             // check if loaded
             if (loadedLoader.contains(isStatic ? loaderClass : instance)) return instance;

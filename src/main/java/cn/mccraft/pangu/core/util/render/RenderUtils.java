@@ -54,7 +54,7 @@ public class RenderUtils {
      * @param box if render the debug bounding box. required debugBoundingBox enabled
      */
     public static void renderEntity(Entity entity, double x, double y, double z, float yaw, float partialTicks, boolean box) {
-        minecraft.getRenderManager().renderEntity(entity, x, y, z, yaw, partialTicks, box);
+        minecraft.getRenderManager().doRenderEntity(entity, x, y, z, yaw, partialTicks, box);
     }
 
     /**

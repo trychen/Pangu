@@ -214,4 +214,15 @@ public interface ReflectUtils {
         }
         return null;
     }
+
+    static Object forInstance(Class clazz){
+        try {
+            return clazz.newInstance();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

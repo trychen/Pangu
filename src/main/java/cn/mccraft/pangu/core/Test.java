@@ -17,6 +17,13 @@ public class Test {
     @RegItem("hello")
     public static Item item = new PGItem();
 
-    @AutoWired(RecipeRegister.class)
-    public static RecipeRegister recipeRegister;
+    @AutoWired
+    private static Hello hello;
+
+    @AutoWired
+    public static class Hello{
+        public Hello() {
+            System.out.println("Hello World!");
+        }
+    }
 }

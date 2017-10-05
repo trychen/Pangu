@@ -37,11 +37,18 @@ public enum AnnotationInjector {
         Set<ASMDataTable.ASMData> allAutoWireds = discoverer.getASMTable().getAll(AutoWired.class.getName());
         Set<ASMDataTable.ASMData> allInvokers = discoverer.getASMTable().getAll(StaticInvoke.class.getName());
 
+        // solve class
         allAutoWireds
                 .stream()
                 .filter(it -> it.getClassName().equals(it.getObjectName()))
-                .forEach(it -> InstanceHolder.putInstance(ReflectUtils.forInstance(it.getClassName())));
+                .forEach(it -> {
+                    Class<?> clazz = ReflectUtils.forName(it.getObjectName());
+                    if (!InstanceHolder.searchInstance(clazz)){
+                        InstanceHolder.putInstance(ReflectUtils.forInstance(clazz));
+                    }
+                });
 
+        // solve field
         allAutoWireds
                 .stream()
                 .filter(it -> !it.getClassName().equals(it.getObjectName()))
@@ -49,12 +56,12 @@ public enum AnnotationInjector {
                     Class parentClass = ReflectUtils.forName(data.getClassName());
                     String annotationTarget = data.getObjectName();
                     Type type = (Type) data.getAnnotationInfo().get("value");
-                    Class value = ReflectUtils.forName(type.getClassName() == null ? Object.class.getName() : type.getClassName());
+                    Class value = type == null?null:ReflectUtils.forName(type.getClassName());
 
                     Object object;
                     try {
                         Field field = parentClass.getDeclaredField(annotationTarget);
-                        object = InstanceHolder.getIntance(type == null || Object.class.equals(value) ? field.getType() : value);
+                        object = InstanceHolder.getInstance(value == null ? field.getType() : value);
                     } catch (NoSuchFieldException e) {
                         PanguCore.getLogger().error("", e);
                         return;
@@ -65,13 +72,13 @@ public enum AnnotationInjector {
                         return;
                     }
 
-                    ReflectUtils.setField(parentClass, InstanceHolder.getIntance(parentClass), annotationTarget, InstanceHolder.getIntance(parentClass), true);
+                    ReflectUtils.setField(parentClass, InstanceHolder.getInstance(parentClass), annotationTarget, InstanceHolder.getInstance(parentClass), true);
                 });
 
         for (ASMDataTable.ASMData load : allInvokers) {
             Class parentClass = ReflectUtils.forName(load.getClassName());
             String methodName = load.getObjectName().substring(0, load.getObjectName().indexOf('('));
-            ReflectUtils.invokeMethod(parentClass, InstanceHolder.getIntance(parentClass), methodName, null, false, discoverer.getASMTable());
+            ReflectUtils.invokeMethod(parentClass, InstanceHolder.getInstance(parentClass), methodName, null, false, discoverer.getASMTable());
         }
     }
 

@@ -174,7 +174,6 @@ public class PanguCore {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
-        System.out.println(Test.recipeRegister);
     }
 
     @Mod.EventHandler

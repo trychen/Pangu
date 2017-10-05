@@ -10,8 +10,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The Registering System's Controller
@@ -73,17 +71,15 @@ public enum Register {
      * @return IRegister's instance, null if can't init
      */
     public IRegister getLoaderInstance(Class<? extends IRegister> loaderClass) {
-        Object object = InstanceHolder.getIntance(loaderClass);
+        Object object = InstanceHolder.getInstance(loaderClass);
 
         // check instance if exists
-        if (object == null || !(object instanceof IRegister)) try {
+        if (!loaderClass.isInterface() && (object == null || !(object instanceof IRegister))) try {
             // new instance with reflection
             object = InstanceHolder.putInstance(loaderClass.newInstance());
 
             // subscribed to MinecraftForge.EVENT_BUS
             if (needSubscribedEventBus(loaderClass)) MinecraftForge.EVENT_BUS.register(object);
-            // subscribed to MinecraftForge.EVENT_BUS
-            if (needSubscribedLoad(loaderClass)) Proxy.INSTANCE.addLoader(object);
         } catch (Exception e) {
             // catch all exception to make sure no effect other loader
             PanguCore.getLogger().error("Unable to init loader: " + loaderClass, e);
@@ -96,6 +92,11 @@ public enum Register {
         return (IRegister) object;
     }
 
+    /**
+     * check if need to subscribed event bus
+     * @param clazz
+     * @return
+     */
     public static boolean needSubscribedEventBus(Class clazz) {
         for (Method method : clazz.getMethods()) {
             if (method.isAnnotationPresent(SubscribeEvent.class)) return true;
@@ -103,13 +104,10 @@ public enum Register {
         return false;
     }
 
-    public static boolean needSubscribedLoad(Class clazz) {
-        for (Method method : clazz.getMethods()) {
-            if (method.isAnnotationPresent(Load.class)) return true;
-        }
-        return false;
-    }
-
+    /**
+     * auto inject all @Registering class
+     * @param table
+     */
     @AnnotationInjector.StaticInvoke
     public static void injectAnnotation(ASMDataTable table) {
         table.getAll(Registering.class.getName())

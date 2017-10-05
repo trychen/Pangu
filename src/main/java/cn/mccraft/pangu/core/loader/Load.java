@@ -11,10 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  * A loader which can make auto invoke the annotated function (must be visible to core) with this class.
- * You should add your custom loader in {@link cn.mccraft.pangu.core.loader.Proxy#loaders}.
- *
- * 被该注解注释的函数将被自动执行。
- * 你需要把你的自定义加载器放入{@link cn.mccraft.pangu.core.loader.Proxy#loaders}
+ * Your method's parent class will be auto added into {@link Proxy}, and the method must be
  *
  * @author LasmGratel
  * @since .2
