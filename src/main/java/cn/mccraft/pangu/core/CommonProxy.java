@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CommonProxy {
 
     public CommonProxy() {
+        Proxy.INSTANCE.addLoader(CapabilityLoader.class);
         Register.INSTANCE.register(PanguItems.INSTANCE);
     }
 

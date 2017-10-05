@@ -19,10 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+    static {
+        Proxy.INSTANCE.addLoader(ModelLoader.class);
+    }
+
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
-        Proxy.INSTANCE.addLoader(ModelLoader.class);
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.CLIENT);
     }
 

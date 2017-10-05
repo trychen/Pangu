@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.client;
 
-import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.capability.FoodStats;
 import cn.mccraft.pangu.core.item.FoodManager;
 import cn.mccraft.pangu.core.item.ItemPanguFoodMeshDefinition;
@@ -17,15 +16,13 @@ public class ModelLoader {
     
     @Load(side = Side.CLIENT)
     @SideOnly(Side.CLIENT)
-    public void loadModelMeshDefinitions() {
-        PanguCore.getLogger().info("Registering model mesh definition");
+    public static void loadModelMeshDefinitions() {
         net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(PanguItems.PANGU_FOOD, new ItemPanguFoodMeshDefinition());
     }
 
     @Load(side = Side.CLIENT)
     @SideOnly(Side.CLIENT)
-    public void addVariantNames() {
-        PanguCore.getLogger().info("Registering variant names");
+    public static void addVariantNames() {
         FoodManager.INSTANCE.getFoods().stream().map(FoodStats::getModel).forEach(model -> ModelBakery.registerItemVariants(PanguItems.PANGU_FOOD, model));
     }
 }

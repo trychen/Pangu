@@ -1,7 +1,7 @@
 package cn.mccraft.pangu.core.capability;
 
-import cn.mccraft.pangu.core.util.function.FoodEatenCallback;
-import cn.mccraft.pangu.core.util.function.FoodUseFinishCallback;
+import cn.mccraft.pangu.core.util.function.item.food.FoodEatenCallback;
+import cn.mccraft.pangu.core.util.function.item.food.FoodUseFinishCallback;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.EnumAction;
 import net.minecraft.nbt.NBTBase;
