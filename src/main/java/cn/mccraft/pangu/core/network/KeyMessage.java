@@ -29,15 +29,8 @@ public final class KeyMessage {
     private KeyMessage(){
     }
 
-    /**
-     * add loader to make this class automatically load while needed
-     */
-    static {
-        Proxy.INSTANCE.addLoader(KeyMessage.class);
-    }
-
     @Load(LoaderState.INITIALIZATION)
-    public void registerMessageHandler(){
+    public static void registerMessageHandler(){
         PanguCore.getNetwork().registerMessage(Handler.class, Context.class, Network.getNextID(), Side.SERVER);
     }
 
@@ -47,7 +40,7 @@ public final class KeyMessage {
         return name2Receiver.put(name, reciver);
     }
 
-    static class Handler implements IMessageHandler<Context, Context> {
+    public static class Handler implements IMessageHandler<Context, Context> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -71,7 +64,7 @@ public final class KeyMessage {
     /**
      * A key message which storage none of information
      */
-    static class Context implements IMessage {
+    public static class Context implements IMessage {
         private String key;
 
         public Context(String key) {

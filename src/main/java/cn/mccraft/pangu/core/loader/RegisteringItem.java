@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.loader;
 
-import cn.mccraft.pangu.core.util.ReflectUtils;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.util.ResourceLocation;
 

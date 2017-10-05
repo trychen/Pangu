@@ -1,15 +1,14 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.Proxy;
+import cn.mccraft.pangu.core.loader.Register;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * Common proxy of Pangu Core
@@ -28,6 +27,10 @@ public class CommonProxy {
      *        FML Initialization
      */
     public void preInit(FMLPreInitializationEvent event) {
+        AnnotationInjector.INSTANCE.startSolveInjectors();
+
+        Register.INSTANCE.register(Test.class);
+
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);
     }
 

@@ -25,18 +25,17 @@ public @interface RegItem {
     String[] value() default {};
 
     /**
-     * The params to build registryName's domain, its priority is higher than {@link cn.mccraft.pangu.core.loader.Registering}
-     * @return
-     */
-    String domain() default "";
-
-    /**
      * All {@link net.minecraftforge.oredict.OreDictionary} values to be registered.
      */
     String[] oreDict() default {};
 
     /**
-     * if register render automatically
+     * if register model automatically
      */
-    boolean isRegisterRender() default true;
+    boolean isRegisterModel() default true;
+
+    /**
+     * if auto create model automatically
+     */
+    boolean autoModel() default true;
 }
