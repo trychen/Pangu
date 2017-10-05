@@ -1,9 +1,11 @@
 package cn.mccraft.pangu.core.util.debug;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.DevEnv;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,7 +30,7 @@ public final class GlRotateDebugger {
      * if enable this debugger tools
      */
     public static boolean enable(){
-        return false;
+        return DevEnv.INSTANCE.isActiving();
     }
 
     /**

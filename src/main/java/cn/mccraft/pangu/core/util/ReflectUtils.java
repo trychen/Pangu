@@ -6,10 +6,38 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public interface ReflectUtils {
+    static void setField(Class ownerClass, Object owner, String name, Object object, boolean breakPrivate){
+        try {
+            // resolve break private
+            Field field;
+            try {
+                field = breakPrivate ? ownerClass.getDeclaredField(name) : ownerClass.getField(name);
+            } catch (NoSuchFieldException e){
+                // check no field
+                return;
+            }
+
+            // break access
+            if (!field.isAccessible()) field.setAccessible(true);
+
+            field.set(owner, object);
+        } catch (Exception e) {
+            PanguCore.getLogger().error(
+                    String.format(
+                            "Unable to set field in %s#%s typed %s, breakPrivate?%b",
+                            ownerClass.getName(),
+                            name,
+                            object,
+                            breakPrivate
+                    ), e);
+        }
+    }
+
     /**
      * get some field
      *
@@ -23,11 +51,13 @@ public interface ReflectUtils {
     static <T> T getField(Class ownerClass, Object owner, String name, Class<T> typeCheck, boolean breakPrivate) {
         try {
             // resolve break private
-            Field field = breakPrivate ? ownerClass.getDeclaredField(name) : ownerClass.getField(name);
-
-            // check exist
-            if (field == null) return null;
-
+            Field field;
+            try {
+                field = breakPrivate ? ownerClass.getDeclaredField(name) : ownerClass.getField(name);
+            } catch (NoSuchFieldException e){
+                // check no field
+                return null;
+            }
             // check type
             if (typeCheck != null && !typeCheck.isAssignableFrom(field.getType())) return null;
 
@@ -88,10 +118,12 @@ public interface ReflectUtils {
             Class[] parameterTypes = toTypes(parameters);
 
             // resolve break private
-            Method method = breakPrivate ? ownerClass.getDeclaredMethod(name, parameterTypes) : ownerClass.getMethod(name, parameterTypes);
-
-            // check exist
-            if (method == null) return null;
+            Method method;
+            try {
+                method = breakPrivate ? ownerClass.getDeclaredMethod(name, parameterTypes) : ownerClass.getMethod(name, parameterTypes);
+            } catch (NoSuchMethodException e){
+                return null;
+            }
 
             // check type
             if (returnTypeCheck != null && !returnTypeCheck.isAssignableFrom(method.getReturnType())) return null;
@@ -100,7 +132,6 @@ public interface ReflectUtils {
             if (!method.isAccessible()) method.setAccessible(true);
 
             Object object = method.invoke(owner, parameters);
-            if (returnTypeCheck == null) return null;
             return (T) object;
         } catch (Exception e) {
             PanguCore.getLogger().error(
@@ -160,5 +191,27 @@ public interface ReflectUtils {
      */
     static Class[] toTypes(Object... parameters){
         return Arrays.stream(parameters).map(parameter -> parameter.getClass()).collect(Collectors.toList()).toArray(new Class[0]);
+    }
+
+    static Class<?> forName(String name){
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    static Object forInstance(String name){
+        try {
+            return Class.forName(name).newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

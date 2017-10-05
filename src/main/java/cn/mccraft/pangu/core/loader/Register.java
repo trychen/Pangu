@@ -45,7 +45,7 @@ public enum Register {
                 RegisteringHandler handler = annotation.annotationType().getAnnotation(RegisteringHandler.class);
 
                 // ignore item without loader
-                if (handler == null || !IRegister.class.isAssignableFrom(handler.value())) continue;
+                if (handler == null|| IRegister.class.equals(handler.value()) || !IRegister.class.isAssignableFrom(handler.value())) continue;
 
                 // get the cached instance of loader
                 IRegister loader = getLoaderInstance(handler.value());
@@ -66,34 +66,23 @@ public enum Register {
     }
 
     /**
-     * loader's class to instance
-     */
-    public Map<Class<? extends IRegister>, Object> loadersInstanceMap = new HashMap<>();
-
-    /**
      * get the cached instance
      *
      * @param loaderClass the loader's class
      * @return IRegister's instance, null if can't init
      */
     public IRegister getLoaderInstance(Class<? extends IRegister> loaderClass) {
-        Object object = loadersInstanceMap.get(loaderClass);
+        Object object = InstanceHolder.getIntance(loaderClass);
 
         // check instance if exists
         if (object == null || !(object instanceof IRegister)) try {
             // new instance with reflection
-            object = loaderClass.newInstance();
-            // put to map
-            loadersInstanceMap.put(loaderClass, object);
+            object = InstanceHolder.putInstance(loaderClass.newInstance());
 
             // subscribed to MinecraftForge.EVENT_BUS
-            if (needSubscribedEventBus(loaderClass)) {
-                MinecraftForge.EVENT_BUS.register(object);
-            }
-            // subscribed to Proxy
+            if (needSubscribedEventBus(loaderClass)) MinecraftForge.EVENT_BUS.register(object);
+            // subscribed to MinecraftForge.EVENT_BUS
             if (needSubscribedLoad(loaderClass)) Proxy.INSTANCE.addLoader(object);
-
-
         } catch (Exception e) {
             // catch all exception to make sure no effect other loader
             PanguCore.getLogger().error("Unable to init loader: " + loaderClass, e);

@@ -13,4 +13,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @RegisteringHandler(RecipeRegister.class)
 public @interface RegRecipe {
+    /**
+     * resource name
+     */
+    String value() default "";
+
+    /**
+     * if ignore this recipe when resource file exist
+     */
+    boolean autoIgnoreIfResourceExist() default true;
 }

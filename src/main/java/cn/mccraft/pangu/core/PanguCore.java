@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.network.KeyMessage;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 
@@ -173,6 +174,7 @@ public class PanguCore {
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
+        System.out.println(Test.recipeRegister);
     }
 
     @Mod.EventHandler

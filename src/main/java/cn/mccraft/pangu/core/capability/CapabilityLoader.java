@@ -5,12 +5,8 @@ import cn.mccraft.pangu.core.loader.Proxy;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class CapabilityLoader {
-    static {
-        Proxy.INSTANCE.addLoader(CapabilityLoader.class);
-    }
-
     @Load
-    public void registerCapabilities() {
+    public static void registerCapabilities() {
         CapabilityManager.INSTANCE.register(FoodStats.class, new CapabilityFood.Storage(), CapabilityFood.Implementation.class);
     }
 }
