@@ -10,6 +10,7 @@ import net.minecraft.world.World;
  * Created by trychen on 17/9/30.
  */
 public class AIUtils {
+
     /**
      * checking if two Vec3d can see each other (there are not any block between)
      *

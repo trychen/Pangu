@@ -8,36 +8,46 @@ buildscript {
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+allprojects {
+    apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0"
-group = "cn.mccraft.pangu"
-archivesBaseName = "Pangu-Core"
+    version = "1.0"
 
+    group = "cn.mccraft.pangu"
+
+    // Build name as
+    archivesBaseName = rootProject.name + project.is(rootProject) ? "" : project.name
+
+    minecraft {
+        version = "1.12-14.21.1.2443"
+        runDir = "run"
+        mappings = "snapshot_20170624"
+    }
+
+    task ideaInfo {
+        println(project.sourceSets.main.allSource.srcDirs)
+    }
+}
+
+// all sub projects
+subprojects {
+    processResources {
+        inputs.property "version", project.version
+        inputs.property "mcversion", project.minecraft.version
+
+        from(sourceSets.main.resources.srcDirs) {
+            include 'mcmod.info'
+            expand 'version': project.version, 'mcversion': project.minecraft.version
+        }
+
+        from(sourceSets.main.resources.srcDirs) {
+            exclude 'mcmod.info'
+        }
+    }
+}
+
+// Either Forge and Project required Java 8
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
-}
-
-minecraft {
-    version = "1.12-14.21.1.2387"
-    runDir = "run"
-    mappings = "snapshot_20170925"
-}
-
-dependencies {
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
 }

@@ -17,9 +17,12 @@ import java.lang.annotation.Target;
 public @interface RegItem {
     /**
      * The params to build registryName and unlocalizedName,
-     * using {@link cn.mccraft.pangu.core.util.NameBuilder}
+     * using {@link cn.mccraft.pangu.core.util.NameBuilder}.
+     * if you set this to empty, register will use
+     * {@link cn.mccraft.pangu.core.util.NameBuilder#apart(String)}
+     * to apart the field's name as the item's name.
      */
-    String[] value();
+    String[] value() default {};
 
     /**
      * The params to build registryName's domain, its priority is higher than {@link cn.mccraft.pangu.core.loader.Registering}

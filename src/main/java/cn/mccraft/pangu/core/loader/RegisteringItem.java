@@ -1,10 +1,11 @@
 package cn.mccraft.pangu.core.loader;
 
-import cn.mccraft.pangu.core.util.AnnotationReflect;
+import cn.mccraft.pangu.core.util.ReflectUtils;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.util.ResourceLocation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 /**
  * use to storage cached item which need register later
@@ -13,6 +14,11 @@ import java.lang.annotation.Annotation;
  * @author trychen
  */
 public class RegisteringItem<T, A extends Annotation> {
+    /**
+     * the field that storage this item
+     */
+    private final Field field;
+
     /**
      * the item's instance
      */
@@ -28,13 +34,11 @@ public class RegisteringItem<T, A extends Annotation> {
      */
     private final A annotation;
 
-    public RegisteringItem(T key, String domain, A annotation) {
+    public RegisteringItem(Field field, T key, String domain, A annotation) {
+        this.field = field;
         this.key = key;
         this.domain = domain;
         this.annotation = annotation;
-
-        // special domain
-        AnnotationReflect.getField(annotation, "domain", String.class);
     }
 
     public T getItem() {
@@ -47,6 +51,10 @@ public class RegisteringItem<T, A extends Annotation> {
 
     public A getAnnotation() {
         return annotation;
+    }
+
+    public Field getField() {
+        return field;
     }
 
     /**
@@ -73,5 +81,9 @@ public class RegisteringItem<T, A extends Annotation> {
     @Override
     public int hashCode() {
         return key.hashCode();
+    }
+
+    public String buildUnlocalizedName(String[] name) {
+        return NameBuilder.buildUnlocalizedName(name);
     }
 }
