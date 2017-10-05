@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -116,9 +117,9 @@ public class ItemPanguFood extends ItemFood {
     }
 
     @Nonnull
-    @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return getStats(stack).getUnlocalizedName() == null ? "" : getStats(stack).getUnlocalizedName();
+    public String getItemStackDisplayName(ItemStack stack) {
+        final String localizedName = getStats(stack).getUnlocalizedName() == null ? "" : getStats(stack).getUnlocalizedName();
+        return I18n.translateToLocal(localizedName + ".name").trim();
     }
 
     @Override

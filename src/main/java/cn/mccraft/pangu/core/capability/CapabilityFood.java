@@ -2,12 +2,12 @@ package cn.mccraft.pangu.core.capability;
 
 import cn.mccraft.pangu.core.util.function.FoodEatenCallback;
 import cn.mccraft.pangu.core.util.function.FoodUseFinishCallback;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.EnumAction;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -29,6 +29,7 @@ public interface CapabilityFood {
         private PotionEffect potion;
         private float potionEffectProbability;
         private String unlocalizedName = "";
+        private ModelResourceLocation model;
         private FoodUseFinishCallback useFinishCallback = FoodUseFinishCallback.BASIC_CALLBACK;
         private FoodEatenCallback eatenCallback = FoodEatenCallback.BASIC_CALLBACK;
 
@@ -153,6 +154,17 @@ public interface CapabilityFood {
         }
 
         @Override
+        public ModelResourceLocation getModel() {
+            return model;
+        }
+
+        @Override
+        public FoodStats setModel(ModelResourceLocation model) {
+            this.model = model;
+            return this;
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
@@ -165,7 +177,14 @@ public interface CapabilityFood {
             if (alwaysEdible != that.alwaysEdible) return false;
             if (maxItemUseDuration != that.maxItemUseDuration) return false;
             if (Float.compare(that.potionEffectProbability, potionEffectProbability) != 0) return false;
-            return action == that.action && (potion != null ? potion.equals(that.potion) : that.potion == null);
+            if (action != that.action) return false;
+            if (potion != null ? !potion.equals(that.potion) : that.potion != null) return false;
+            if (unlocalizedName != null ? !unlocalizedName.equals(that.unlocalizedName) : that.unlocalizedName != null)
+                return false;
+            if (model != null ? !model.equals(that.model) : that.model != null) return false;
+            if (useFinishCallback != null ? !useFinishCallback.equals(that.useFinishCallback) : that.useFinishCallback != null)
+                return false;
+            return eatenCallback != null ? eatenCallback.equals(that.eatenCallback) : that.eatenCallback == null;
         }
 
         @Override
@@ -178,6 +197,10 @@ public interface CapabilityFood {
             result = 31 * result + action.hashCode();
             result = 31 * result + (potion != null ? potion.hashCode() : 0);
             result = 31 * result + (potionEffectProbability != +0.0f ? Float.floatToIntBits(potionEffectProbability) : 0);
+            result = 31 * result + (unlocalizedName != null ? unlocalizedName.hashCode() : 0);
+            result = 31 * result + (model != null ? model.hashCode() : 0);
+            result = 31 * result + (useFinishCallback != null ? useFinishCallback.hashCode() : 0);
+            result = 31 * result + (eatenCallback != null ? eatenCallback.hashCode() : 0);
             return result;
         }
     }
