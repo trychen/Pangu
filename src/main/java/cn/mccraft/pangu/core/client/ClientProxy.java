@@ -22,6 +22,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        Proxy.INSTANCE.addLoader(ModelLoader.class);
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.CLIENT);
     }
 

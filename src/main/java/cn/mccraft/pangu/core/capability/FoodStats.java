@@ -2,13 +2,13 @@ package cn.mccraft.pangu.core.capability;
 
 import cn.mccraft.pangu.core.util.function.FoodEatenCallback;
 import cn.mccraft.pangu.core.util.function.FoodUseFinishCallback;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public interface FoodStats {
@@ -81,6 +81,10 @@ public interface FoodStats {
     String getUnlocalizedName();
 
     FoodStats setUnlocalizedName(String unlocalizedName);
+
+    ModelResourceLocation getModel();
+
+    FoodStats setModel(ModelResourceLocation model);
 
     /**
      *

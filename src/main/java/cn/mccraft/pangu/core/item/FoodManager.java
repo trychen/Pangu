@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.item;
 
 import cn.mccraft.pangu.core.capability.CapabilityFood;
 import cn.mccraft.pangu.core.capability.FoodStats;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ public enum FoodManager {
     private Set<FoodStats> foods = new HashSet<>();
 
     FoodManager() {
-        addFood(new CapabilityFood.Implementation().setAmount(2));
+        addFood(new CapabilityFood.Implementation().setAmount(2).setUnlocalizedName("testFood").setModel(new ModelResourceLocation("minecraft:apple")));
     }
 
     public void addFood(FoodStats stats) {
@@ -29,10 +30,14 @@ public enum FoodManager {
         foods.addAll(stats);
     }
 
+    public Set<FoodStats> getFoods() {
+        return foods;
+    }
+
     public Set<ItemStack> toStacks() {
         Set<ItemStack> stacks = new HashSet<>();
         for (FoodStats stats : foods) {
-            ItemStack stack = new ItemStack(new ItemPanguFood());
+            ItemStack stack = new ItemStack(PanguItems.PANGU_FOOD);
             stack.getCapability(CapabilityFood.CAPABILITY_FOOD_STATS, null)
                     .setUnlocalizedName(stats.getUnlocalizedName())
                     .setPotionEffectProbability(stats.getPotionEffectProbability())
