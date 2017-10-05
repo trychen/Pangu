@@ -53,7 +53,7 @@ public final class KeyMessage {
         public Context onMessage(Context message, MessageContext ctx) {
             Consumer<MessageContext> receiver = name2Receiver.get(message.key);
             if (receiver != null) {
-                receiver.accept(ctx);
+                receiver.apply(ctx);
             } else {
                 PanguCore.getLogger().warn("Client is trying to send an unregistered packet");
             }

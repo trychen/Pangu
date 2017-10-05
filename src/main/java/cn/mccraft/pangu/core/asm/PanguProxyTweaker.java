@@ -22,7 +22,7 @@ public class PanguProxyTweaker implements ITweaker {
         return new String[0];
     }
     @Override
-    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
+    public void applyOptions(List<String> args, File gameDir, File assetsDir, String profile) {
     }
 
 }
