@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.loader;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.buildin.IRegister;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.annotation.Annotation;
@@ -108,4 +109,20 @@ public enum Register {
         }
         return false;
     }
+
+    @AnnotationInjector.StaticInvoke
+    public static void injectAnnotation(ASMDataTable table) {
+        table.getAll(Registering.class.getName())
+                .stream()
+                .map(ASMDataTable.ASMData::getClassName)
+                .distinct()
+                .forEach(it -> {
+                    try {
+                        INSTANCE.register(Class.forName(it));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
 }
