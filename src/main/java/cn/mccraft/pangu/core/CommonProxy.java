@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.capability.CapabilityLoader;
+import cn.mccraft.pangu.core.item.PanguItems;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.Proxy;
 import cn.mccraft.pangu.core.loader.Register;
@@ -20,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CommonProxy {
 
     public CommonProxy() {
+        Register.INSTANCE.register(PanguItems.INSTANCE);
     }
 
     /*
@@ -28,8 +31,6 @@ public class CommonProxy {
      */
     public void preInit(FMLPreInitializationEvent event) {
         AnnotationInjector.INSTANCE.startSolveInjectors();
-
-        Register.INSTANCE.register(Test.class);
 
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);
     }
