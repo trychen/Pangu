@@ -10,7 +10,20 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * 反射工具类。
+ * 如方法或变量不存在，该类下的方法都不会抛出异常。
+ */
 public interface ReflectUtils {
+    /**
+     * 设置变量
+     *
+     * @param ownerClass 要修改的类
+     * @param owner 要修改的对象，如为静态变量时可空
+     * @param name 变量名
+     * @param object 要修改成的对象
+     * @param breakPrivate 是否反射修改为变量可见
+     */
     static void setField(Class ownerClass, Object owner, String name, Object object, boolean breakPrivate){
         try {
             // resolve break private
@@ -39,11 +52,13 @@ public interface ReflectUtils {
     }
 
     /**
-     * get some field
+     * 获取变量的值
      *
-     * @param name         the name of field
-     * @param typeCheck    the type of the class
-     * @param breakPrivate if set accessible to true
+     * @param ownerClass 要修改的类
+     * @param owner 要修改的对象，如为静态变量时可空
+     * @param name 变量名
+     * @param typeCheck 返回类型转换
+     * @param breakPrivate 是否反射修改为变量可见
      * @param <T>
      * @return
      */
@@ -193,6 +208,11 @@ public interface ReflectUtils {
         return Arrays.stream(parameters).map(parameter -> parameter.getClass()).collect(Collectors.toList()).toArray(new Class[0]);
     }
 
+    /**
+     * 无异常的 {@link Class#forName(String)}
+     *
+     * @return 类不存在时返回 null
+     */
     static Class<?> forName(String name){
         try {
             return Class.forName(name);
@@ -202,11 +222,15 @@ public interface ReflectUtils {
         return null;
     }
 
+    /**
+     * 无异常的 {@link Class#newInstance()}
+     *
+     * @param name 类名
+     * @return 异常时返回 null
+     */
     static Object forInstance(String name){
         try {
-            return Class.forName(name).newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return forName(name).newInstance();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -215,6 +239,12 @@ public interface ReflectUtils {
         return null;
     }
 
+    /**
+     * 无异常的 {@link Class#newInstance()}
+     *
+     * @param clazz 创建的对象的类
+     * @return 异常时返回 null
+     */
     static Object forInstance(Class clazz){
         try {
             return clazz.newInstance();

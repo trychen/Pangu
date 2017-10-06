@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Common proxy of Pangu Core
- * Pangu Core 公共代理
+ * Pangu Core 公共代理类
  *
  * @author trychen
  * @since .2
@@ -22,7 +22,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public class CommonProxy {
 
     public CommonProxy() {
-        Proxy.INSTANCE.addLoader(CapabilityLoader.class);
         Register.INSTANCE.register(PanguItems.INSTANCE);
     }
 

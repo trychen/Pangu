@@ -75,7 +75,7 @@ public class RenderUtils {
     /**
      * a simple util to helper you rotate translate, and this is also a box render
      */
-    public static interface Box {
+    public interface Box {
 
         static void rotateX() {
             rotate(180, 1, 0, 0);
@@ -202,6 +202,8 @@ public class RenderUtils {
 
         /**
          * Draw an cube with the size of x, y, z
+         *
+         * 渲染一个大小为 x, y, z 的立方体
          */
         static void drawCube(float x, float y, float z) {
             for (EnumFacing facing : EnumFacing.VALUES) drawRectangle(x, y, z, facing);

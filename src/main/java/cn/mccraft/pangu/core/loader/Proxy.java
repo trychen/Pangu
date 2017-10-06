@@ -25,17 +25,18 @@ public enum Proxy {
 
     /**
      * Set to check if has loaded, to prevent repeat add
+     *
+     * 用于检查类是否已经被加载过，避免因重复加载而重复执行
      */
     private Set<Object> loadedLoader = new HashSet();
 
     /**
-     * The implementation of {@link Proxy#getStateLoaderMap()}
+     * 存储已经加载了的使用了 {@link Load} 注解方法
      */
     private final Map<LoaderState, List<Method>> stateLoaderMap = new HashMap<>();
 
-
     /**
-     * start invoking the opposite registered loader's
+     * tart invoking the opposite registered loader's
      *
      * @param event the instance of event
      * @param state not all loader state will be invoke in the loader, just for {@link LoaderState#PREINITIALIZATION} to {@link LoaderState#AVAILABLE}

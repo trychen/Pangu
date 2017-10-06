@@ -22,6 +22,8 @@ public enum AnnotationInjector {
 
     /**
      * invoke method like "public static void injectAnnotation(ASMDataTable.ASMData data) ..."
+     *
+     * 带有该注解的方法，必须是可见的，且是静态或者类的实例已存入 {@link InstanceHolder} （即使用了 {@link AutoWired} 的类）
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -90,7 +92,7 @@ public enum AnnotationInjector {
     /**
      * get {@link Loader#discoverer} by {@link ReflectUtils}
      *
-     * @return
+     * 通过反射工具类获取 {@link Loader#discoverer}
      */
     public ModDiscoverer getDiscoverer() {
         if (discoverer == null) {

@@ -14,6 +14,9 @@ import java.lang.annotation.Target;
  * (must be visible to core) with this class. Your method's parent
  * class will be auto added into {@link Proxy#addLoader(Object)}.
  *
+ * 使用了该注解的方法的类，将会在 PreInit 前自动执行 {@link Proxy#addLoader(Object)}。
+ * 你的方法必须是是静态的或父类的实例已被存入 InstanceHolder 的类（即使用了 @AutoWired 的类）
+ *
  * @author LasmGratel
  * @since .2
  */
@@ -22,13 +25,13 @@ import java.lang.annotation.Target;
 public @interface Load {
     /**
      * Select which state we should invoke this method.
-     * 选择你需要执行该函数的Forge加载状态。
+     * 执行该函数的 Forge 加载状态。
      */
     LoaderState value() default LoaderState.PREINITIALIZATION;
 
     /**
      * Select which side we should invoke this method.
-     * 选择你需要执行该函数所需的平台，服务器或是客户端。
+     * 执行该函数所需的平台，服务器或是客户端。
      */
     Side side() default Side.SERVER;
 }
