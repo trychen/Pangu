@@ -8,6 +8,10 @@ import java.util.List;
 
 public class PanguProxyTweaker implements ITweaker {
     @Override
+    public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
+    }
+
+    @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         classLoader.registerTransformer("cn.mccraft.pangu.core.asm.transformer.LoaderTransformer");
     }
@@ -20,9 +24,6 @@ public class PanguProxyTweaker implements ITweaker {
     @Override
     public String[] getLaunchArguments() {
         return new String[0];
-    }
-    @Override
-    public void applyOptions(List<String> args, File gameDir, File assetsDir, String profile) {
     }
 
 }

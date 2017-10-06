@@ -72,7 +72,7 @@ public enum AnnotationInjector {
                         return;
                     }
 
-                    ReflectUtils.setField(parentClass, InstanceHolder.getInstance(parentClass), annotationTarget, InstanceHolder.getInstance(parentClass), true);
+                    ReflectUtils.setField(parentClass, InstanceHolder.getInstance(parentClass), annotationTarget, object, true);
                 });
 
         for (ASMDataTable.ASMData load : allInvokers) {
