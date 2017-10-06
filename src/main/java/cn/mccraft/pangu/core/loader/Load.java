@@ -10,8 +10,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A loader which can make auto invoke the annotated function (must be visible to core) with this class.
- * Your method's parent class will be auto added into {@link Proxy}, and the method must be
+ * A loader which can make auto invoke the annotated function
+ * (must be visible to core) with this class. Your method's parent
+ * class will be auto added into {@link Proxy#addLoader(Object)}.
  *
  * @author LasmGratel
  * @since .2

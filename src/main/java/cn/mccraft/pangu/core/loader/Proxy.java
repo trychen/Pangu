@@ -62,6 +62,8 @@ public enum Proxy {
                     throw new NullPointerException("Couldn't find the instance to invoke or method is not static: " + method.toString());
                 }
 
+                if (!method.isAccessible()) method.setAccessible(true);
+
                 if (method.getParameterCount() == 0) method.invoke(instance);
                 else method.invoke(instance, event);
             } catch (IllegalAccessException | InvocationTargetException e) {
@@ -95,7 +97,7 @@ public enum Proxy {
             if (loadedLoader.contains(isStatic ? loaderClass : instance)) return instance;
 
             // searching method
-            for (Method method : loaderClass.getMethods())
+            for (Method method : loaderClass.getDeclaredMethods())
                 // searching annotations
                 for (Annotation annotation : method.getDeclaredAnnotations())
                     // checking annotation type

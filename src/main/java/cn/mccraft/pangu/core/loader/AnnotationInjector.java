@@ -82,6 +82,9 @@ public enum AnnotationInjector {
         }
     }
 
+    /**
+     * cached discoverer
+     */
     private static ModDiscoverer discoverer;
 
     /**

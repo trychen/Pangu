@@ -36,7 +36,10 @@ public interface InstanceHolder {
 
         // try to find instance
         if (cachedInstance == null) {
+            // insert the provided object
             if (!isStatic) cachedInstance = object;
+
+            // try to find instance in class
             if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "instance");
             if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "INSTANCE");
             if (cachedInstance == null) cachedInstance = ReflectUtils.invokeMethod(loaderClass, "getInstance");
