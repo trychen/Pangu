@@ -21,13 +21,13 @@ public enum AnnotationInjector {
     INSTANCE;
 
     /**
-     * invoke method like "public static void injectAnnotation(ASMDataTable.ASMData data) ..."
+     * invoke method like "public static void injectAnnotation(ASMDataTable data) ..."
      *
      * 带有该注解的方法，必须是可见的，且是静态或者类的实例已存入 {@link InstanceHolder} （即使用了 {@link AutoWired} 的类）
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    @interface StaticInvoke {
+    public @interface StaticInvoke {
     }
 
     /**
@@ -44,9 +44,14 @@ public enum AnnotationInjector {
                 .stream()
                 .filter(it -> it.getClassName().equals(it.getObjectName()))
                 .forEach(it -> {
-                    Class<?> clazz = ReflectUtils.forName(it.getObjectName());
-                    if (!InstanceHolder.searchInstance(clazz)){
-                        InstanceHolder.putInstance(ReflectUtils.forInstance(clazz));
+                    try {
+                        Class<?> clazz = ReflectUtils.forName(it.getObjectName());
+                        if (clazz == null) {
+                            return;
+                        }
+                        InstanceHolder.getOrNewInstance(clazz);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
 

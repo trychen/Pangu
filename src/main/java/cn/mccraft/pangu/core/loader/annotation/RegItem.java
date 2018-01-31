@@ -10,6 +10,8 @@ import java.lang.annotation.Target;
 
 /**
  * auto load item with base info
+ *
+ * @since 1.0.0.2
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

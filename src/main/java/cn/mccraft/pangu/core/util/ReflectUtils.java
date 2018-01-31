@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 /**
  * 反射工具类。
  * 如方法或变量不存在，该类下的方法都不会抛出异常。
+ *
+ * @since 1.0.0.2
  */
 public interface ReflectUtils {
     /**
@@ -245,7 +247,7 @@ public interface ReflectUtils {
      * @param clazz 创建的对象的类
      * @return 异常时返回 null
      */
-    static Object forInstance(Class clazz){
+    static <T> T forInstance(Class<T> clazz){
         try {
             return clazz.newInstance();
         } catch (IllegalAccessException e) {

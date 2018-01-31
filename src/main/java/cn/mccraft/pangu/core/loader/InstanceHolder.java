@@ -50,12 +50,24 @@ public interface InstanceHolder {
         return cachedInstance;
     }
 
+    static <T> T getOrNewInstance(@Nonnull Class<T> clazz){
+        Object object = InstanceHolder.getInstance(clazz);
+        if (object == null){
+            return InstanceHolder.putInstance(ReflectUtils.forInstance(clazz));
+        } else if (clazz.isInstance(object)){
+            return (T) object;
+        } else {
+            loaderInstanceMap.remove(clazz);
+            return getOrNewInstance(clazz);
+        }
+    }
+
     /**
      * Putting the instance to {@link InstanceHolder##loaderInstanceMap} and return it
      * @param object the instance your gotta storage
      * @return the instance you given
      */
-    static Object putInstance(@Nonnull Object object){
+    static <T> T putInstance(@Nonnull T object){
         loaderInstanceMap.put(object.getClass(), object);
         return object;
     }

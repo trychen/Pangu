@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  *
  * Registry Name 构造器
  *
- * @since .3
+ * @since 1.0.0.3
  */
 public interface NameBuilder {
     /**

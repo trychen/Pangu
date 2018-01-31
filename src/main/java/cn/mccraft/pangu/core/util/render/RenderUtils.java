@@ -21,7 +21,7 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 @SideOnly(Side.CLIENT)
 public class RenderUtils {
     private static final Minecraft minecraft = Minecraft.getMinecraft();
-    
+
     /**
      * Render Item with {@link net.minecraft.client.renderer.RenderItem} as its on the ground
      */
@@ -50,7 +50,7 @@ public class RenderUtils {
 
     /**
      * do entity render in x, y, z with yaw, partialTicks
-     * 
+     *
      * @param box if render the debug bounding box. required debugBoundingBox enabled
      */
     public static void renderEntity(Entity entity, double x, double y, double z, float yaw, float partialTicks, boolean box) {
@@ -66,148 +66,183 @@ public class RenderUtils {
 
     /**
      * get the render timer ticks
+     *
      * @return
      */
     public static float getRenderPartialTicks() {
         return minecraft.getRenderPartialTicks();
     }
 
+    static void rotateX() {
+        rotate(90, 1, 0, 0);
+    }
+
+    static void rotateY() {
+        rotate(90, 0, 1, 0);
+    }
+
+    static void rotateZ() {
+        rotate(90, 0, 0, 1);
+    }
+
+    static void rotateX(float rot) {
+        rotate(rot, 1, 0, 0);
+    }
+
+    static void rotateY(float rot) {
+        rotate(rot, 0, 1, 0);
+    }
+
+    static void rotateZ(float rot) {
+        rotate(rot, 0, 0, 1);
+    }
+
+    static void translate(Entity entity) {
+        GlStateManager.translate((float) entity.posX, (float) entity.posY, (float) entity.posZ);
+    }
+
+    static void translate(BlockPos pos) {
+        GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    static void translateCenter(BlockPos pos) {
+        GlStateManager.translate(pos.getX() + .5F, pos.getY() + .5F, pos.getZ() + .5F);
+    }
+
     /**
-     * a simple util to helper you rotate translate, and this is also a box render
+     * draw rectangle in face with the size of x, y, z
+     * <p>
+     * 渲染一个大小为x, y, z的矩形
      */
-    public interface Box {
+    static void drawRectangle(float x, float y, float z, EnumFacing facing) {
+        glBegin(GL_QUADS);
 
-        static void rotateX() {
-            rotate(180, 1, 0, 0);
+        if (facing == EnumFacing.UP) {
+            glVertex3f(x, y, z);
+            glVertex3f(-x, y, z);
+            glVertex3f(-x, y, -z);
+            glVertex3f(x, y, -z);
+        } else if (facing == EnumFacing.DOWN) {
+            glVertex3f(x, -y, z);
+            glVertex3f(-x, -y, z);
+            glVertex3f(-x, -y, -z);
+            glVertex3f(x, -y, -z);
+        } else if (facing == EnumFacing.NORTH) {
+            glVertex3f(x, y, z);
+            glVertex3f(-x, y, z);
+            glVertex3f(-x, -y, z);
+            glVertex3f(x, -y, z);
+        } else if (facing == EnumFacing.SOUTH) {
+            glVertex3f(x, y, z);
+            glVertex3f(-x, y, z);
+            glVertex3f(-x, -y, z);
+            glVertex3f(x, -y, z);
+        } else if (facing == EnumFacing.WEST) {
+            glVertex3f(x, y, z);
+            glVertex3f(x, -y, z);
+            glVertex3f(x, -y, -z);
+            glVertex3f(x, y, -z);
+        } else if (facing == EnumFacing.EAST) {
+            glVertex3f(-x, y, z);
+            glVertex3f(-x, -y, z);
+            glVertex3f(-x, -y, -z);
+            glVertex3f(-x, y, -z);
         }
+        glEnd();
 
-        static void rotateY() {
-            rotate(180, 0, 1, 0);
+        glBegin(GL_QUADS);
+        switch (facing) {
+            case UP:
+                glVertex3f(x, y, -z);
+                glVertex3f(-x, y, -z);
+                glVertex3f(-x, y, z);
+                glVertex3f(x, y, z);
+                break;
+            case DOWN:
+                glVertex3f(x, -y, -z);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(x, -y, z);
+                break;
+            case NORTH:
+                glVertex3f(x, -y, z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(-x, y, z);
+                glVertex3f(x, y, z);
+                break;
+            case SOUTH:
+                glVertex3f(x, -y, z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(-x, y, z);
+                glVertex3f(x, y, z);
+                break;
+            case WEST:
+                glVertex3f(x, y, -z);
+                glVertex3f(x, -y, -z);
+                glVertex3f(x, -y, z);
+                glVertex3f(x, y, z);
+                break;
+            case EAST:
+                glVertex3f(-x, y, -z);
+                glVertex3f(-x, -y, -z);
+                glVertex3f(-x, -y, z);
+                glVertex3f(-x, y, z);
+                break;
         }
+        glEnd();
+    }
 
-        static void rotateZ() {
-            rotate(180, 0, 0, 1);
-        }
+    /**
+     * Draw an cube with the size of x, y, z
+     * <p>
+     * 渲染一个大小为 x, y, z 的立方体
+     */
+    static void drawCube(float x, float y, float z) {
+        // White side - BACK
+        glBegin(GL_QUADS);
+        color(1, 1, 1);
+        glVertex3f(x, -y, z);
+        glVertex3f(x, y, z);
+        glVertex3f(-x, y, z);
+        glVertex3f(-x, -y, z);
+        glEnd();
 
-        static void rotateX(float rot) {
-            rotate(rot, 1, 0, 0);
-        }
+        // Purple side - RIGHT
+        glBegin(GL_QUADS);
+        color(1, 0, 1);
+        glVertex3f(x, -y, -z);
+        glVertex3f(x, y, -z);
+        glVertex3f(x, y, z);
+        glVertex3f(x, -y, z);
+        glEnd();
 
-        static void rotateY(float rot) {
-            rotate(rot, 0, 1, 0);
-        }
+        // Green side - LEFT
+        glBegin(GL_QUADS);
+        color(0, 1, 0);
+        glVertex3f(-x, -y, z);
+        glVertex3f(-x, y, z);
+        glVertex3f(-x, y, -z);
+        glVertex3f(-x, -y, -z);
+        glEnd();
 
-        static void rotateZ(float rot) {
-            rotate(rot, 0, 0, 1);
-        }
+        // Blue side - TOP
+        glBegin(GL_QUADS);
+        color(0, 0, 1);
+        glVertex3f(x, y, z);
+        glVertex3f(x, y, -z);
+        glVertex3f(-x, y, -z);
+        glVertex3f(-x, y, z);
+        glEnd();
 
-        static void translate(Entity entity) {
-            GlStateManager.translate((float) entity.posX, (float) entity.posY, (float) entity.posZ);
-        }
+        // Red side - BOTTOM
+        glBegin(GL_QUADS);
+        color(1, 0, 0);
+        glVertex3f(x, -y, -z);
+        glVertex3f(x, -y, z);
+        glVertex3f(-x, -y, z);
+        glVertex3f(-x, -y, -z);
+        glEnd();
 
-        static void translate(BlockPos pos) {
-            GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
-        }
-
-        static void translateCenter(BlockPos pos) {
-            GlStateManager.translate(pos.getX() + .5F, pos.getY() + .5F, pos.getZ() + .5F);
-        }
-
-        /**
-         * draw rectangle in face with the size of x, y, z
-         */
-        static void drawRectangle(float x, float y, float z, EnumFacing facing) {
-            glBegin(GL_QUADS);
-            switch (facing) {
-                case UP:
-                    glVertex3f(x, y, z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(-x, y, -z);
-                    glVertex3f(x, y, -z);
-                    break;
-                case DOWN:
-                    glVertex3f(x, -y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(-x, -y, -z);
-                    glVertex3f(x, -y, -z);
-                    break;
-                case NORTH:
-                    glVertex3f(x, y, z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(x, -y, z);
-                    break;
-                case SOUTH:
-                    glVertex3f(x, y, z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(x, -y, z);
-                    break;
-                case WEST:
-                    glVertex3f(x, y, z);
-                    glVertex3f(x, -y, z);
-                    glVertex3f(x, -y, -z);
-                    glVertex3f(x, y, -z);
-                    break;
-                case EAST:
-                    glVertex3f(-x, y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(-x, -y, -z);
-                    glVertex3f(-x, y, -z);
-                    break;
-            }
-            glEnd();
-
-            glBegin(GL_QUADS);
-            switch (facing) {
-                case UP:
-                    glVertex3f(x, y, -z);
-                    glVertex3f(-x, y, -z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(x, y, z);
-                    break;
-                case DOWN:
-                    glVertex3f(x, -y, -z);
-                    glVertex3f(-x, -y, -z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(x, -y, z);
-                    break;
-                case NORTH:
-                    glVertex3f(x, -y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(x, y, z);
-                    break;
-                case SOUTH:
-                    glVertex3f(x, -y, z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(-x, y, z);
-                    glVertex3f(x, y, z);
-                    break;
-                case WEST:
-                    glVertex3f(x, y, -z);
-                    glVertex3f(x, -y, -z);
-                    glVertex3f(x, -y, z);
-                    glVertex3f(x, y, z);
-                    break;
-                case EAST:
-                    glVertex3f(-x, y, -z);
-                    glVertex3f(-x, -y, -z);
-                    glVertex3f(-x, -y, z);
-                    glVertex3f(-x, y, z);
-                    break;
-            }
-            glEnd();
-        }
-
-        /**
-         * Draw an cube with the size of x, y, z
-         *
-         * 渲染一个大小为 x, y, z 的立方体
-         */
-        static void drawCube(float x, float y, float z) {
-            for (EnumFacing facing : EnumFacing.VALUES) drawRectangle(x, y, z, facing);
-        }
-
+//        for (EnumFacing facing : EnumFacing.VALUES) drawRectangle(x, y, z, facing);
     }
 }

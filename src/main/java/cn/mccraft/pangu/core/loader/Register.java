@@ -15,7 +15,7 @@ import java.lang.reflect.Modifier;
  * The Registering System's Controller
  *
  * @author trychen
- * @since .3
+ * @since 1.0.0.3
  */
 public enum Register {
     INSTANCE;

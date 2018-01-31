@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * Pangu Core 公共代理类
  *
  * @author trychen
- * @since .2
+ * @since 1.0.0.2
  */
 public class CommonProxy {
 
@@ -29,6 +29,7 @@ public class CommonProxy {
      *  ==============================
      *        FML Initialization
      */
+
     public void preInit(FMLPreInitializationEvent event) {
         AnnotationInjector.INSTANCE.startSolveInjectors();
 
@@ -46,9 +47,9 @@ public class CommonProxy {
     public void loadComplete(FMLLoadCompleteEvent event) {
         Proxy.INSTANCE.invoke(event, LoaderState.AVAILABLE, Side.SERVER);
     }
+
     /*
      *        FML Initialization
      *  ==============================
      */
-
 }

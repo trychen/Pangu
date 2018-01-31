@@ -7,7 +7,6 @@ import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,21 +16,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 /**
  * Register to register item with RegItem
  *
  * @author trychen
- * @since .3
+ * @since 1.0.0.3
  */
 public class ItemRegister extends BaseRegister<Item, RegItem> {
     /**
      * forge build-in event holder.
      * the implementation of {@link RegItem}
-     *
-     * @param event
      */
     @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Item> event) {
@@ -63,25 +57,17 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
         }
     }
 
-    private IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
-
     /**
      * Registering model
      */
     @SideOnly(Side.CLIENT)
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
-    public void loadModel() {
+    public void registerModel() {
         ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         itemSet.stream()
                 .filter(it -> it.getAnnotation().isRegisterModel())
                 .forEach(it -> {
                     ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getItem().getRegistryName(), "inventory");
-                    try {
-                        resourceManager.getResource(modelResourceLocation);
-                    } catch (FileNotFoundException e) {
-
-                    } catch (IOException e) {
-                    }
                     ModelLoader.registerItemVariants(it.getItem(), modelResourceLocation);
                     mesher.register(it.getItem(), 0, modelResourceLocation);
                 });

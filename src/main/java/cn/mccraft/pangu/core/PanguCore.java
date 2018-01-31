@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * pack some static method/field/description or fml event.
  *
  * @author trychen
- * @since .0
+ * @since 1.0.0.0
  */
 @Mod(modid = PanguCore.MODID, name = PanguCore.NAME, version = PanguCore.VERSION)
 public class PanguCore {
@@ -32,7 +32,7 @@ public class PanguCore {
      *
      * 子Mod的ID不需要有任何特殊的前缀或后缀，但是你也可以加上 "pangu-", "pangu_" 或 "pangu"。
      *
-     * @since .1
+     * @since 1.0.0.1
      */
     public static final String MODID = "pangu";
     /**
@@ -49,7 +49,7 @@ public class PanguCore {
      *
      * 每一个子Mod的名字都应该包含前缀 "Pangu "
      *
-     * @since .1
+     * @since 1.0.0.1
      */
     public static final String  NAME = "Pangu Core";
     /**
@@ -60,7 +60,7 @@ public class PanguCore {
      *
      * 版本号构成： "大版本号.小版本号.构建版本.Commit版本"， 对于玩家可见的的版本号只不需要包含Commit版本
      *
-     * @since .1
+     * @since 1.0.0.1
      */
     public static final String  VERSION = "1.0.0.3";
 
@@ -73,7 +73,7 @@ public class PanguCore {
     /**
      * The instance of Pangu Core, it must be private to prevent others mod change it!
      *
-     * @since .2
+     * @since 1.0.0.2
      */
     @Mod.Instance(PanguCore.MODID) private static PanguCore instance;
 
@@ -81,7 +81,7 @@ public class PanguCore {
      * Get the instance of Pangu Core
      *
      * @return the instance of PanguCore
-     * @since .2
+     * @since 1.0.0.2
      */
     public static PanguCore getInstance() {
         return instance;
@@ -117,7 +117,7 @@ public class PanguCore {
     /**
      * Proxy should be only visible to mod main class
      *
-     * @since .2
+     * @since 1.0.0.2
      */
     @SidedProxy(
             clientSide = "cn.mccraft.pangu.core.client.ClientProxy",
@@ -136,7 +136,7 @@ public class PanguCore {
      * and it will be init while {@link SimpleNetworkWrapper}.
      * The name of this channel is "pangu" which is the mod id of Pangu Core
      *
-     * @since .2
+     * @since 1.0.0.2
      */
     private static SimpleNetworkWrapper network;
 

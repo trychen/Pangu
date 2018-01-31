@@ -4,6 +4,8 @@ import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRema
 
 /**
  * 环境检查
+ *
+ * @since 1.0.0.2
  */
 public enum DevEnv {
     INSTANCE;

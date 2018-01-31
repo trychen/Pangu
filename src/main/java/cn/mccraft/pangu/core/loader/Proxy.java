@@ -18,7 +18,7 @@ import java.util.*;
  * 请在主类中监听你要进行注册的{@link FMLStateEvent} 并调用{@link #invoke(FMLStateEvent, LoaderState, Side)}函数.
  *
  * @author LasmGratel
- * @since .2
+ * @since 1.0.0.2
  */
 public enum Proxy {
     INSTANCE;
@@ -42,7 +42,7 @@ public enum Proxy {
      * @param state not all loader state will be invoke in the loader, just for {@link LoaderState#PREINITIALIZATION} to {@link LoaderState#AVAILABLE}
      * @param side  {@link Side}
      * @param <T>   The event invoked by {@link net.minecraftforge.fml.common.Mod.EventHandler}
-     * @since .2
+     * @since 1.0.0.2
      */
     public <T extends FMLStateEvent> void invoke(T event, LoaderState state, Side side) {
         getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {

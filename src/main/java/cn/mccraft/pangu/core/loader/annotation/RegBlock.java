@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 
 /**
  * 注册方块的注解
+ *
+ * @since 1.0.0.2
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
