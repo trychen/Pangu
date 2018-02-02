@@ -6,6 +6,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -38,7 +40,8 @@ public enum Register {
         // for all field to find registrable item
         // here is using getFields() which means that your item must be visible or it won't be register
         for (Field field : parentClass.getFields()) {
-            if (isStatic && !Modifier.isStatic(field.getModifiers())) continue;
+            // check if there's a instance to get field
+            if (isStatic && !Modifier.isStatic(field.getModifiers()) && (owner = InstanceHolder.getInstance(parentClass)) == null) continue;
             for (Annotation annotation : field.getAnnotations()) {
                 // find RegisteringHandler anno
                 RegisteringHandler handler = annotation.annotationType().getAnnotation(RegisteringHandler.class);
@@ -48,6 +51,11 @@ public enum Register {
 
                 // get the cached instance of loader
                 IRegister loader = getLoaderInstance(handler.value());
+
+                // couldn't find a loader
+                if (loader == null) {
+                    PanguCore.getLogger().error("Couldn't find a loader to load instance " + field.getName() + " in " + parentClass.toGenericString());
+                }
 
                 Object item;
                 try {
@@ -59,7 +67,6 @@ public enum Register {
                 }
 
                 loader.preRegister(new RegisteringItem<>(field, item, domain, annotation));
-
             }
         }
     }
@@ -70,7 +77,8 @@ public enum Register {
      * @param loaderClass the loader's class
      * @return IRegister's instance, null if can't init
      */
-    public IRegister getLoaderInstance(Class<? extends IRegister> loaderClass) {
+    @Nullable
+    public IRegister getLoaderInstance(@Nonnull Class<? extends IRegister> loaderClass) {
         Object object = InstanceHolder.getInstance(loaderClass);
 
         // check instance if exists

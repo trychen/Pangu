@@ -19,27 +19,27 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
  * An simple Render Helper to help you render something
  */
 @SideOnly(Side.CLIENT)
-public class RenderUtils {
-    private static final Minecraft minecraft = Minecraft.getMinecraft();
+public interface RenderUtils {
+    Minecraft minecraft = Minecraft.getMinecraft();
 
     /**
      * Render Item with {@link net.minecraft.client.renderer.RenderItem} as its on the ground
      */
-    public static void renderItem(ItemStack item) {
+    static void renderItem(ItemStack item) {
         renderItem(item, ItemCameraTransforms.TransformType.GROUND);
     }
 
     /**
      * Render Item with {@link net.minecraft.client.renderer.RenderItem}
      */
-    public static void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
+    static void renderItem(ItemStack item, ItemCameraTransforms.TransformType transformType) {
         minecraft.getRenderItem().renderItem(item, transformType);
     }
 
     /**
      * Render Block with {@link Tessellator} and {@link BlockRendererDispatcher}
      */
-    public static void renderBlock(IBlockState state, BlockPos pos) {
+    static void renderBlock(IBlockState state, BlockPos pos) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder BufferBuilder = tessellator.getBuffer();
         BufferBuilder.begin(GL_QUADS, DefaultVertexFormats.BLOCK);
@@ -53,14 +53,14 @@ public class RenderUtils {
      *
      * @param box if render the debug bounding box. required debugBoundingBox enabled
      */
-    public static void renderEntity(Entity entity, double x, double y, double z, float yaw, float partialTicks, boolean box) {
+    static void renderEntity(Entity entity, double x, double y, double z, float yaw, float partialTicks, boolean box) {
         minecraft.getRenderManager().renderEntity(entity, x, y, z, yaw, partialTicks, box);
     }
 
     /**
      * render entity in Vec ZERO with no
      */
-    public static void renderEntity(Entity entity, float partialTick) {
+    static void renderEntity(Entity entity, float partialTick) {
         renderEntity(entity, 0, 0, 0, 0, partialTick, false);
     }
 
@@ -69,7 +69,7 @@ public class RenderUtils {
      *
      * @return
      */
-    public static float getRenderPartialTicks() {
+    static float getRenderPartialTicks() {
         return minecraft.getRenderPartialTicks();
     }
 

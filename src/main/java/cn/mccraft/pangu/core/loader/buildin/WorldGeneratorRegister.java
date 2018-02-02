@@ -1,11 +1,8 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
-import cn.mccraft.pangu.core.loader.annotation.RegTileEntity;
 import cn.mccraft.pangu.core.loader.annotation.RegWorldGenerator;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class WorldGeneratorRegister {
     @AnnotationInjector.StaticInvoke

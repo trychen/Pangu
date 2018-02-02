@@ -1,10 +1,13 @@
 package cn.mccraft.pangu.core.item;
 
+import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.loader.Registering;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
 
+@Registering(PanguCore.MODID)
 public interface PanguItems {
-    PanguItems INSTANCE = new PanguItems() {};
 
     @RegItem("food")
-    ItemPanguFood PANGU_FOOD = new ItemPanguFood();
+    PGFood PANGU_FOOD = new PGFood();
+
 }

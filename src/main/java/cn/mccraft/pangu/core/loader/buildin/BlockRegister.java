@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
+import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegBlock;
 import cn.mccraft.pangu.core.util.NameBuilder;
@@ -43,5 +44,6 @@ public class BlockRegister extends BaseRegister<Block, RegBlock> {
                 }
             }
         }
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " RegBlock annotations");
     }
 }

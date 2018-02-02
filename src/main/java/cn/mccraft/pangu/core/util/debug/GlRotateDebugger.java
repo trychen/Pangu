@@ -69,7 +69,7 @@ public final class GlRotateDebugger {
      */
     public static void rotate(float angle, float x, float y, float z) {
         GlStateManager.translate(offsetX, offsetY, offsetZ);
-        RenderUtils.Box.drawCube(1, 1, 1);
+        RenderUtils.drawCube(1, 1, 1);
         GlStateManager.rotate(angle, x, y, z);
         GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
     }

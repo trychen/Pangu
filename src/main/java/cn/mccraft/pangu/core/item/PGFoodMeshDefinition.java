@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class ItemPanguFoodMeshDefinition implements ItemMeshDefinition {
+public class PGFoodMeshDefinition implements ItemMeshDefinition {
     @Nonnull
     @Override
     public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {

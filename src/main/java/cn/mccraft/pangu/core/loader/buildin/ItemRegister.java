@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
+import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
@@ -55,6 +56,7 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                 }
             }
         }
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " RegItem annotations");
     }
 
     /**
@@ -71,5 +73,6 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                     ModelLoader.registerItemVariants(it.getItem(), modelResourceLocation);
                     mesher.register(it.getItem(), 0, modelResourceLocation);
                 });
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " items' model with @RegItem");
     }
 }

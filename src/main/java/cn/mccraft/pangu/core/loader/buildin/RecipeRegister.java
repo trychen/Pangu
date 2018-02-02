@@ -41,9 +41,10 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe>{
                 registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
             }
         });
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " Recipes");
     }
 
-    public void registerRecipe(String name, @Nonnull IRecipe recipe){
+    public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe){
         GameData.register_impl(recipe.setRegistryName(new PanguResourceLocation(name)));
     }
 

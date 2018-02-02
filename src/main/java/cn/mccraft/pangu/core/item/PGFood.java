@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemPanguFood extends ItemFood {
+public class PGFood extends ItemFood {
 
     @Nonnull
     @Override
@@ -128,7 +128,7 @@ public class ItemPanguFood extends ItemFood {
             items.addAll(FoodManager.INSTANCE.toStacks());
     }
 
-    public ItemPanguFood() {
+    public PGFood() {
         super(0, false);
         setCreativeTab(CreativeTabs.FOOD);
     }
