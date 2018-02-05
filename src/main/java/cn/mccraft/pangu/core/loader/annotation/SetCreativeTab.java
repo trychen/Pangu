@@ -6,10 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface GeneralCreativeTab {
-    /**
-     * the name of the creative tabs
-     */
+@Target({ElementType.FIELD, ElementType.TYPE})
+public @interface SetCreativeTab {
     String value();
 }

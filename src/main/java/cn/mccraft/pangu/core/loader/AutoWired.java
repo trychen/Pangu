@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * Example:
  * <pre>
  *     <code>
- *          public class Test {
+ *          public class Tools {
  *              @AutoWired
  *              public static Hello hello;
  *
