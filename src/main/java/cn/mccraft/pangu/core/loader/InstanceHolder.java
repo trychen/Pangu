@@ -3,6 +3,8 @@ package cn.mccraft.pangu.core.loader;
 import cn.mccraft.pangu.core.util.ReflectUtils;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,11 +52,11 @@ public interface InstanceHolder {
         return cachedInstance;
     }
 
-    static <T> T getOrNewInstance(@Nonnull Class<T> clazz){
+    static <T> T getOrNewInstance(@Nonnull Class<T> clazz) {
         Object object = InstanceHolder.getInstance(clazz);
-        if (object == null){
+        if (object == null) {
             return InstanceHolder.putInstance(ReflectUtils.forInstance(clazz));
-        } else if (clazz.isInstance(object)){
+        } else if (clazz.isInstance(object)) {
             return (T) object;
         } else {
             loaderInstanceMap.remove(clazz);
@@ -64,10 +66,11 @@ public interface InstanceHolder {
 
     /**
      * Putting the instance to {@link InstanceHolder##loaderInstanceMap} and return it
+     *
      * @param object the instance your gotta storage
      * @return the instance you given
      */
-    static <T> T putInstance(@Nonnull T object){
+    static <T> T putInstance(@Nonnull T object) {
         loaderInstanceMap.put(object.getClass(), object);
         return object;
     }
@@ -78,6 +81,32 @@ public interface InstanceHolder {
      * @return true while found, false while couldn't
      */
     static boolean searchInstance(Class<?> clazz) {
-        return getInstance(clazz) != null;
+        return loaderInstanceMap.containsKey(clazz);
+    }
+
+    static Object getObject(Field field) throws IllegalAccessException {
+        if (!field.isAccessible()) field.setAccessible(true);
+        if (Modifier.isStatic(field.getModifiers())) {
+            return field.get(null);
+        } else {
+            Object owner = InstanceHolder.getInstance(field.getDeclaringClass());
+            if (owner == null) {
+                throw new IllegalAccessException("Couldn't find instance to get field");
+            }
+            return field.get(InstanceHolder.getInstance(field.getDeclaringClass()));
+        }
+    }
+
+    static void setObject(Field field, Object object) throws IllegalAccessException {
+        if (!field.isAccessible()) field.setAccessible(true);
+        if (Modifier.isStatic(field.getModifiers())) {
+            field.set(null, object);
+        } else {
+            Object owner = InstanceHolder.getInstance(field.getDeclaringClass());
+            if (owner == null) {
+                throw new IllegalAccessException("Couldn't find instance to set field");
+            }
+            field.set(InstanceHolder.getInstance(field.getDeclaringClass()), object);
+        }
     }
 }
