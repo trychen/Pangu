@@ -32,6 +32,7 @@ public class PanguCore {
      * @since 1.0.0.1
      */
     public static final String MODID = "pangu";
+
     /**
      * "Pan Gu created heaven and earth" is a Chinese fairy tale which means that the creation of china history,
      * so we use "Pangu' as the name of this mod, to represent the chinese history which is long as 5k years
@@ -49,6 +50,7 @@ public class PanguCore {
      * @since 1.0.0.1
      */
     public static final String  NAME = "Pangu Core";
+
     /**
      * The version number means BIG_VERSION.SMALL_VERSION.BUILD_VERSION.COMMIT_VERSION,
      * the COMMIT_VERSION should be hidden while the version is appearing to player.
@@ -59,7 +61,7 @@ public class PanguCore {
      *
      * @since 1.0.0.1
      */
-    public static final String  VERSION = "1.0.0.3";
+    public static final String  VERSION = "1.0.0.4";
 
     /**
      *  ==============================

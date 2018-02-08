@@ -33,11 +33,8 @@ public enum AnnotationInjector {
     /**
      * start solve all annotation injector
      */
-    public void startSolveInjectors() {
-        ModDiscoverer discoverer = getDiscoverer();
-
-        Set<ASMDataTable.ASMData> allAutoWireds = discoverer.getASMTable().getAll(AutoWired.class.getName());
-        Set<ASMDataTable.ASMData> allInvokers = discoverer.getASMTable().getAll(StaticInvoke.class.getName());
+    public void startSolveAutoWireds() {
+        Set<ASMDataTable.ASMData> allAutoWireds = getDiscoverer().getASMTable().getAll(AutoWired.class.getName());
 
         // solve class
         allAutoWireds
@@ -82,6 +79,10 @@ public enum AnnotationInjector {
                     ReflectUtils.setField(parentClass, InstanceHolder.getInstance(parentClass), annotationTarget, object, true);
                 });
 
+    }
+
+    public void startSolveInjectors() {
+        Set<ASMDataTable.ASMData> allInvokers = getDiscoverer().getASMTable().getAll(StaticInvoke.class.getName());
         for (ASMDataTable.ASMData load : allInvokers) {
             Class parentClass = ReflectUtils.forName(load.getClassName());
             String methodName = load.getObjectName().substring(0, load.getObjectName().indexOf('('));
