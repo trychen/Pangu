@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.item;
 import cn.mccraft.pangu.core.capability.CapabilityFood;
 import cn.mccraft.pangu.core.capability.FoodStats;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -23,6 +23,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class PGFood extends ItemFood {
+    public PGFood() {
+        super(0, false);
+    }
 
     @Nonnull
     @Override
@@ -119,18 +122,13 @@ public class PGFood extends ItemFood {
     @Nonnull
     public String getItemStackDisplayName(ItemStack stack) {
         final String localizedName = getStats(stack).getUnlocalizedName() == null ? "" : getStats(stack).getUnlocalizedName();
-        return I18n.translateToLocal(localizedName + ".name").trim();
+        return I18n.format(localizedName + ".name").trim();
     }
 
     @Override
     public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> items) {
         if (this.isInCreativeTab(tab))
             items.addAll(FoodManager.INSTANCE.toStacks());
-    }
-
-    public PGFood() {
-        super(0, false);
-        setCreativeTab(CreativeTabs.FOOD);
     }
 
     private FoodStats getStats(@Nonnull ItemStack stack) {

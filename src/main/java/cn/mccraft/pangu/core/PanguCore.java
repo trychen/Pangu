@@ -49,7 +49,7 @@ public class PanguCore {
      *
      * @since 1.0.0.1
      */
-    public static final String  NAME = "Pangu Core";
+    public static final String NAME = "Pangu Core";
 
     /**
      * The version number means BIG_VERSION.SMALL_VERSION.BUILD_VERSION.COMMIT_VERSION,
@@ -61,7 +61,7 @@ public class PanguCore {
      *
      * @since 1.0.0.1
      */
-    public static final String  VERSION = "1.0.0.4";
+    public static final String VERSION = "1.0.0.5";
 
     /**
      *  ==============================

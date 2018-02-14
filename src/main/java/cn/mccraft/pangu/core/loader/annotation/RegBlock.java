@@ -2,7 +2,6 @@ package cn.mccraft.pangu.core.loader.annotation;
 
 import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import cn.mccraft.pangu.core.loader.buildin.BlockRegister;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
