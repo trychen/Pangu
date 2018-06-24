@@ -41,7 +41,11 @@ public enum Register {
         // here is using getFields() which means that your item must be visible or it won't be register
         for (Field field : parentClass.getFields()) {
             // check if there's a instance to get field
-            if (isStatic && !Modifier.isStatic(field.getModifiers()) && (owner = InstanceHolder.getInstance(parentClass)) == null) continue;
+            if (isStatic && !Modifier.isStatic(field.getModifiers())) {
+                if ((owner = InstanceHolder.getInstance(parentClass)) != null) isStatic = false;
+                else continue;
+            }
+
             for (Annotation annotation : field.getAnnotations()) {
                 // find RegisteringHandler anno
                 RegisteringHandler handler = annotation.annotationType().getAnnotation(RegisteringHandler.class);

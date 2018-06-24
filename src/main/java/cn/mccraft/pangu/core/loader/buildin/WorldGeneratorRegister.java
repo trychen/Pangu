@@ -12,7 +12,7 @@ public class WorldGeneratorRegister {
                     try {
                         Class clazz = Class.forName(it.getClassName());
                         if (it.getClassName().equals(it.getObjectName())) {
-
+                            // TODO:
                         }
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
