@@ -1,18 +1,16 @@
 package cn.mccraft.pangu.core.asm.dev;
 
+import cn.mccraft.pangu.core.asm.LambdaGatherer;
 import cn.mccraft.pangu.core.util.Environment;
-import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.common.FMLLog;
-import org.objectweb.asm.*;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.AnnotationNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
+import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.FMLLog;
+
+import org.objectweb.asm.*;
+import org.objectweb.asm.tree.*;
 
 /**
  * Impl of {@link DevOnly}
@@ -71,41 +69,4 @@ public class DevTransformer implements IClassTransformer {
         return anns != null && anns.stream().anyMatch(ann -> ann.desc.equals(Type.getDescriptor(DevOnly.class)));
     }
 
-    static class LambdaGatherer  extends MethodVisitor {
-        private static final Handle META_FACTORY = new Handle(Opcodes.H_INVOKESTATIC, "java/lang/invoke/LambdaMetafactory", "metafactory",
-                "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;",
-                false);
-        private final List<Handle> dynamicLambdaHandles = new ArrayList<Handle>();
-
-        public LambdaGatherer() {
-            super(Opcodes.ASM5);
-        }
-
-        public void accept(MethodNode method) {
-            ListIterator<AbstractInsnNode> insnNodeIterator = method.instructions.iterator();
-            while (insnNodeIterator.hasNext())
-            {
-                AbstractInsnNode insnNode = insnNodeIterator.next();
-                if (insnNode.getType() == AbstractInsnNode.INVOKE_DYNAMIC_INSN)
-                {
-                    insnNode.accept(this);
-                }
-            }
-        }
-
-        @Override
-        public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... bsmArgs)
-        {
-            if (META_FACTORY.equals(bsm))
-            {
-                Handle dynamicLambdaHandle = (Handle) bsmArgs[1];
-                dynamicLambdaHandles.add(dynamicLambdaHandle);
-            }
-        }
-
-        public List<Handle> getDynamicLambdaHandles()
-        {
-            return dynamicLambdaHandles;
-        }
-    }
 }

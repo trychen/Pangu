@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
+@IFMLLoadingPlugin.TransformerExclusions({"cn.mccraft.pangu.core.asm"})
 public class PanguPlugin implements IFMLLoadingPlugin {
     /**
      * Return a list of classes that implements the IClassTransformer interface
