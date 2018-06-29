@@ -32,7 +32,7 @@ public class SoundRegister extends BaseRegister<SoundEvent, RegSound> {
             if (location.isEmpty()) {
                 registryName = soundEvent.getSoundName();
             } else {
-                registryName = new PanguResourceLocation(location);
+                registryName = PanguResourceLocation.of(location);
             }
 
             // start register

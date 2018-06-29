@@ -1,7 +1,5 @@
 package cn.mccraft.pangu.core.loader.creativetabs;
 
-import cn.mccraft.pangu.core.loader.creativetabs.CreativeTabRegister;
-
 import java.lang.annotation.*;
 
 /**

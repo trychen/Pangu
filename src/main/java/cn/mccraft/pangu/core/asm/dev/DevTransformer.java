@@ -1,0 +1,72 @@
+package cn.mccraft.pangu.core.asm.dev;
+
+import cn.mccraft.pangu.core.asm.LambdaGatherer;
+import cn.mccraft.pangu.core.util.Environment;
+import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.FMLLog;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Impl of {@link DevOnly}
+ */
+public class DevTransformer implements IClassTransformer {
+    private boolean isDevMode = Environment.isDevEnv();
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        FMLLog.log.info("Environment Status: " + (isDevMode ? "Development" : "Production"));
+        if (isDevMode) return basicClass;
+        if (basicClass == null) return null;
+
+        ClassNode classNode = new ClassNode();
+        ClassReader classReader = new ClassReader(basicClass);
+        classReader.accept(classNode, 0);
+
+        if (isDevOnly(classNode.invisibleAnnotations))
+            throw new RuntimeException(String.format("Attempted to load class %s for invalid environment %s", classNode.name, isDevMode ? "Development" : "Production"));
+
+        // remove fields
+        classNode.fields.removeIf(field -> isDevOnly(field.visibleAnnotations));
+
+        // remove methods
+        LambdaGatherer lambdaGatherer = new LambdaGatherer();
+        Iterator<MethodNode> methods = classNode.methods.iterator();
+        while (methods.hasNext()) {
+            MethodNode method = methods.next();
+            if (isDevOnly(method.visibleAnnotations)) {
+                methods.remove();
+                lambdaGatherer.accept(method);
+            }
+        }
+
+        // remove dynamic lambda methods that are inside of removed methods
+        List<Handle> dynamicLambdaHandles = lambdaGatherer.getDynamicLambdaHandles();
+        if (!dynamicLambdaHandles.isEmpty()) {
+            classNode.methods.forEach(method -> dynamicLambdaHandles.removeIf(dynamicLambdaHandle -> method.name.equals(dynamicLambdaHandle.getName()) && method.desc.equals(dynamicLambdaHandle.getDesc())));
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classNode.accept(writer);
+        return writer.toByteArray();
+    }
+
+    /**
+     * check if the list contain {@link DevOnly} node
+     *
+     * @param anns annotation nodes
+     * @return true if contain
+     */
+    public static boolean isDevOnly(List<AnnotationNode> anns) {
+        return anns != null && anns.stream().anyMatch(ann -> ann.desc.equals(Type.getDescriptor(DevOnly.class)));
+    }
+
+}

@@ -28,7 +28,7 @@ public final class GlRotateDebugger {
      * if enable this debugger tools
      */
     public static boolean enable(){
-//        return DevEnv.INSTANCE.isActiving();
+//        return Environment.INSTANCE.isActiving();
         return false;
     }
 

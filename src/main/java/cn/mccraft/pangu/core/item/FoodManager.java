@@ -18,6 +18,10 @@ public enum FoodManager {
         addFood(new CapabilityFood.Implementation().setAmount(2).setUnlocalizedName("testFood").setModel(new ModelResourceLocation("minecraft:apple")));
     }
 
+    /**
+     * Add a food
+     * @param stats
+     */
     public void addFood(FoodStats stats) {
         foods.add(stats);
     }

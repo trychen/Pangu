@@ -4,10 +4,7 @@ package cn.mccraft.pangu.core.loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * A loader which can make auto invoke the annotated function
@@ -18,8 +15,9 @@ import java.lang.annotation.Target;
  * 你的方法必须是是静态的或父类的实例已被存入 InstanceHolder 的类（即使用了 @AutoWired 的类）
  *
  * @author LasmGratel
- * @since .2
+ * @since 1.0.0.2
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Load {

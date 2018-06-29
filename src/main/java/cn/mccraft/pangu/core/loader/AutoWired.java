@@ -1,9 +1,6 @@
 package cn.mccraft.pangu.core.loader;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Auto new shared instance or auto set value of field.
@@ -30,6 +27,7 @@ import java.lang.annotation.Target;
  * to {@link InstanceHolder}, what's more hello will be auto set to
  * the shared instance of class Hello
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface AutoWired {

@@ -66,13 +66,13 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
     @SideOnly(Side.CLIENT)
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
     public void registerModel() {
-        ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+        ItemModelMesher masher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         itemSet.stream()
-                .filter(it -> it.getAnnotation().isRegisterModel())
+                .filter(it -> it.getAnnotation().registerModel())
                 .forEach(it -> {
                     ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getItem().getRegistryName(), "inventory");
                     ModelLoader.registerItemVariants(it.getItem(), modelResourceLocation);
-                    mesher.register(it.getItem(), 0, modelResourceLocation);
+                    masher.register(it.getItem(), 0, modelResourceLocation);
                 });
         PanguCore.getLogger().info("Processed " + itemSet.size() + " items' model with @RegItem");
     }

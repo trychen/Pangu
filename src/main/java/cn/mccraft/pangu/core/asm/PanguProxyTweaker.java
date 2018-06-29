@@ -13,7 +13,8 @@ public class PanguProxyTweaker implements ITweaker {
 
     @Override
     public void injectIntoClassLoader(LaunchClassLoader classLoader) {
-        classLoader.registerTransformer("cn.mccraft.pangu.core.asm.transformer.LoaderTransformer");
+//        classLoader.registerTransformer("cn.mccraft.pangu.core.asm.transformer.LoaderTransformer");
+        classLoader.registerTransformer("cn.mccraft.pangu.core.asm.dev.DevTransformer");
     }
 
     @Override

@@ -1,14 +1,13 @@
 package cn.mccraft.pangu.core.loader.creativetabs;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
@@ -18,6 +17,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @since 1.0.1
+ * @author trychen
+ */
 @AutoWired
 public class CreativeTabRegister {
     /**
@@ -27,12 +30,13 @@ public class CreativeTabRegister {
 
     /**
      * the impl of {@link SharedCreativeTab}
+     *
      * @param event
      */
-    @Load(LoaderState.CONSTRUCTING)
-    public void wireCreativeTab(FMLConstructionEvent event) {
+    @AnnotationInjector.StaticInvoke
+    public void wireCreativeTab(ASMDataTable asmDataTable) {
         int setFields = 0;
-        for (ASMDataTable.ASMData asmData : event.getASMHarvestedData().getAll(SharedCreativeTab.class.getName())) {
+        for (ASMDataTable.ASMData asmData : asmDataTable.getAll(SharedCreativeTab.class.getName())) {
             try {
                 String tabKey = (String) asmData.getAnnotationInfo().get("value");
                 if (tabKey == null) continue;
@@ -63,7 +67,7 @@ public class CreativeTabRegister {
                 PanguCore.getLogger().error("Unable to wire CreativeTab of " + asmData.getObjectName() + " from " + asmData.getClassName(), e);
             }
         }
-        PanguCore.getLogger().info("Created " + tabs.size() + " PanguCreativeTab and processed " + setFields + " field.");
+        PanguCore.getLogger().info("Created " + tabs.size() + " creative tabs and processed " + setFields + " field.");
     }
 
 //
@@ -146,49 +150,16 @@ public class CreativeTabRegister {
     }
 
     /**
-     * get or create {@link PanguCreativeTab}
+     * get or create {@link CustomIconCreativeTab}
      */
     @Nonnull
     public CreativeTabs getTab(String key) {
         CreativeTabs creativeTabs = tabs.get(key);
         if (creativeTabs == null) {
-            creativeTabs = new PanguCreativeTab(key);
+            creativeTabs = new CustomIconCreativeTab(key);
             tabs.put(key, creativeTabs);
         }
         return creativeTabs;
     }
 
-    /**
-     * a simple impl {@link CreativeTabs}
-     */
-    static class PanguCreativeTab extends CreativeTabs {
-        private ItemStack tabIconItem;
-
-        public PanguCreativeTab(String label) {
-            super(label);
-            tabIconItem = new ItemStack(Items.AIR);
-        }
-
-        public PanguCreativeTab(String label, ItemStack tabIconItem) {
-            super(label);
-            setTabIconItem(tabIconItem);
-        }
-
-        public void setTabIconItem(@Nonnull ItemStack tabIconItem) {
-            this.tabIconItem = tabIconItem;
-        }
-
-        /**
-         * set tab icon if not exist
-         */
-        public void setTabIconItemIfNull(@Nonnull ItemStack tabIconItem) {
-            if (this.tabIconItem == null || this.tabIconItem.getItem() == Items.AIR) this.tabIconItem = tabIconItem;
-        }
-
-        @Override
-        @Nonnull
-        public ItemStack getTabIconItem() {
-            return tabIconItem;
-        }
-    }
 }

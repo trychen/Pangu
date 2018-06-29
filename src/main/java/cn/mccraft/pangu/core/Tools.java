@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.item.PGItem;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Registering;
@@ -13,4 +14,7 @@ import net.minecraft.item.Item;
 public class Tools {
     @RegItem("swords")
     public Item swords = new PGItem().setUnlocalizedName("swords");
+
+    @DevOnly
+    public static int devOnlyInt = 1;
 }

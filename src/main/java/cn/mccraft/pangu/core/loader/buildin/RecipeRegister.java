@@ -22,6 +22,8 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Map;
 
+import static java.lang.Character.valueOf;
+
 /**
  * the recipes register
  *
@@ -31,13 +33,13 @@ import java.util.Map;
 public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
 
     @Load(LoaderState.INITIALIZATION)
-    public void registerRecipe(){
+    public void registerRecipe() {
         itemSet.forEach(item -> {
             if (item.getItem() instanceof IRecipeProvider) {
                 // check is a provider
                 IRecipeProvider provider = (IRecipeProvider) item.getItem();
                 Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
-            } else if (item.getItem() instanceof IRecipe){
+            } else if (item.getItem() instanceof IRecipe) {
                 // check if is a recipe
                 registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
             }
@@ -45,82 +47,70 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
         PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegRecipe Recipes");
     }
 
-    public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe){
-        GameData.register_impl(recipe.setRegistryName(new PanguResourceLocation(name)));
+    public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe) {
+        GameData.register_impl(recipe.setRegistryName(PanguResourceLocation.of(name)));
     }
 
     /**
      * build Shaped Recipe
      *
-     * @param name
-     * @param stack
-     * @param recipeComponents
-     * @return
+     * @param group group name
+     * @param stack recipe return
+     * @param recipeComponents components
+     *
+     * @return unregistered recipe
      */
-    public static ShapedRecipes buildShapedRecipe(String name, ItemStack stack, Object... recipeComponents) {
-        name = PanguCore.ID.toLowerCase() + ":" + name;
-        String s = "";
+    public static ShapedRecipes buildShapedRecipe(String group, ItemStack stack, Object... recipeComponents) {
+        group = PanguCore.ID.toLowerCase() + ":" + group;
+        StringBuilder s = new StringBuilder();
         int i = 0;
         int j = 0;
         int k = 0;
 
-        if (recipeComponents[i] instanceof String[])
-        {
-            String[] astring = (String[])recipeComponents[i++];
+        if (recipeComponents[i] instanceof String[]) {
+            String[] astring = (String[]) recipeComponents[i++];
 
-            for (String s2 : astring)
-            {
+            for (String s2 : astring) {
                 ++k;
                 j = s2.length();
-                s = s + s2;
+                s.append(s2);
             }
-        }
-        else
-        {
-            while (recipeComponents[i] instanceof String)
-            {
-                String s1 = (String)recipeComponents[i++];
+        } else {
+            while (recipeComponents[i] instanceof String) {
+                String s1 = (String) recipeComponents[i++];
                 ++k;
                 j = s1.length();
-                s = s + s1;
+                s.append(s1);
             }
         }
 
         Map<Character, ItemStack> map;
 
-        for (map = Maps.newHashMap(); i < recipeComponents.length; i += 2)
-        {
-            Character character = (Character)recipeComponents[i];
+        for (map = Maps.newHashMap(); i < recipeComponents.length; i += 2) {
+            Character character = (Character) recipeComponents[i];
             ItemStack itemstack = ItemStack.EMPTY;
 
-            if (recipeComponents[i + 1] instanceof Item)
-            {
-                itemstack = new ItemStack((Item)recipeComponents[i + 1]);
-            }
-            else if (recipeComponents[i + 1] instanceof Block)
-            {
-                itemstack = new ItemStack((Block)recipeComponents[i + 1], 1, 32767);
-            }
-            else if (recipeComponents[i + 1] instanceof ItemStack)
-            {
-                itemstack = (ItemStack)recipeComponents[i + 1];
+            if (recipeComponents[i + 1] instanceof Item) {
+                itemstack = new ItemStack((Item) recipeComponents[i + 1]);
+            } else if (recipeComponents[i + 1] instanceof Block) {
+                itemstack = new ItemStack((Block) recipeComponents[i + 1], 1, 32767);
+            } else if (recipeComponents[i + 1] instanceof ItemStack) {
+                itemstack = (ItemStack) recipeComponents[i + 1];
             }
 
             map.put(character, itemstack);
         }
 
-        NonNullList<Ingredient> aitemstack = NonNullList.withSize(j * k, Ingredient.EMPTY);
+        NonNullList<Ingredient> itemList = NonNullList.withSize(j * k, Ingredient.EMPTY);
 
-        for (int l = 0; l < j * k; ++l)
-        {
+        for (int l = 0; l < j * k; ++l) {
             char c0 = s.charAt(l);
 
-            if (map.containsKey(Character.valueOf(c0)))
-            {
-                aitemstack.set(l, Ingredient.fromStacks((map.get(Character.valueOf(c0))).copy()));
+            if (map.containsKey(valueOf(c0))) {
+                itemList.set(l, Ingredient.fromStacks((map.get(valueOf(c0))).copy()));
             }
         }
 
-        return new ShapedRecipes(name, j, k, aitemstack, stack);
+        return new ShapedRecipes(group, j, k, itemList, stack);
     }
 }
