@@ -1,7 +1,6 @@
 package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.loader.buildin.IRegister;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -35,7 +34,7 @@ public enum Register {
         Registering registering = parentClass.getAnnotation(Registering.class);
 
         // get resource domain
-        String domain = registering == null || registering.value().isEmpty() ? PanguCore.MODID : registering.value();
+        String domain = registering == null || registering.value().isEmpty() ? PanguCore.ID : registering.value();
 
         // for all field to find registrable item
         // here is using getFields() which means that your item must be visible or it won't be register

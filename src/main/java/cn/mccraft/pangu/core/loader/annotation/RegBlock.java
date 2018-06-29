@@ -5,16 +5,14 @@ import cn.mccraft.pangu.core.loader.buildin.BlockRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 注册方块的注解
  *
  * @since 1.0.0.2
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @RegisteringHandler(BlockRegister.class)

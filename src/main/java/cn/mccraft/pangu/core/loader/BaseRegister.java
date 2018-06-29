@@ -1,6 +1,4 @@
-package cn.mccraft.pangu.core.loader.buildin;
-
-import cn.mccraft.pangu.core.loader.RegisteringItem;
+package cn.mccraft.pangu.core.loader;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
@@ -15,6 +13,7 @@ import java.util.Set;
 public abstract class BaseRegister<T, A extends Annotation> implements IRegister {
     protected Set<RegisteringItem<T, A>> itemSet = new HashSet<>();
 
+    @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
     @Override
     public boolean preRegister(RegisteringItem registeringItem) {
         try {

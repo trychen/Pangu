@@ -1,9 +1,7 @@
-package cn.mccraft.pangu.core.loader.buildin;
-
-import cn.mccraft.pangu.core.loader.RegisteringItem;
+package cn.mccraft.pangu.core.loader;
 
 /**
- * @since .3
+ * @since 1.0.0.3
  * @author trychen
  */
 public interface IRegister {

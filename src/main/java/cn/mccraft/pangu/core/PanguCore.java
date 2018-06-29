@@ -15,12 +15,12 @@ import org.apache.logging.log4j.Logger;
  * @author trychen
  * @since 1.0.0.0
  */
-@Mod(modid = PanguCore.MODID, name = PanguCore.NAME, version = PanguCore.VERSION)
+@Mod(modid = PanguCore.ID, name = PanguCore.NAME, version = PanguCore.VERSION)
 public class PanguCore {
-    /**
-     *  ==============================
-     *            Base Info
-     *  ==============================
+    /*
+       ==============================
+                 Base Info
+       ==============================
      */
 
     /**
@@ -31,7 +31,7 @@ public class PanguCore {
      *
      * @since 1.0.0.1
      */
-    public static final String MODID = "pangu";
+    public static final String ID = "pangu";
 
     /**
      * "Pan Gu created heaven and earth" is a Chinese fairy tale which means that the creation of china history,
@@ -63,10 +63,10 @@ public class PanguCore {
      */
     public static final String VERSION = "1.0.0.5";
 
-    /**
-     *  ==============================
-     *             Instance
-     *  ==============================
+    /*
+       ==============================
+                  Instance
+       ==============================
      */
 
     /**
@@ -74,7 +74,7 @@ public class PanguCore {
      *
      * @since 1.0.0.2
      */
-    @Mod.Instance(PanguCore.MODID) private static PanguCore instance;
+    @Mod.Instance(PanguCore.ID) private static PanguCore instance;
 
     /**
      * Get the instance of Pangu Core
@@ -107,10 +107,10 @@ public class PanguCore {
         return LOGGER;
     }
 
-    /**
-     *  ==============================
-     *              Proxy
-     *  ==============================
+    /*
+       ==============================
+                   Proxy
+       ==============================
      */
 
     /**
@@ -124,10 +124,10 @@ public class PanguCore {
     )
     private static CommonProxy proxy;
 
-    /**
-     *  ==============================
-     *              Network
-     *  ==============================
+    /*
+       ==============================
+                   Network
+       ==============================
      */
 
     /**
@@ -154,14 +154,14 @@ public class PanguCore {
      */
 
     @Mod.EventHandler
-    public void preInit(FMLConstructionEvent event) {
+    public void construction(FMLConstructionEvent event) {
         proxy.construction(event);
     }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Init the network
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
 
         proxy.preInit(event);
     }
@@ -182,12 +182,12 @@ public class PanguCore {
     }
 
 
-    /**
-     *  ==============================
-     *     Configuration (Not exist)
-     *  ==============================
-     *
-     *  Pangu Core won't provide a configuration file
+    /*
+       ==============================
+          Configuration (Not exist)
+       ==============================
+
+       Pangu Core won't provide a configuration file
      */
 
 }

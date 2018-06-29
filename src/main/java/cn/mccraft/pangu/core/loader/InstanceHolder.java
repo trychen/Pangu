@@ -97,6 +97,16 @@ public interface InstanceHolder {
         }
     }
 
+    /**
+     * Try to set the object to the field.
+     * If the field is static, the method will directly set value using {@link Field#set(Object, Object)}.
+     * But if the field is non-static, the method will try to find any
+     * instance of the parent class from {@link InstanceHolder#getInstance(Object)}.
+     *
+     * @param field the field to set
+     * @param object instance
+     * @throws IllegalAccessException if couldn't find any instance to set field while static
+     */
     static void setObject(Field field, Object object) throws IllegalAccessException {
         if (!field.isAccessible()) field.setAccessible(true);
         if (Modifier.isStatic(field.getModifiers())) {

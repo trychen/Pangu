@@ -1,12 +1,9 @@
-package cn.mccraft.pangu.core.loader.buildin;
+package cn.mccraft.pangu.core.loader.creativetabs;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.loader.annotation.GeneralCreativeTab;
-import cn.mccraft.pangu.core.loader.annotation.SetCreativeTab;
-import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
@@ -20,44 +17,22 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @AutoWired
 public class CreativeTabRegister {
+    /**
+     * shared creative tabs
+     */
     private Map<String, CreativeTabs> tabs = new HashMap<>();
 
     /**
-     * the impl of {@link GeneralCreativeTab}
+     * the impl of {@link SharedCreativeTab}
      * @param event
      */
     @Load(LoaderState.CONSTRUCTING)
     public void wireCreativeTab(FMLConstructionEvent event) {
-        for (ASMDataTable.ASMData asmData : event.getASMHarvestedData().getAll(GeneralCreativeTab.class.getName())) {
-            try {
-                String tabKey = (String) asmData.getAnnotationInfo().get("value");
-                if (tabKey == null) continue;
-
-                Class clazz = Class.forName(asmData.getClassName());
-                Field field = clazz.getField(asmData.getObjectName());
-
-                InstanceHolder.setObject(field, getTab(tabKey));
-            } catch (ClassNotFoundException | NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                PanguCore.getLogger().error("Unable to wire CreativeTab of " + asmData.getObjectName() + " from " + asmData.getClassName(), e);
-            }
-        }
-        PanguCore.getLogger().info("Processed " + tabs.size() + " PanguCreativeTab");
-    }
-
-    /**
-     * the impl of {@link SetCreativeTab}
-     * @param event
-     */
-    @Load(LoaderState.CONSTRUCTING)
-    public void setCreativeTab(FMLConstructionEvent event) {
         int setFields = 0;
-        for (ASMDataTable.ASMData asmData : event.getASMHarvestedData().getAll(SetCreativeTab.class.getName())) {
+        for (ASMDataTable.ASMData asmData : event.getASMHarvestedData().getAll(SharedCreativeTab.class.getName())) {
             try {
                 String tabKey = (String) asmData.getAnnotationInfo().get("value");
                 if (tabKey == null) continue;
@@ -75,20 +50,62 @@ public class CreativeTabRegister {
                     }
                 } else {
                     // field
-                    Field field = clazz.getDeclaredField(asmData.getObjectName());
+                    Field field = clazz.getField(asmData.getObjectName());
+
                     if (isCreateTabSetable(field)) {
                         setCreativeTab(field, tabKey);
                         setFields++;
-                    } else {
-                        PanguCore.getLogger().error(String.format("Unsupported type to setCreativeTab. fieldname=%s, class=%s, tabKey=%s.", field.getName(), field.getDeclaringClass().toString(), tabKey));
                     }
                 }
+
+
             } catch (ClassNotFoundException | NoSuchFieldException e) {
-                e.printStackTrace();
+                PanguCore.getLogger().error("Unable to wire CreativeTab of " + asmData.getObjectName() + " from " + asmData.getClassName(), e);
             }
         }
-        PanguCore.getLogger().info("Processed " + setFields + " SetCreativeTab annotations");
+        PanguCore.getLogger().info("Created " + tabs.size() + " PanguCreativeTab and processed " + setFields + " field.");
     }
+
+//
+//    /**
+//     * the impl of {@link SetCreativeTab}
+//     * @param event
+//     */
+//    @Load(LoaderState.CONSTRUCTING)
+//    public void setCreativeTab(FMLConstructionEvent event) {
+//        int setFields = 0;
+//        for (ASMDataTable.ASMData asmData : event.getASMHarvestedData().getAll(SetCreativeTab.class.getName())) {
+//            try {
+//                String tabKey = (String) asmData.getAnnotationInfo().get("value");
+//                if (tabKey == null) continue;
+//
+//                Class clazz = Class.forName(asmData.getClassName());
+//                if (asmData.getClassName().equals(asmData.getObjectName())) {
+//                    // class
+//                    for (Field field : clazz.getDeclaredFields()) {
+//                        if (isCreateTabSetable(field)) {
+//                            setCreativeTab(field, tabKey);
+//                            setFields++;
+//                        } else {
+//                            PanguCore.getLogger().error(String.format("Unsupported type to setCreativeTab. fieldname=%s, class=%s, tabKey=%s.", field.getName(), field.getDeclaringClass().toString(), tabKey));
+//                        }
+//                    }
+//                } else {
+//                    // field
+//                    Field field = clazz.getDeclaredField(asmData.getObjectName());
+//                    if (isCreateTabSetable(field)) {
+//                        setCreativeTab(field, tabKey);
+//                        setFields++;
+//                    } else {
+//                        PanguCore.getLogger().error(String.format("Unsupported type to setCreativeTab. fieldname=%s, class=%s, tabKey=%s.", field.getName(), field.getDeclaringClass().toString(), tabKey));
+//                    }
+//                }
+//            } catch (ClassNotFoundException | NoSuchFieldException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        PanguCore.getLogger().info("Processed " + setFields + " SetCreativeTab annotations");
+//    }
 
     /**
      * setCreativeTab of field using {@link InstanceHolder#getInstance(Object)} and {@link CreativeTabRegister#getTab(String)}
@@ -96,6 +113,15 @@ public class CreativeTabRegister {
      * @param tabKey
      */
     public void setCreativeTab(Field field, String tabKey) {
+        if (CreativeTabs.class.isAssignableFrom(field.getType())) {
+            // for CreativeTabs field
+            try {
+                InstanceHolder.setObject(field, getTab(tabKey));
+            } catch (IllegalAccessException e) {
+                PanguCore.getLogger().error("Unable to find any instance to set value of " + field.getName() + " from " + field.getDeclaringClass(), e);
+            }
+        }
+
         Object object = null;
         try {
             object = InstanceHolder.getObject(field);
@@ -114,7 +140,9 @@ public class CreativeTabRegister {
      * @return if the field is a block or a item
      */
     public boolean isCreateTabSetable(Field field) {
-        return Item.class.isAssignableFrom(field.getType()) || Block.class.isAssignableFrom(field.getType());
+        return CreativeTabs.class.isAssignableFrom(field.getType())
+                || Item.class.isAssignableFrom(field.getType())
+                || Block.class.isAssignableFrom(field.getType());
     }
 
     /**

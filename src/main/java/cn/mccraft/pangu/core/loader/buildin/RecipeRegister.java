@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.loader.buildin;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.item.IRecipeProvider;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.loader.BaseRegister;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.annotation.RegRecipe;
 import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author trychen
  */
 @AutoWired
-public class RecipeRegister extends BaseRegister<Object, RegRecipe>{
+public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
 
     @Load(LoaderState.INITIALIZATION)
     public void registerRecipe(){
@@ -41,7 +42,7 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe>{
                 registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
             }
         });
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " Recipes");
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegRecipe Recipes");
     }
 
     public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe){
@@ -50,13 +51,14 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe>{
 
     /**
      * build Shaped Recipe
+     *
      * @param name
      * @param stack
      * @param recipeComponents
      * @return
      */
     public static ShapedRecipes buildShapedRecipe(String name, ItemStack stack, Object... recipeComponents) {
-        name = PanguCore.MODID.toLowerCase() + ":" + name;
+        name = PanguCore.ID.toLowerCase() + ":" + name;
         String s = "";
         int i = 0;
         int j = 0;

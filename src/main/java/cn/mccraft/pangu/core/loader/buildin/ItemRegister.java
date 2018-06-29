@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.loader.BaseRegister;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
@@ -56,7 +57,7 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
                 }
             }
         }
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " RegItem annotations");
+        PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegItem annotations");
     }
 
     /**

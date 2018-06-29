@@ -1,13 +1,14 @@
 package cn.mccraft.pangu.core.loader.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import cn.mccraft.pangu.core.loader.buildin.TileEntityRegister;
+
+import java.lang.annotation.*;
 
 /**
+ * @see TileEntityRegister
  * @since 1.0.0.3
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface RegTileEntity {
