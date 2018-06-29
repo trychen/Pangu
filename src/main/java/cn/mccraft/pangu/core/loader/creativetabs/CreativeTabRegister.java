@@ -48,8 +48,6 @@ public class CreativeTabRegister {
                         if (isCreateTabSetable(field)) {
                             setCreativeTab(field, tabKey);
                             setFields++;
-                        } else {
-                            PanguCore.getLogger().error(String.format("Unsupported type to setCreativeTab. fieldname=%s, class=%s, tabKey=%s.", field.getName(), field.getDeclaringClass().toString(), tabKey));
                         }
                     }
                 } else {
@@ -59,6 +57,8 @@ public class CreativeTabRegister {
                     if (isCreateTabSetable(field)) {
                         setCreativeTab(field, tabKey);
                         setFields++;
+                    } else {
+                        PanguCore.getLogger().error(String.format("Unsupported type to setCreativeTab. fieldname=%s, class=%s, tabKey=%s.", field.getName(), field.getDeclaringClass().toString(), tabKey));
                     }
                 }
 

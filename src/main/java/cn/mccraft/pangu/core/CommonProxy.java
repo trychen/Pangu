@@ -2,9 +2,16 @@ package cn.mccraft.pangu.core;
 
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.Proxy;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.lang.reflect.Field;
 
 /**
  * Common proxy of Pangu Core
@@ -24,6 +31,7 @@ public class CommonProxy {
      */
 
     public void construction(FMLConstructionEvent event) {
+        System.out.println(Tools.devOnlyInt);
         AnnotationInjector.INSTANCE.startSolveAutoWireds();
         AnnotationInjector.INSTANCE.startSolveInjectors();
         Proxy.INSTANCE.invoke(event, LoaderState.CONSTRUCTING, Side.SERVER);
