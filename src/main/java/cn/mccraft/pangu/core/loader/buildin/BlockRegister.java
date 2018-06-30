@@ -19,7 +19,7 @@ public class BlockRegister extends BaseRegister<Block, RegBlock> {
 
     @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Block> event) {
-        for (RegisteringItem<Block, RegBlock> registeringItem : itemSet) {
+        for (RegisteringItem<Block, RegBlock> registeringItem : itemSet) try {
             Block block = registeringItem.getItem();
             RegBlock regBlock = registeringItem.getAnnotation();
 
@@ -44,6 +44,8 @@ public class BlockRegister extends BaseRegister<Block, RegBlock> {
                     OreDictionary.registerOre(oreName, block);
                 }
             }
+        } catch (Exception ex) {
+            PanguCore.getLogger().error("Unable to register model of " + registeringItem.getField().toGenericString(), ex);
         }
         PanguCore.getLogger().info("Processed " + itemSet.size() + " RegBlock annotations");
     }

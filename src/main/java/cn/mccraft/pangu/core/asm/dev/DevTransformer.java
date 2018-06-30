@@ -16,7 +16,7 @@ import org.objectweb.asm.tree.*;
  * Impl of {@link DevOnly}
  */
 public class DevTransformer implements IClassTransformer {
-    private boolean isDevMode = Environment.isDevEnv();
+    private boolean isDevMode = Environment.isDevEnv;
 
     public DevTransformer() {
         FMLLog.log.info("Environment Status: " + (isDevMode ? "Development" : "Production"));
@@ -68,5 +68,4 @@ public class DevTransformer implements IClassTransformer {
     public static boolean isDevOnly(List<AnnotationNode> anns) {
         return anns != null && anns.stream().anyMatch(ann -> ann.desc.equals(Type.getDescriptor(DevOnly.class)));
     }
-
 }

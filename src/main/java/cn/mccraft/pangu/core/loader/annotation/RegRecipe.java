@@ -7,6 +7,8 @@ import cn.mccraft.pangu.core.loader.buildin.RecipeRegister;
 import java.lang.annotation.*;
 
 /**
+ * You can use this annotation in an IRecipeProvider or IRecipe field.
+ *
  * @see RecipeRegister
  * @since 1.0.0.2
  */
@@ -16,12 +18,7 @@ import java.lang.annotation.*;
 @RegisteringHandler(RecipeRegister.class)
 public @interface RegRecipe {
     /**
-     * resource name
+     * recipe group
      */
     String value() default "";
-
-    /**
-     * if ignore this recipe when resource file exist
-     */
-    boolean autoIgnoreIfResourceExist() default true;
 }

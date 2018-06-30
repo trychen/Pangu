@@ -31,7 +31,6 @@ public class CommonProxy {
      */
 
     public void construction(FMLConstructionEvent event) {
-        System.out.println(Tools.devOnlyInt);
         AnnotationInjector.INSTANCE.startSolveAutoWireds();
         AnnotationInjector.INSTANCE.startSolveInjectors();
         Proxy.INSTANCE.invoke(event, LoaderState.CONSTRUCTING, Side.SERVER);

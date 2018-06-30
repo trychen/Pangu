@@ -23,7 +23,7 @@ public class SoundRegister extends BaseRegister<SoundEvent, RegSound> {
      */
     @SubscribeEvent
     public void registerSound(RegistryEvent.Register<SoundEvent> event) {
-        for (RegisteringItem<SoundEvent, RegSound> registeringItem : itemSet) {
+        for (RegisteringItem<SoundEvent, RegSound> registeringItem : itemSet) try {
             SoundEvent soundEvent = registeringItem.getItem();
             RegSound regSound = registeringItem.getAnnotation();
 
@@ -40,6 +40,8 @@ public class SoundRegister extends BaseRegister<SoundEvent, RegSound> {
                     // set registry name
                     soundEvent.setRegistryName(registryName)
             );
+        } catch (Exception ex) {
+            PanguCore.getLogger().error("Unable to register " + registeringItem.getField().toGenericString(), ex);
         }
         PanguCore.getLogger().info("Processed " + itemSet.size() + " RegSound annotations");
     }

@@ -5,6 +5,7 @@ import cn.mccraft.pangu.core.item.IRecipeProvider;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.BaseRegister;
 import cn.mccraft.pangu.core.loader.Load;
+import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegRecipe;
 import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
 import com.google.common.collect.Maps;
@@ -34,16 +35,20 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
 
     @Load(LoaderState.INITIALIZATION)
     public void registerRecipe() {
-        itemSet.forEach(item -> {
-            if (item.getItem() instanceof IRecipeProvider) {
-                // check is a provider
-                IRecipeProvider provider = (IRecipeProvider) item.getItem();
-                Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
-            } else if (item.getItem() instanceof IRecipe) {
-                // check if is a recipe
-                registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
+        for (RegisteringItem<Object, RegRecipe> item : itemSet)
+            try {
+                if (item.getItem() instanceof IRecipeProvider) {
+                    // check is a provider
+                    IRecipeProvider provider = (IRecipeProvider) item.getItem();
+                    Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
+                } else if (item.getItem() instanceof IRecipe) {
+                    // check if is a recipe
+                    registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
+                }
+            } catch (Exception ex) {
+                PanguCore.getLogger().error("Unable to register " + item.getField().toGenericString(), ex);
             }
-        });
+
         PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegRecipe Recipes");
     }
 
@@ -54,14 +59,13 @@ public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
     /**
      * build Shaped Recipe
      *
-     * @param group group name
-     * @param stack recipe return
+     * @param group            group name
+     * @param stack            recipe return
      * @param recipeComponents components
-     *
      * @return unregistered recipe
      */
     public static ShapedRecipes buildShapedRecipe(String group, ItemStack stack, Object... recipeComponents) {
-        group = PanguCore.ID.toLowerCase() + ":" + group;
+        group = PanguCore.ID + ":" + group;
         StringBuilder s = new StringBuilder();
         int i = 0;
         int j = 0;

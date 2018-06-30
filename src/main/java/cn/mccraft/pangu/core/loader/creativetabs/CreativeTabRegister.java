@@ -30,8 +30,6 @@ public class CreativeTabRegister {
 
     /**
      * the impl of {@link SharedCreativeTab}
-     *
-     * @param event
      */
     @AnnotationInjector.StaticInvoke
     public void wireCreativeTab(ASMDataTable asmDataTable) {

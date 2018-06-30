@@ -8,13 +8,11 @@ import cn.mccraft.pangu.core.loader.annotation.RegItem;
 import cn.mccraft.pangu.core.loader.creativetabs.SharedCreativeTab;
 import net.minecraft.item.Item;
 
+@DevOnly
 @AutoWired
 @Registering(PanguCore.ID)
 @SharedCreativeTab("tools")
 public class Tools {
     @RegItem("swords")
     public Item swords = new PGItem().setUnlocalizedName("swords");
-
-    @DevOnly
-    public static int devOnlyInt = 1;
 }
