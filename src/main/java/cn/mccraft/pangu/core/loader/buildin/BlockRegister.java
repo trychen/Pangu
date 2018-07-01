@@ -6,9 +6,14 @@ import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegBlock;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Collections;
 
 /**
  * Block register
@@ -48,5 +53,16 @@ public class BlockRegister extends BaseRegister<Block, RegBlock> {
             PanguCore.getLogger().error("Unable to register model of " + registeringItem.getField().toGenericString(), ex);
         }
         PanguCore.getLogger().info("Processed " + itemSet.size() + " RegBlock annotations");
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void registerItemBlocks(RegistryEvent.Register<Item> event) {
+        itemSet.stream()
+                // check if need register ItemBlock
+                .filter(it -> it.getAnnotation().isRegisterItemBlock())
+                // create ItemBlock and set RegistryName
+                .map(it -> new ItemBlock(it.getItem()).setRegistryName(it.getItem().getRegistryName()))
+                // registering
+                .forEach(event.getRegistry()::register);
     }
 }
