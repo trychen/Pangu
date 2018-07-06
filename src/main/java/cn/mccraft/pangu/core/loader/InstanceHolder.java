@@ -52,6 +52,11 @@ public interface InstanceHolder {
         return cachedInstance;
     }
 
+    static Object getCachedInstance(Class clazz) {
+        if (clazz == null) throw new IllegalArgumentException();
+        return loaderInstanceMap.get(clazz);
+    }
+
     static <T> T getOrNewInstance(@Nonnull Class<T> clazz) {
         Object object = InstanceHolder.getInstance(clazz);
         if (object == null) {

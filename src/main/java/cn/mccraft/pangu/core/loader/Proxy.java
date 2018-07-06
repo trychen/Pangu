@@ -25,7 +25,7 @@ public enum Proxy {
 
     /**
      * Set to check if has loaded, to prevent repeat add
-     *
+     * <p>
      * 用于检查类是否已经被加载过，避免因重复加载而重复执行
      */
     private Set<Object> loadedLoader = new HashSet();
@@ -67,7 +67,7 @@ public enum Proxy {
 
                 if (method.getParameterCount() == 0) method.invoke(instance);
                 else method.invoke(instance, event);
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (Exception e) {
                 PanguCore.getLogger().warn("Un-able to invoke method " + method.getName(), e);
             }
         }));
@@ -129,9 +129,8 @@ public enum Proxy {
     }
 
     @AnnotationInjector.StaticInvoke
-    public static void injectAnnotation(ASMDataTable table) {
-        table.getAll(Load.class.getName())
-                .stream()
+    public static void injectAnnotation(AnnotationStream<Load> anno) {
+        anno.stream()
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 .forEach(it -> {

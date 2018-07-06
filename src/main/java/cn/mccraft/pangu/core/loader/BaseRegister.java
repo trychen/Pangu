@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.loader;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +15,6 @@ public abstract class BaseRegister<T, A extends Annotation> implements IRegister
     protected Set<RegisteringItem<T, A>> itemSet = new HashSet<>();
 
     @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
-    @Override
     public boolean preRegister(RegisteringItem registeringItem) {
         try {
             // check type
@@ -28,5 +28,15 @@ public abstract class BaseRegister<T, A extends Annotation> implements IRegister
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void registerField(Field field, Object instance, Annotation annotation) {
+
+    }
+
+    @Override
+    public void registerClass(Class clazz, Annotation annotation) {
+
     }
 }

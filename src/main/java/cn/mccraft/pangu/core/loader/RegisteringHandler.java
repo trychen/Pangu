@@ -7,11 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * Mark register for Reg- anno
- *
- * 如一个类被执行 {@link Register#register(Object)}，
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RegisteringHandler {
     Class<? extends IRegister> value() default IRegister.class;
+    ElementType[] elementType() default {};
 }

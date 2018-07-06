@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@RegisteringHandler(BlockRegister.class)
+@RegisteringHandler(value = BlockRegister.class, elementType = ElementType.FIELD)
 public @interface RegBlock {
     /**
      * 该参数将自动设置方块的registryName和unlocalizedName
