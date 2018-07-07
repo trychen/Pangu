@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.loader;
 
+import cn.mccraft.pangu.core.PanguCore;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,5 +20,5 @@ public @interface Registering {
      *
      * @return resourceDomain
      */
-    String value() default "";
+    String value() default PanguCore.ID;
 }

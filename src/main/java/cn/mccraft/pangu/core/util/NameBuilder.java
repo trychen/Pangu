@@ -35,9 +35,9 @@ public interface NameBuilder {
     }
 
     /**
-     * Building the registry name, liking [hello, world] to HelloWorld
+     * Building the unlocalized name, liking [hello, world] to helloWorld
      *
-     * 将字符串数组转换成大驼峰写法的字符串，例如：[hello, world] 转换成 HelloWorld
+     * 将字符串数组转换成小驼峰写法的字符串，例如：[hello, world] 转换成 helloWorld
      *
      * @param params all parts of name
      * @return built name

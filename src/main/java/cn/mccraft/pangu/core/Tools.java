@@ -14,7 +14,7 @@ import net.minecraft.item.Item;
 
 @DevOnly
 @AutoWired
-@Registering(PanguCore.ID)
+@Registering()
 @SharedCreativeTab("tools")
 public class Tools {
     @RegItem("swords")

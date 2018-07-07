@@ -12,5 +12,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RegisteringHandler {
     Class<? extends IRegister> value() default IRegister.class;
-    ElementType[] elementType() default {};
 }

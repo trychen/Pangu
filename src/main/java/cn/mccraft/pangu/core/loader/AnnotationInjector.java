@@ -2,6 +2,8 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ModDiscoverer;
 
@@ -17,6 +19,9 @@ import java.util.Arrays;
 
 /**
  * auto annotation discover
+ *
+ * @author trychen
+ * @since 1.0.2
  */
 public enum AnnotationInjector {
     INSTANCE;
@@ -25,6 +30,8 @@ public enum AnnotationInjector {
      * invoke method like "public static void injectAnnotation(ASMDataTable data) ..."
      * <p>
      * 带有该注解的方法，必须是可见的，且是静态或者类的实例已存入 {@link InstanceHolder} （即使用了 {@link AutoWired} 的类）
+     *
+     * @since 1.0.2
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -44,7 +51,10 @@ public enum AnnotationInjector {
                 .typeStream()
                 .forEach(it -> {
                     try {
-                        InstanceHolder.getOrNewInstance(it);
+                        final Object instance = InstanceHolder.getOrNewInstance(it);
+                        if (it.getAnnotation(AutoWired.class).registerCommonEventBus()) {
+                            MinecraftForge.EVENT_BUS.register(instance);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

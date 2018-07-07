@@ -39,5 +39,6 @@ public @interface RegItem {
     /**
      * if auto create model automatically
      */
-    boolean autoModel() default true;
+    @Deprecated
+    boolean autoModel() default false;
 }

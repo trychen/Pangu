@@ -1,9 +1,8 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.loader.BaseRegister;
+import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import net.minecraft.client.Minecraft;
@@ -18,48 +17,51 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.lang.reflect.Field;
+
 /**
  * Register to register item with RegItem
  *
  * @author trychen
  * @since 1.0.0.3
  */
-public class ItemRegister extends BaseRegister<Item, RegItem> {
+@AutoWired(registerCommonEventBus = true)
+public class ItemRegister extends StoredElementRegister<Item, RegItem> {
+    @Override
+    public void registerField(Field field, Item item, RegItem regItem) {
+        String[] name = regItem.value();
+        if (name.length == 0) {
+            name = NameBuilder.apart(field.getName());
+        }
+        // set registry name
+        item.setRegistryName(NameBuilder.buildRegistryName(name))
+                // set unlocalized name
+                .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name));
+
+        super.registerField(field, item, regItem);
+    }
+
     /**
      * forge build-in event holder.
      * the implementation of {@link RegItem}
      */
     @SubscribeEvent
     public void registerItem(RegistryEvent.Register<Item> event) {
-        for (RegisteringItem<Item, RegItem> registeringItem : itemSet) try {
-            Item item = registeringItem.getItem();
-            RegItem regItem = registeringItem.getAnnotation();
+        items.forEach(element -> {
+            try {
+                // start register
+                event.getRegistry().register(element.getInstance());
 
-            String[] name = regItem.value();
-            if (name.length == 0) {
-                name = NameBuilder.apart(registeringItem.getField().getName());
-            }
-
-            // start register
-            event.getRegistry().register(
-                    // set registry name
-                    item.setRegistryName(registeringItem.buildRegistryName(name))
-                            // set unlocalized name
-                            .setUnlocalizedName(registeringItem.buildUnlocalizedName(name))
-            );
-
-            // check if there contains ore dict
-            if (regItem.oreDict().length > 0) {
                 // for each all ore dict from RegItem
-                for (String oreName : regItem.oreDict()) {
+                for (String oreName : element.getAnnotation().oreDict())
                     // registering ore dictionary to item
-                    OreDictionary.registerOre(oreName, item);
-                }
+                    OreDictionary.registerOre(oreName, element.getInstance());
+            } catch (Exception ex) {
+                PanguCore.getLogger().error("Unable to register " + element.getField().toGenericString(), ex);
             }
-        } catch (Exception ex) {
-            PanguCore.getLogger().error("Unable to register " + registeringItem.getField().toGenericString(), ex);
-        }
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegItem annotations");
+        });
+
+        PanguCore.getLogger().info("Processed " + items.size() + " @RegItem annotations");
     }
 
     /**
@@ -69,17 +71,17 @@ public class ItemRegister extends BaseRegister<Item, RegItem> {
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
     public void registerModel() {
         ItemModelMesher masher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        itemSet.stream()
+        items.stream()
                 .filter(it -> it.getAnnotation().registerModel())
                 .forEach(it -> {
                     try {
-                        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getItem().getRegistryName(), "inventory");
-                        ModelLoader.registerItemVariants(it.getItem(), modelResourceLocation);
-                        masher.register(it.getItem(), 0, modelResourceLocation);
+                        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getInstance().getRegistryName(), "inventory");
+                        ModelLoader.registerItemVariants(it.getInstance(), modelResourceLocation);
+                        masher.register(it.getInstance(), 0, modelResourceLocation);
                     } catch (Exception ex) {
                         PanguCore.getLogger().error("Unable to register model of " + it.getField().toGenericString(), ex);
                     }
                 });
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " items' model with @RegItem");
+        PanguCore.getLogger().info("Processed " + items.size() + " items' model with @RegItem");
     }
 }

@@ -3,9 +3,7 @@ package cn.mccraft.pangu.core.loader.buildin;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.item.IRecipeProvider;
 import cn.mccraft.pangu.core.loader.AutoWired;
-import cn.mccraft.pangu.core.loader.BaseRegister;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.loader.RegisteringItem;
 import cn.mccraft.pangu.core.loader.annotation.RegRecipe;
 import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
 import com.google.common.collect.Maps;
@@ -31,25 +29,24 @@ import static java.lang.Character.valueOf;
  * @author trychen
  */
 @AutoWired
-public class RecipeRegister extends BaseRegister<Object, RegRecipe> {
-
+public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
     @Load(LoaderState.INITIALIZATION)
     public void registerRecipe() {
-        for (RegisteringItem<Object, RegRecipe> item : itemSet)
+        items.forEach(element -> {
             try {
-                if (item.getItem() instanceof IRecipeProvider) {
+                if (element.getInstance() instanceof IRecipeProvider) {
                     // check is a provider
-                    IRecipeProvider provider = (IRecipeProvider) item.getItem();
+                    IRecipeProvider provider = (IRecipeProvider) element.getInstance();
                     Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
-                } else if (item.getItem() instanceof IRecipe) {
+                } else if (element.getInstance() instanceof IRecipe) {
                     // check if is a recipe
-                    registerRecipe(item.getAnnotation().value(), (IRecipe) item.getItem());
+                    registerRecipe(element.getAnnotation().value(), (IRecipe) element.getInstance());
                 }
             } catch (Exception ex) {
-                PanguCore.getLogger().error("Unable to register " + item.getField().toGenericString(), ex);
+                PanguCore.getLogger().error("Unable to register " + element.getField().toGenericString(), ex);
             }
-
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " @RegRecipe Recipes");
+        });
+        PanguCore.getLogger().info("Processed " + items.size() + " @RegRecipe Recipes");
     }
 
     public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe) {

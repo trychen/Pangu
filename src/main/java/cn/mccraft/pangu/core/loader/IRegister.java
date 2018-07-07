@@ -4,10 +4,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**
- * @since 1.0.0.3
+ * @since 1.0.2
  * @author trychen
  */
-public interface IRegister<ANNO extends Annotation, OBJ> {
-    void registerField(Field field, OBJ instance, ANNO annotation);
-    void registerClass(Class<? extends OBJ> clazz, ANNO annotation);
+public interface IRegister<ANNOTATION extends Annotation, INSTANCE> {
+    void registerField(Field field, INSTANCE instance, ANNOTATION annotation);
+    void registerClass(Class<? extends INSTANCE> clazz, ANNOTATION annotation);
 }

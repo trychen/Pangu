@@ -1,14 +1,14 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.loader.BaseRegister;
-import cn.mccraft.pangu.core.loader.RegisteringItem;
+import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.annotation.RegSound;
 import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.lang.reflect.Field;
 
 /**
  * Register to register SoundEvent with RegSound
@@ -16,33 +16,29 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * @author trychen
  * @since 1.0.0.4
  */
-public class SoundRegister extends BaseRegister<SoundEvent, RegSound> {
+@AutoWired(registerCommonEventBus = true)
+public class SoundRegister extends StoredElementRegister<SoundEvent, RegSound> {
+    @Override
+    public void registerField(Field field, SoundEvent soundEvent, RegSound regSound) {
+        String location = regSound.value();
+        soundEvent.setRegistryName(location.isEmpty() ? soundEvent.getSoundName() : PanguResourceLocation.of(location));
+        super.registerField(field, soundEvent, regSound);
+    }
+
     /**
      * forge build-in event holder.
      * the implementation of {@link RegSound}
      */
     @SubscribeEvent
     public void registerSound(RegistryEvent.Register<SoundEvent> event) {
-        for (RegisteringItem<SoundEvent, RegSound> registeringItem : itemSet) try {
-            SoundEvent soundEvent = registeringItem.getItem();
-            RegSound regSound = registeringItem.getAnnotation();
-
-            String location = regSound.value();
-            ResourceLocation registryName;
-            if (location.isEmpty()) {
-                registryName = soundEvent.getSoundName();
-            } else {
-                registryName = PanguResourceLocation.of(location);
+        items.forEach(element -> {
+            try {
+                // start register
+                event.getRegistry().register(element.getInstance());
+            } catch (Exception ex) {
+                PanguCore.getLogger().error("Unable to register " + element.getField().toGenericString(), ex);
             }
-
-            // start register
-            event.getRegistry().register(
-                    // set registry name
-                    soundEvent.setRegistryName(registryName)
-            );
-        } catch (Exception ex) {
-            PanguCore.getLogger().error("Unable to register " + registeringItem.getField().toGenericString(), ex);
-        }
-        PanguCore.getLogger().info("Processed " + itemSet.size() + " RegSound annotations");
+        });
+        PanguCore.getLogger().info("Processed " + items.size() + " RegSound annotations");
     }
 }

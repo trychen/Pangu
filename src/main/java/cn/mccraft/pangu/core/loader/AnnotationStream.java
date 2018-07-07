@@ -8,6 +8,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+/**
+ * A simple way to operate ASMDataTable.ASMData
+ * @since 1.0.2
+ */
 public class AnnotationStream<T extends Annotation> {
     private final String typeName;
     private final Set<ASMDataTable.ASMData> asmDatas;
@@ -55,6 +59,7 @@ public class AnnotationStream<T extends Annotation> {
                 .filter(Objects::nonNull);
     }
 
+    @SuppressWarnings("unchecked")
     public Stream<? extends Class<?>> typeStream() {
         return asmDatas
                 .stream()

@@ -26,6 +26,8 @@ import java.lang.annotation.*;
  * Before preinit, class Hello will be auto created and put
  * to {@link InstanceHolder}, what's more hello will be auto set to
  * the shared instance of class Hello
+ *
+ * @since 1.0.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -36,4 +38,9 @@ public @interface AutoWired {
      * No effect to class, only for field.
      */
     Class<?> value() default Object.class;
+
+    /**
+     * @since 1.0.2
+     */
+    boolean registerCommonEventBus() default false;
 }
