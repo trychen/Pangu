@@ -29,7 +29,7 @@ public class LoadSideTransformer implements IClassTransformer {
         classReader.accept(classNode, 0);
 
         if (remove(classNode.visibleAnnotations, SIDE)) {
-            throw new RuntimeException(String.format("Attempted to load class %s for invalid side %s", classNode.name, SIDE));
+            return null;
         }
 
         classNode.fields.removeIf(field -> remove(field.visibleAnnotations, SIDE));

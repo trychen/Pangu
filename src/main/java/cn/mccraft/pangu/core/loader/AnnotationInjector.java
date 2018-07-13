@@ -56,7 +56,7 @@ public enum AnnotationInjector {
                             MinecraftForge.EVENT_BUS.register(instance);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        PanguCore.getLogger().error("Unable to inject type " + it.toGenericString(), e);
                     }
                 });
 

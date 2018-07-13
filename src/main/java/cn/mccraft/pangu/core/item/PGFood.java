@@ -17,6 +17,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -120,6 +122,7 @@ public class PGFood extends ItemFood {
     }
 
     @Nonnull
+    @SideOnly(Side.CLIENT)
     public String getItemStackDisplayName(ItemStack stack) {
         final String localizedName = getStats(stack).getUnlocalizedName() == null ? "" : getStats(stack).getUnlocalizedName();
         return I18n.format(localizedName + ".name").trim();

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.debug;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.common.Mod;
@@ -13,8 +14,8 @@ import java.text.DecimalFormat;
 
 import static org.lwjgl.input.Keyboard.*;
 
+@DevOnly
 @SideOnly(Side.CLIENT)
-@Mod.EventBusSubscriber
 public final class GlRotateDebugger {
     private GlRotateDebugger(){
     }

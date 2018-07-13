@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.util.debug;
 
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.util.text.ChatType;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * display message in game
  */
+@DevOnly
 @SideOnly(Side.CLIENT)
 public interface Message {
     Minecraft minecraft =Minecraft.getMinecraft();
@@ -25,7 +27,7 @@ public interface Message {
      * add chat message as some kind of type
      */
     static void chat(ChatType type, String message){
-        minecraft.ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentString(message));
+        minecraft.ingameGUI.addChatMessage(type, new TextComponentString(message));
     }
 
     /**
