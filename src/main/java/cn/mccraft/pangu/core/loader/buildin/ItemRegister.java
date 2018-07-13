@@ -5,6 +5,7 @@ import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.annotation.RegItem;
 import cn.mccraft.pangu.core.util.NameBuilder;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -28,17 +29,17 @@ import java.lang.reflect.Field;
 @AutoWired(registerCommonEventBus = true)
 public class ItemRegister extends StoredElementRegister<Item, RegItem> {
     @Override
-    public void registerField(Field field, Item item, RegItem regItem) {
+    public void registerField(Field field, Item item, RegItem regItem, String domain) {
         String[] name = regItem.value();
         if (name.length == 0) {
             name = NameBuilder.apart(field.getName());
         }
         // set registry name
-        item.setRegistryName(NameBuilder.buildRegistryName(name))
+        item.setRegistryName(PanguResLoc.of(domain, NameBuilder.buildRegistryName(name)))
                 // set unlocalized name
                 .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name));
 
-        super.registerField(field, item, regItem);
+        super.registerField(field, item, regItem, domain);
     }
 
     /**

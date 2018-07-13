@@ -1,17 +1,12 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.loader.IRegister;
-import cn.mccraft.pangu.core.util.NameBuilder;
-import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
-import com.google.common.collect.Maps;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.google.common.collect.Sets;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.util.ResourceLocation;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,11 +25,13 @@ public abstract class StoredElementRegister<T, A extends Annotation> implements 
         private final Field field;
         private final T instance;
         private final A annotation;
+        private final String domain;
 
-        public FieldElement(Field field, T instance, A annotation) {
+        public FieldElement(Field field, T instance, A annotation, String domain) {
             this.field = field;
             this.instance = instance;
             this.annotation = annotation;
+            this.domain = domain;
         }
 
         public Field getField() {
@@ -48,20 +45,22 @@ public abstract class StoredElementRegister<T, A extends Annotation> implements 
         public A getAnnotation() {
             return annotation;
         }
+
+        public String getDomain() {
+            return domain;
+        }
+        public ResourceLocation getResLoc(String path) {
+            return PanguResLoc.of(getDomain(), path);
+        }
     }
 
     @Override
-    public void registerField(Field field, T instance, A annotation) {
+    public void registerField(Field field, T instance, A annotation, String domain) {
         if (instance == null) return;
-        items.add(new FieldElement(field, instance, annotation));
+        items.add(new FieldElement(field, instance, annotation, domain));
     }
 
     public String[] getAnnotationRegistryName() {
         return new String[0];
-    }
-
-    @Override
-    public void registerClass(Class<? extends T> clazz, A annotation) {
-
     }
 }

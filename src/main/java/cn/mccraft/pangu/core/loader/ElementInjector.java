@@ -1,10 +1,10 @@
 package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.ModFinder;
 import com.google.common.collect.Maps;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
 import java.util.Map;
 
 public enum ElementInjector {
@@ -29,10 +29,11 @@ public enum ElementInjector {
     public void start() {
         annotations.forEach((annoClass, register) -> {
             final AnnotationStream<? extends Annotation> anno = AnnotationStream.of(annoClass);
+
             anno.fieldStream().forEach(field -> {
                 try {
                     //noinspection unchecked
-                    register.registerField(field, InstanceHolder.getObject(field), field.getAnnotation(annoClass));
+                    register.registerField(field, InstanceHolder.getObject(field), field.getAnnotation(annoClass), ModFinder.getDomain(field).orElse(PanguCore.ID));
                 } catch (Exception e) {
                     PanguCore.getLogger().error(
                             String.format("Unable to register %s annotation for %s", annoClass.getName(), field.toGenericString())
@@ -46,7 +47,7 @@ public enum ElementInjector {
             anno.typeStream().forEach(clazz -> {
                 try {
                     //noinspection unchecked
-                    register.registerClass(clazz, clazz.getAnnotation(annoClass));
+                    register.registerClass(clazz, clazz.getAnnotation(annoClass), ModFinder.getDomain(clazz).orElse(PanguCore.ID));
                 } catch (Exception e) {
                     PanguCore.getLogger().error(
                             String.format("Unable to register %s annotation for %s", annoClass.getName(), clazz.toGenericString())

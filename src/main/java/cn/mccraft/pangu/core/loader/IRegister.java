@@ -8,6 +8,9 @@ import java.lang.reflect.Field;
  * @author trychen
  */
 public interface IRegister<ANNOTATION extends Annotation, INSTANCE> {
-    void registerField(Field field, INSTANCE instance, ANNOTATION annotation);
-    void registerClass(Class<? extends INSTANCE> clazz, ANNOTATION annotation);
+    default void registerField(Field field, INSTANCE instance, ANNOTATION annotation, String domain) {
+    }
+
+    default void registerClass(Class<? extends INSTANCE> clazz, ANNOTATION annotation, String domain) {
+    }
 }

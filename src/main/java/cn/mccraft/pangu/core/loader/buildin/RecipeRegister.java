@@ -5,7 +5,7 @@ import cn.mccraft.pangu.core.item.IRecipeProvider;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.annotation.RegRecipe;
-import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -14,6 +14,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.registries.GameData;
 
@@ -40,7 +41,7 @@ public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
                     Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
                 } else if (element.getInstance() instanceof IRecipe) {
                     // check if is a recipe
-                    registerRecipe(element.getAnnotation().value(), (IRecipe) element.getInstance());
+                    registerRecipe(element.getResLoc(element.getAnnotation().value()), (IRecipe) element.getInstance());
                 }
             } catch (Exception ex) {
                 PanguCore.getLogger().error("Unable to register " + element.getField().toGenericString(), ex);
@@ -49,8 +50,8 @@ public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
         PanguCore.getLogger().info("Processed " + items.size() + " @RegRecipe Recipes");
     }
 
-    public void registerRecipe(@Nonnull String name, @Nonnull IRecipe recipe) {
-        GameData.register_impl(recipe.setRegistryName(PanguResourceLocation.of(name)));
+    public void registerRecipe(@Nonnull ResourceLocation resourceLocation, @Nonnull IRecipe recipe) {
+        GameData.register_impl(recipe.setRegistryName(resourceLocation));
     }
 
     /**
@@ -61,8 +62,8 @@ public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
      * @param recipeComponents components
      * @return unregistered recipe
      */
-    public static ShapedRecipes buildShapedRecipe(String group, ItemStack stack, Object... recipeComponents) {
-        group = PanguCore.ID + ":" + group;
+    public static ShapedRecipes buildShapedRecipe(String domain, String group, ItemStack stack, Object... recipeComponents) {
+        group = domain + ":" + group;
         StringBuilder s = new StringBuilder();
         int i = 0;
         int j = 0;

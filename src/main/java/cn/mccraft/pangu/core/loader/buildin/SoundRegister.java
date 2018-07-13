@@ -3,7 +3,7 @@ package cn.mccraft.pangu.core.loader.buildin;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.annotation.RegSound;
-import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,10 +19,10 @@ import java.lang.reflect.Field;
 @AutoWired(registerCommonEventBus = true)
 public class SoundRegister extends StoredElementRegister<SoundEvent, RegSound> {
     @Override
-    public void registerField(Field field, SoundEvent soundEvent, RegSound regSound) {
+    public void registerField(Field field, SoundEvent soundEvent, RegSound regSound, String domain) {
         String location = regSound.value();
-        soundEvent.setRegistryName(location.isEmpty() ? soundEvent.getSoundName() : PanguResourceLocation.of(location));
-        super.registerField(field, soundEvent, regSound);
+        soundEvent.setRegistryName(location.isEmpty() ? soundEvent.getSoundName() : PanguResLoc.of(domain, location));
+        super.registerField(field, soundEvent, regSound, domain);
     }
 
     /**

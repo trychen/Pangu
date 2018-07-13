@@ -3,7 +3,7 @@ package cn.mccraft.pangu.core.loader.buildin;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.annotation.RegEntity;
-import cn.mccraft.pangu.core.util.resource.PanguResourceLocation;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
@@ -20,7 +20,7 @@ public class EntityRegister extends StoredElementRegister<EntityEntry, RegEntity
     public void registerEntities(RegistryEvent.Register<EntityEntry> e) {
         items.forEach(element -> {
             try {
-                ResourceLocation resourceLocation = PanguResourceLocation.of(element.getInstance().getName());
+                ResourceLocation resourceLocation = element.getResLoc(element.getInstance().getName());
                 element.getInstance().setRegistryName(resourceLocation);
 
                 if (element.getAnnotation().addEgg()) {

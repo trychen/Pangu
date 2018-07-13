@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,20 +30,16 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
 
 
     @Override
-    public void registerField(Field field, Object o, SharedCreativeTab annotation) {
-        if (isCreateTabSetable(field)) {
+    public void registerField(Field field, Object o, SharedCreativeTab annotation, String domain) {
+        if (isCreateTabSetable(field))
             setCreativeTab(field, annotation.value());
-        }
     }
 
     @Override
-    public void registerClass(Class clazz, SharedCreativeTab annotation) {
-        System.out.println(clazz);
-        for (Field field : clazz.getDeclaredFields()) {
-            if (isCreateTabSetable(field)) {
-                setCreativeTab(field, annotation.value());
-            }
-        }
+    public void registerClass(Class clazz, SharedCreativeTab annotation, String domain) {
+        Arrays.stream(clazz.getDeclaredFields())
+                .filter(this::isCreateTabSetable)
+                .forEach(field -> setCreativeTab(field, annotation.value()));
     }
 
     /**
