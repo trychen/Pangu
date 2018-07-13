@@ -1,6 +1,6 @@
 package cn.mccraft.pangu.core.asm.dev;
 
-import cn.mccraft.pangu.core.asm.LambdaGatherer;
+import cn.mccraft.pangu.core.asm.transformer.LambdaGatherer;
 import cn.mccraft.pangu.core.util.Environment;
 
 import java.util.Iterator;

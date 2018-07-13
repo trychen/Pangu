@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  * Example:
  * <pre>
  *     <code>
- *          public class Tools {
+ *          public classTools {
  *              @AutoWired
  *              public static Hello hello;
  *

@@ -15,7 +15,10 @@ public class PanguPlugin implements IFMLLoadingPlugin {
      */
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {"cn.mccraft.pangu.core.asm.dev.DevTransformer"};
+        return new String[] {
+                "cn.mccraft.pangu.core.asm.dev.DevTransformer",
+                "cn.mccraft.pangu.core.asm.loader.LoadSideTransformer"
+        };
     }
 
     /**

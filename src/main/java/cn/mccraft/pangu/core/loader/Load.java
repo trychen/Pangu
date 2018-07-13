@@ -29,7 +29,10 @@ public @interface Load {
 
     /**
      * Select which side we should invoke this method.
+     * If side is Side.CLIENT the method will be removed in server
+     *
      * 执行该函数所需的平台，服务器或是客户端。
+     * 如果设置为 CLIENT ，将会在服务端中被移除
      */
     Side side() default Side.SERVER;
 }

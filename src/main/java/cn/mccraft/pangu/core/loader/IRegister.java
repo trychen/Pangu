@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**
- * @since 1.0.2
+ * @since 1.0.3
  * @author trychen
  */
 public interface IRegister<ANNOTATION extends Annotation, INSTANCE> {

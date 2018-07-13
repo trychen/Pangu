@@ -11,6 +11,10 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @author trychen
+ * @since 1.0.3
+ */
 public interface ModFinder {
     /**
      * Find ModContainer that the class belongs to.

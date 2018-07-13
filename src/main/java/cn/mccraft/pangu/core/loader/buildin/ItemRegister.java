@@ -68,7 +68,6 @@ public class ItemRegister extends StoredElementRegister<Item, RegItem> {
     /**
      * Registering model
      */
-    @SideOnly(Side.CLIENT)
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
     public void registerModel() {
         ItemModelMesher masher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
