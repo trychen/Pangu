@@ -31,7 +31,7 @@ public interface ModFinder {
             return getModContainerFromClassByPackageName(target);
         }
 
-        if (source.getPath().endsWith(".class")) {
+        if (source == null || source.getPath().endsWith(".class")) {
             return getModContainerFromClassByPackageName(target);
         }
 
