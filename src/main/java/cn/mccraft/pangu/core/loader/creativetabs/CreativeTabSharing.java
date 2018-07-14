@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
@@ -87,7 +88,7 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
     public CreativeTabs getTab(String key) {
         CreativeTabs creativeTabs = tabs.get(key);
         if (creativeTabs == null) {
-            creativeTabs = new CustomIconCreativeTab(key);
+            creativeTabs = new CustomIconCreativeTab("pangu" + Character.toUpperCase(key.charAt(0)) + key.substring(0));
             tabs.put(key, creativeTabs);
         }
         return creativeTabs;
