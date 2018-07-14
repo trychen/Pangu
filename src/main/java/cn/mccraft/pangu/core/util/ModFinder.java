@@ -31,11 +31,13 @@ public interface ModFinder {
             return getModContainerFromClassByPackageName(target);
         }
 
-        if (source.toString().endsWith(".class")) {
+        final Optional<ModContainer> fromFile = getModContainerFromFile(source);
+
+        if (!fromFile.isPresent()) {
             return getModContainerFromClassByPackageName(target);
         }
 
-        return getModContainerFromFile(source);
+        return fromFile;
     }
 
     /**
