@@ -61,7 +61,7 @@ public class PanguCore {
      *
      * @since 1.0.0.1
      */
-    public static final String VERSION = "1.03";
+    public static final String VERSION = "1.0.3";
 
     /*
        ==============================
@@ -189,5 +189,4 @@ public class PanguCore {
 
        Pangu Core won't provide a configuration file
      */
-
 }

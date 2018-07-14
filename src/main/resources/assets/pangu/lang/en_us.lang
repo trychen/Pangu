@@ -1,0 +1,6 @@
+lore.food.amount=Amount： %d
+lore.food.saturationModifier=Saturation： %f
+lore.food.alwaysEdible=Always Eatable
+lore.food.wolfFood=Can feed wolf
+
+gui.inventory.shiftfordetail=Pressing Shift to see details

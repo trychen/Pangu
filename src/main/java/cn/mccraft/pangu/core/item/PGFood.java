@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.item;
 
 import cn.mccraft.pangu.core.capability.CapabilityFood;
 import cn.mccraft.pangu.core.capability.FoodStats;
+import cn.mccraft.pangu.core.util.LoreHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -107,17 +108,19 @@ public class PGFood extends ItemFood {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         FoodStats stats = getStats(stack);
-        tooltip.add("饥饿值: " + stats.getAmount());
-        tooltip.add("饱和度: " + stats.getSaturationModifier());
+        tooltip.add(I18n.format("lore.food.amount", stats.getAmount()));
+        tooltip.add(I18n.format("lore.food.saturationModifier", stats.getSaturationModifier()));
+
         if (flagIn.isAdvanced()) {
             if (stats.isAlwaysEdible())
-                tooltip.add("永久可食");
+                tooltip.add(I18n.format("lore.food.alwaysEdible"));
             if (stats.isWolfFood())
-                tooltip.add("可喂给狼");
+                tooltip.add(I18n.format("lore.food.wolfFood"));
         } else {
-            tooltip.add("按下Shift来查看更多信息");
+            LoreHelper.shiftLoreWithI18n(tooltip, getUnlocalizedName());
         }
     }
 

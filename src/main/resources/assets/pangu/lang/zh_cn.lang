@@ -1,0 +1,6 @@
+lore.food.amount=饥饿值： %d
+lore.food.saturationModifier=饱和度： %f
+lore.food.alwaysEdible=永久可食
+lore.food.wolfFood=可喂给狼
+
+gui.inventory.shiftfordetail=按住 Shift 以查看更多信息
