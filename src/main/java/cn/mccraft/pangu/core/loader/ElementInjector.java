@@ -7,6 +7,10 @@ import com.google.common.collect.Maps;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+/**
+ * @author trychen
+ * @since 1.0.3
+ */
 public enum ElementInjector {
     INSTANCE;
 

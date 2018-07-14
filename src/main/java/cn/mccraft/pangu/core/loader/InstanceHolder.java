@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
@@ -12,6 +14,12 @@ import java.util.Map;
  * instance holder to storage some class's instance
  */
 public interface InstanceHolder {
+    /**
+     * Store all mod instance
+     */
+    static void storeAllModInstance() {
+        Loader.instance().getModList().stream().map(ModContainer::getMod).forEach(InstanceHolder::putInstance);
+    }
     /**
      * The class to instance
      */

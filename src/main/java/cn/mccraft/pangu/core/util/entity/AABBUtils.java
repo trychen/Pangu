@@ -14,13 +14,11 @@ public class AABBUtils {
      * get the nearest entity, by AxisAlignedBB
      *
      * @param type the type of entity, such as Entity, EntityLiving, EntityZombie ...
-     * @param worldObj
      * @param downLowAmount  the down low amount
      * @param pos the pos of searching center
      * @param turretRange the searching radius
      * @param predicate checker
      * @param <T> Entity
-     * @return nullable
      */
     @Nullable
     public static <T extends Entity> T getTargetWithMinimumRange(Class<T> type, World worldObj, int downLowAmount, Vec3d pos, int turretRange, Predicate<Entity> predicate) {
