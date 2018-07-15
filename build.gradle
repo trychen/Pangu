@@ -93,6 +93,9 @@ task deobfJar(type: Jar) {
 
 build.dependsOn deobfJar
 
+artifacts {
+    artifact deobfJar
+}
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
 ext.jvmArguments = [
         '-Dfml.coreMods.load=cn.mccraft.pangu.core.asm.PanguPlugin'
