@@ -8,43 +8,43 @@ buildscript {
     }
 }
 
-allprojects {
-    apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
-    version = mod_version
+version = mod_version
 
-    group = mod_group
-
-    // Build name as
-    archivesBaseName = mod_id + (project.is(rootProject) ? "" : project.name)
-
-    minecraft {
-        version = minecraft_version + "-" + forge_version
-        runDir = "run"
-        mappings = mcp_mapping_version
-
-        replace "%mod_version%", mod_version
-    }
-
-    task ideaInfo {
-        println(project.sourceSets.main.allSource.srcDirs)
-    }
+//adds build number if on a CI server
+if (System.getenv().BUILD_NUMBER != null) {
+    version += ".${System.getenv().BUILD_NUMBER}"
 }
 
-// all sub projects
-subprojects {
-    processResources {
-        inputs.property "version", project.version
-        inputs.property "mcversion", project.minecraft.version
+group = mod_group
 
-        from(sourceSets.main.resources.srcDirs) {
-            include 'mcmod.info'
-            expand 'version': project.version, 'mcversion': project.minecraft.version
-        }
+// Build name as
+archivesBaseName = mod_id
 
-        from(sourceSets.main.resources.srcDirs) {
-            exclude 'mcmod.info'
-        }
+minecraft {
+    version = minecraft_version + "-" + forge_version
+    runDir = "run"
+    mappings = mcp_mapping_version
+
+    replace "@MOD_VERSION@", mod_version
+}
+
+task ideaInfo {
+    println(project.sourceSets.main.allSource.srcDirs)
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }
 
@@ -54,12 +54,32 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
+// Adds FMLCorePlugin manifest
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'cn.mccraft.pangu.core.asm.PanguPlugin'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
+
+// Adds javadoc
+//tasks.withType(Javadoc) {
+//    options.addStringOption('Xdoclint:none', '-quiet')
+//}
+//
+//javadoc {
+//    source = sourceSets.main.allJava
+//    classpath = configurations.compile
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+//
+//artifacts {
+//    archives javadocJar
+//}
 
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
 ext.jvmArguments = [

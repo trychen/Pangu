@@ -12,17 +12,15 @@ import java.lang.annotation.*;
  * that it will be auto set to the instance.
  * Example:
  * <pre>
- *     <code>
- *          public classTools {
- *              @AutoWired
- *              public static Hello hello;
- *
- *              @AutoWired
- *              public static class Hello {
- *              }
- *         }
- *     </code>
+ *     {@code
+ *       @AutoWired
+ *       public static Hello hello;
+ *       @AutoWired
+ *       public static class Hello {
+ *       }
+     *  }
  * </pre>
+ *
  * Before preinit, class Hello will be auto created and put
  * to {@link InstanceHolder}, what's more hello will be auto set to
  * the shared instance of class Hello
