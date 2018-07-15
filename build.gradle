@@ -94,22 +94,12 @@ task deobfJar(type: Jar) {
 build.dependsOn deobfJar
 
 artifacts {
-    artifact deobfJar
+    archives deobfJar
 }
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
 ext.jvmArguments = [
         '-Dfml.coreMods.load=cn.mccraft.pangu.core.asm.PanguPlugin'
 ]
-
-makeEclipseCleanRunClient.doFirst {
-    def jvmArg = String.join(' ', jvmArguments)
-    it.setJvmArguments(jvmArg)
-}
-
-makeEclipseCleanRunServer.doFirst {
-    def jvmArg = String.join(' ', jvmArguments)
-    it.setJvmArguments(jvmArg)
-}
 
 idea.workspace.iws.withXml {
     def runManager = it.asNode().component.find({ it.@name == 'RunManager' })
