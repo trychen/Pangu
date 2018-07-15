@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * instance holder to storage some class's instance
@@ -18,7 +19,7 @@ public interface InstanceHolder {
      * Store all mod instance
      */
     static void storeAllModInstance() {
-        Loader.instance().getModList().stream().map(ModContainer::getMod).forEach(InstanceHolder::putInstance);
+        Loader.instance().getModList().stream().filter(Objects::nonNull).map(ModContainer::getMod).forEach(InstanceHolder::putInstance);
     }
     /**
      * The class to instance
