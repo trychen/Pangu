@@ -19,7 +19,12 @@ public interface InstanceHolder {
      * Store all mod instance
      */
     static void storeAllModInstance() {
-        Loader.instance().getModList().stream().filter(Objects::nonNull).map(ModContainer::getMod).forEach(InstanceHolder::putInstance);
+        Loader
+                .instance()
+                .getModList()
+                .stream()
+                .map(ModContainer::getMod)
+                .filter(Objects::nonNull).forEach(InstanceHolder::putInstance);
     }
     /**
      * The class to instance
