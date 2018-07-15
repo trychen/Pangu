@@ -81,6 +81,18 @@ jar {
 //    archives javadocJar
 //}
 
+// Adds deobfJar
+
+// because the normal output has been made to be obfuscated
+task deobfJar(type: Jar) {
+    destinationDir = libsDir
+    from sourceSets.main.output
+    from sourceSets.api.output
+    classifier = 'dev'
+}
+
+build.dependsOn deobfJar
+
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
 ext.jvmArguments = [
         '-Dfml.coreMods.load=cn.mccraft.pangu.core.asm.PanguPlugin'
