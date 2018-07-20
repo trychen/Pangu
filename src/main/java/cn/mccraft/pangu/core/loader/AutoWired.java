@@ -38,6 +38,10 @@ public @interface AutoWired {
     Class<?> value() default Object.class;
 
     /**
+     * The core Forge EventBus, all events for Forge will be fired on these,
+     * you should use this to register all your listeners.
+     * This replaces every register*Handler() function in the old version of Forge.
+     *
      * @since 1.0.2
      */
     boolean registerCommonEventBus() default false;

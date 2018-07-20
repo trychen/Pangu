@@ -24,7 +24,8 @@ public interface InstanceHolder {
                 .getModList()
                 .stream()
                 .map(ModContainer::getMod)
-                .filter(Objects::nonNull).forEach(InstanceHolder::putInstance);
+                .filter(Objects::nonNull)
+                .forEach(InstanceHolder::putInstance);
     }
     /**
      * The class to instance

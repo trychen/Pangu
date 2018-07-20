@@ -62,7 +62,7 @@ public final class KeyMessage {
     }
 
     /**
-     * A key message which storage none of information
+     * A input message which storage none of information
      */
     public static class Context implements IMessage {
         private String key;

@@ -1,9 +1,13 @@
 package cn.mccraft.pangu.core.loader;
 
+import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -37,10 +41,16 @@ public class AnnotationStream<T extends Annotation> {
         return asmDatas;
     }
 
+    /**
+     * Returns a sequential {@code Stream} with the native ASMData
+     */
     public Stream<ASMDataTable.ASMData> stream() {
         return asmDatas.stream();
     }
 
+    /**
+     * Returns a sequential {@code Stream} with classes from element's declaring class.
+     */
     public Stream<? extends Class<?>> classStream() {
         return asmDatas
                 .stream()
@@ -59,6 +69,9 @@ public class AnnotationStream<T extends Annotation> {
                 .filter(Objects::nonNull);
     }
 
+    /**
+     * Returns a sequential {@code Stream} with classes annotated
+     */
     @SuppressWarnings("unchecked")
     public Stream<? extends Class<?>> typeStream() {
         return asmDatas
@@ -80,6 +93,9 @@ public class AnnotationStream<T extends Annotation> {
                 .filter(Objects::nonNull);
     }
 
+    /**
+     * Returns a sequential {@code Stream} with fields annotated
+     */
     public Stream<Field> fieldStream() {
         return asmDatas
                 .stream()
@@ -96,9 +112,16 @@ public class AnnotationStream<T extends Annotation> {
                 // clean class could get instance
                 .filter(Objects::nonNull);
     }
-
-    public Stream<Field> methodStream() {
-        // TODO: NotImpl Method
-        return null;
+    /**
+     * Returns a sequential {@code Stream} with method annotated
+     */
+    public Stream<Method> methodStream() {
+        Set<Method> methods = Sets.newHashSet();
+        classStream().forEach(
+                clazz -> Arrays.stream(clazz.getDeclaredMethods())
+                        .filter(method -> Arrays.stream(method.getAnnotations()).anyMatch(it -> typeName.equals(it.annotationType().getName())))
+                        .forEach(methods::add)
+        );
+        return methods.stream();
     }
 }

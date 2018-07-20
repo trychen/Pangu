@@ -34,7 +34,7 @@ public final class GlRotateDebugger {
     }
 
     /**
-     * active when key down
+     * active when input down
      * @param event
      */
     @SubscribeEvent

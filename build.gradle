@@ -57,56 +57,29 @@ compileJava {
 // Adds FMLCorePlugin manifest
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'cn.mccraft.pangu.core.asm.PanguPlugin'
+        attributes 'FMLCorePlugin': mod_core_plugin
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
 
-// Adds javadoc
-//tasks.withType(Javadoc) {
-//    options.addStringOption('Xdoclint:none', '-quiet')
-//}
-//
-//javadoc {
-//    source = sourceSets.main.allJava
-//    classpath = configurations.compile
-//}
-//
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from javadoc.destinationDir
-//}
-//
-//artifacts {
-//    archives javadocJar
-//}
-
 // Adds deobfJar
-
 // because the normal output has been made to be obfuscated
-task deobfJar(type: Jar) {
-    destinationDir = libsDir
-    from sourceSets.main.output
-    from sourceSets.api.output
-    classifier = 'dev'
+task deobfJar(type: Jar, dependsOn: 'jar') {
+    from "build/source/main"
+    classifier "dev"
 }
-
-build.dependsOn deobfJar
-
 artifacts {
     archives deobfJar
 }
+
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
-ext.jvmArguments = [
-        '-Dfml.coreMods.load=cn.mccraft.pangu.core.asm.PanguPlugin'
-]
 
 idea.workspace.iws.withXml {
     def runManager = it.asNode().component.find({ it.@name == 'RunManager' })
     runManager.configuration.findAll({ it.@type == 'Application' }).each {
         def mainClass = it.option.find({ it.@name == 'MAIN_CLASS_NAME' }).@value
         if (mainClass == 'GradleStart' || mainClass == 'GradleStartServer') {
-            def jvmArg = String.join(' ', jvmArguments)
+            def jvmArg = String.join(' ', ['-Dfml.coreMods.load=' + mod_core_plugin])
             it.option.find({ it.@name == 'VM_PARAMETERS' }).@value = jvmArg
         }
     }
