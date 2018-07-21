@@ -1,13 +1,14 @@
 package cn.mccraft.pangu.core.client.input;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.client.gui.GuiTest;
+import cn.mccraft.pangu.core.client.gui.PanguToast;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -46,7 +47,7 @@ public class KeyBindingInjector {
     }
 
     @SubscribeEvent
-    public void handleKey(GuiScreenEvent.KeyboardInputEvent e) {
+    public void handleKey(GuiScreenEvent.KeyboardInputEvent.Pre e) {
         handleKeyPress();
     }
 
@@ -58,7 +59,7 @@ public class KeyBindingInjector {
     public void handleKeyPress() {
         for (Map.Entry<KeyBinding, Method> entry : bindingKeys.entrySet())
             // check if pressed
-            if (entry.getKey().isPressed()) try {
+            if (entry.getKey().isPressed() || Keyboard.isKeyDown(entry.getKey().getKeyCode())) try {
                 entry.getValue().invoke(InstanceHolder.getCachedInstance(entry.getValue().getDeclaringClass()));
             } catch (Exception e) {
                 // catch all exception
@@ -68,6 +69,11 @@ public class KeyBindingInjector {
 
     @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_O, category = KeyBindingHelper.CATEGORY_MISC)
     public void test() {
-        System.out.println(1);
+        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
+    }
+
+    @BindKeyPress(description = "key.toast", keyCode = Keyboard.KEY_L, category = KeyBindingHelper.CATEGORY_MISC)
+    public void l() {
+        Minecraft.getMinecraft().getToastGui().add(new PanguToast("Test", "Hello"));
     }
 }

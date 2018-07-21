@@ -2,6 +2,8 @@ package cn.mccraft.pangu.core.client;
 
 import cn.mccraft.pangu.core.CommonProxy;
 import cn.mccraft.pangu.core.loader.Proxy;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
@@ -19,6 +21,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+    public static final ResourceLocation PG_BUTTONS_TEXTURE = PanguResLoc.ofGui("buttons.png");
+    public static final ResourceLocation PG_ICONS_TEXTURE = PanguResLoc.ofGui("icons.png");
+
     static {
         Proxy.INSTANCE.addLoader(ModelLoader.class);
     }

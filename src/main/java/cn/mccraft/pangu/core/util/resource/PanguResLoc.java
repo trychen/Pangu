@@ -16,6 +16,9 @@ public class PanguResLoc extends ResourceLocation {
     public static PanguResLoc of(String resourcePathIn) {
         return new PanguResLoc(resourcePathIn);
     }
+    public static PanguResLoc ofGui(String resourcePathIn) {
+        return of("textures/gui/" + resourcePathIn);
+    }
 
     public static ResourceLocation of(String domain, String resourcePathIn) {
         return new ResourceLocation(domain, resourcePathIn);
