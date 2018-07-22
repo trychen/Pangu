@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.input;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.gui.GuiTest;
 import cn.mccraft.pangu.core.client.gui.PanguToast;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
@@ -41,7 +42,6 @@ public class KeyBindingInjector {
                     KeyBinding key = KeyBindingHelper.of(bindKeyPress.description(), bindKeyPress.keyCode(), bindKeyPress.category());
                     // put into cache
                     bindingKeys.put(key, method);
-                    System.out.println("Binding key " + bindKeyPress + " to method " + method);
                 });
 
     }
@@ -67,11 +67,13 @@ public class KeyBindingInjector {
             }
     }
 
+    @DevOnly
     @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_O, category = KeyBindingHelper.CATEGORY_MISC)
     public void test() {
         Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
     }
 
+    @DevOnly
     @BindKeyPress(description = "key.toast", keyCode = Keyboard.KEY_L, category = KeyBindingHelper.CATEGORY_MISC)
     public void l() {
         Minecraft.getMinecraft().getToastGui().add(new PanguToast("Test", "Hello"));
