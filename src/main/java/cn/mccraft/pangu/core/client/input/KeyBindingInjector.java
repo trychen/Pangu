@@ -25,7 +25,8 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 @AutoWired(registerCommonEventBus = true)
 public class KeyBindingInjector {
-    private Map<KeyBinding, Method> bindingKeys = Maps.newHashMap();
+    private Map<KeyBinding, Method> bindingInGameKeys = Maps.newHashMap();
+    private Map<KeyBinding, Method> bindingInGuiKeys = Maps.newHashMap();
 
     @AnnotationInjector.StaticInvoke
     public void bind(AnnotationStream<BindKeyPress> stream) {
@@ -41,23 +42,33 @@ public class KeyBindingInjector {
                     // register key binding
                     KeyBinding key = KeyBindingHelper.of(bindKeyPress.description(), bindKeyPress.keyCode(), bindKeyPress.category());
                     // put into cache
-                    bindingKeys.put(key, method);
+                    if (bindKeyPress.enableInGame())
+                        bindingInGameKeys.put(key, method);
+
+                    if (bindKeyPress.enableInGUI())
+                        bindingInGuiKeys.put(key, method);
                 });
 
     }
 
+    /**
+     * Key pressed in GUI
+     */
     @SubscribeEvent
     public void handleKey(GuiScreenEvent.KeyboardInputEvent.Pre e) {
-        handleKeyPress();
+        handleKeyPress(bindingInGuiKeys);
     }
 
+    /**
+     * Key pressed in game
+     */
     @SubscribeEvent
     public void handleKey(InputEvent.KeyInputEvent e) {
-        handleKeyPress();
+        handleKeyPress(bindingInGuiKeys);
     }
 
-    public void handleKeyPress() {
-        for (Map.Entry<KeyBinding, Method> entry : bindingKeys.entrySet())
+    public void handleKeyPress(Map<KeyBinding, Method> keyMap) {
+        for (Map.Entry<KeyBinding, Method> entry : keyMap.entrySet())
             // check if pressed
             if (entry.getKey().isPressed() || Keyboard.isKeyDown(entry.getKey().getKeyCode())) try {
                 entry.getValue().invoke(InstanceHolder.getCachedInstance(entry.getValue().getDeclaringClass()));
@@ -68,14 +79,9 @@ public class KeyBindingInjector {
     }
 
     @DevOnly
-    @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_O, category = KeyBindingHelper.CATEGORY_MISC)
-    public void test() {
+    @BindKeyPress(description = "key.example", keyCode = Keyboard.KEY_O, category = KeyBindingHelper.CATEGORY_CREATIVE)
+    public void onKeyLPressed() {
         Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
-    }
-
-    @DevOnly
-    @BindKeyPress(description = "key.toast", keyCode = Keyboard.KEY_L, category = KeyBindingHelper.CATEGORY_MISC)
-    public void l() {
-        Minecraft.getMinecraft().getToastGui().add(new PanguToast("Test", "Hello"));
+        System.out.println("Key L Pressed");
     }
 }
