@@ -65,7 +65,8 @@ jar {
 // Adds deobfJar
 // because the normal output has been made to be obfuscated
 task deobfJar(type: Jar, dependsOn: 'jar') {
-    from "build/source/main"
+    from "build/classes/java/main"
+    from "build/resources/main"
     classifier "dev"
 }
 artifacts {
