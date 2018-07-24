@@ -28,6 +28,7 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
      * shared creative tabs
      */
     private Map<String, CreativeTabs> tabs = new HashMap<>();
+    private int creativeTabsLength = -1;
 
 
     @Override
@@ -86,10 +87,21 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
      */
     @Nonnull
     public CreativeTabs getTab(String key) {
+        // Reflesh creative tab.
+        int currentLength = CreativeTabs.CREATIVE_TAB_ARRAY.length;
+        if (creativeTabsLength != currentLength) {
+            creativeTabsLength = currentLength;
+            for(CreativeTabs creativeTabs : CreativeTabs.CREATIVE_TAB_ARRAY) {
+                tabs.put(creativeTabs.getTabLabel(), creativeTabs);
+            }
+        }
+
         CreativeTabs creativeTabs = tabs.get(key);
         if (creativeTabs == null) {
-            creativeTabs = new CustomIconCreativeTab("pangu" + Character.toUpperCase(key.charAt(0)) + key.substring(0));
+            //creativeTabs = new CustomIconCreativeTab("pangu" + Character.toUpperCase(key.charAt(0)) + key.substring(1));
+            creativeTabs = new CustomIconCreativeTab(key);
             tabs.put(key, creativeTabs);
+            creativeTabsLength++;
         }
         return creativeTabs;
     }
