@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.util.date;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -16,7 +15,6 @@ import java.util.Date;
 public final class LunarCalendar {
     public static final LunarCalendar INSTANCE = new LunarCalendar(Calendar.getInstance());
 
-
     private int year;// 农历年
     private int month;// 农历月
     private int day;// 农历日
@@ -31,6 +29,7 @@ public final class LunarCalendar {
      * 中文日期格式
      */
     static SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+
     /**
      * 农历数据， 1901 ~ 2100 年之间正确
      */

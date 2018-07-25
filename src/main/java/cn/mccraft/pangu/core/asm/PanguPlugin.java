@@ -42,7 +42,6 @@ public class PanguPlugin implements IFMLLoadingPlugin {
      * run <strong>prior</strong> to Minecraft starting, so it CANNOT operate on minecraft
      * itself. The game will deliberately crash if this code is detected to trigger a
      * minecraft class loading
-     * TODO: implement crash ;)
      */
     @Nullable
     @Override
@@ -61,7 +60,6 @@ public class PanguPlugin implements IFMLLoadingPlugin {
      */
     @Override
     public void injectData(Map<String, Object> data) {
-
     }
 
     /**

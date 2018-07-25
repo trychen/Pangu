@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class PGFood extends ItemFood {
     public PGFood() {
@@ -34,15 +35,14 @@ public class PGFood extends ItemFood {
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, @Nullable World worldIn, EntityLivingBase entityLiving) {
         if (entityLiving instanceof EntityPlayer) {
-            EntityPlayer entityplayer = (EntityPlayer)entityLiving;
+            EntityPlayer entityplayer = (EntityPlayer) entityLiving;
             entityplayer.getFoodStats().addStats(this, stack);
             worldIn.playSound(null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, worldIn.rand.nextFloat() * 0.1F + 0.9F);
             this.onFoodEaten(stack, worldIn, entityplayer);
-            entityplayer.addStat(StatList.getObjectUseStats(this));
+            entityplayer.addStat(Objects.requireNonNull(StatList.getObjectUseStats(this)));
 
-            if (entityplayer instanceof EntityPlayerMP)
-            {
-                CriteriaTriggers.CONSUME_ITEM.trigger((EntityPlayerMP)entityplayer, stack);
+            if (entityplayer instanceof EntityPlayerMP) {
+                CriteriaTriggers.CONSUME_ITEM.trigger((EntityPlayerMP) entityplayer, stack);
             }
         }
 
@@ -75,8 +75,7 @@ public class PGFood extends ItemFood {
         if (playerIn.canEat(getStats(itemstack).isAlwaysEdible())) {
             playerIn.setActiveHand(handIn);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
-        }
-        else
+        } else
             return new ActionResult<>(EnumActionResult.FAIL, itemstack);
     }
 

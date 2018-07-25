@@ -14,7 +14,7 @@ public class AABBUtils {
      * get the nearest entity, by AxisAlignedBB
      *
      * @param type the type of entity, such as Entity, EntityLiving, EntityZombie ...
-     * @param downLowAmount  the down low amount
+     * @param downLowAmount the down low amount
      * @param pos the pos of searching center
      * @param turretRange the searching radius
      * @param predicate checker
