@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 /**
  * A simple way to send a notice to server
  *
- * @since .4
+ * @since 1.0.0.4
  * @author trychen
  */
 public final class KeyMessage {
@@ -34,10 +34,10 @@ public final class KeyMessage {
         PanguCore.getNetwork().registerMessage(Handler.class, Context.class, Network.getNextID(), Side.SERVER);
     }
 
-    private static Map<String, Consumer<MessageContext>> name2Receiver = new HashMap();
+    private static Map<String, Consumer<MessageContext>> name2Receiver = new HashMap<>();
 
-    public static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> reciver){
-        return name2Receiver.put(name, reciver);
+    public static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> receiver){
+        return name2Receiver.put(name, receiver);
     }
 
     public static class Handler implements IMessageHandler<Context, Context> {
@@ -46,7 +46,7 @@ public final class KeyMessage {
          * is needed.
          *
          * @param message The message
-         * @param ctx
+         * @param ctx context
          * @return an optional return message
          */
         @Override
@@ -78,14 +78,14 @@ public final class KeyMessage {
          */
         @Override
         public void fromBytes(ByteBuf buf) {
-            int lengh = buf.getInt(0);
-            key = buf.getCharSequence(1, lengh, StandardCharsets.UTF_8).toString();
+            int length = buf.getInt(0);
+            key = buf.getCharSequence(1, length, StandardCharsets.UTF_8).toString();
         }
 
         /**
          * Deconstruct your message into the supplied byte buffer
          *
-         * @param buf
+         * @param buf buffer
          */
         @Override
         public void toBytes(ByteBuf buf) {
