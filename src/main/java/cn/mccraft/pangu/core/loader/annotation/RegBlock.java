@@ -32,15 +32,15 @@ public @interface RegBlock {
     /**
      * 设置方块的ItemBlock类
      */
-    Class<? extends Item> itemClass() default ItemBlock.class;
+    Class<? extends ItemBlock> itemBlockClass() default ItemBlock.class;
 
     /**
      * 是否自动注册ItemBlock
      */
-    boolean isRegisterItemBlock() default true;
+    boolean registerItemBlock() default true;
 
     /**
      * 是否自动注册渲染器
      */
-    boolean isRegisterRender() default true;
+    boolean registerRenderer() default true;
 }

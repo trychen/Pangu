@@ -2,18 +2,27 @@ package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.annotation.RegBlock;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Block register
@@ -60,12 +69,36 @@ public class BlockRegister extends StoredElementRegister<Block, RegBlock> {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void registerItemBlocks(RegistryEvent.Register<Item> event) {
+        for(FieldElement item : items) {
+            if (item.getAnnotation().registerItemBlock()) {
+                try {
+                    Constructor<? extends ItemBlock> itemBlockConstructor = item.getAnnotation().itemBlockClass().getConstructor(Block.class);
+                    itemBlockConstructor.setAccessible(true);
+                    event.getRegistry().register(itemBlockConstructor.newInstance(item.getInstance()).setRegistryName(item.getInstance().getRegistryName()));
+                } catch (ReflectiveOperationException ex) {
+                    PanguCore.getLogger().error("Unable to register itemblock of " + item.getField().toGenericString(), ex);
+                }
+            }
+        }
+    }
+
+    /**
+     * Registering itemblock model
+     */
+    @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
+    public void registerModel() {
+        ItemModelMesher masher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         items.stream()
-                // check if need register ItemBlock
-                .filter(it -> it.getAnnotation().isRegisterItemBlock())
-                // create ItemBlock and set RegistryName
-                .map(it -> new ItemBlock(it.getInstance()).setRegistryName(it.getInstance().getRegistryName()))
-                // registering
-                .forEach(event.getRegistry()::register);
+                .filter(it -> it.getAnnotation().registerItemBlock())
+                .forEach(it -> {
+                    try {
+                        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getInstance().getRegistryName(), "inventory");
+                        ModelLoader.registerItemVariants(Item.getItemFromBlock(it.getInstance()), modelResourceLocation);
+                        masher.register(Item.getItemFromBlock(it.getInstance()), 0, modelResourceLocation);
+                    } catch (Exception ex) {
+                        PanguCore.getLogger().error("Unable to register model of " + it.getField().toGenericString(), ex);
+                    }
+                });
+        PanguCore.getLogger().info("Processed " + items.size() + " itemblocks' model with @RegBlock");
     }
 }
