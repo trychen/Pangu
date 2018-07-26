@@ -36,6 +36,7 @@ public class KeyBindingInjector {
                     // check if there is an instance to invoke
                     if (!Modifier.isStatic(method.getModifiers()) && InstanceHolder.getCachedInstance(method.getDeclaringClass()) == null) {
                         PanguCore.getLogger().error("Unable to find any instance to bind key for method " + method.toString(), new NullPointerException());
+                        return;
                     }
                     // get annotation info
                     BindKeyPress bindKeyPress = method.getAnnotation(BindKeyPress.class);
@@ -48,11 +49,10 @@ public class KeyBindingInjector {
                     if (bindKeyPress.enableInGUI())
                         bindingInGuiKeys.put(key, method);
                 });
-
     }
 
     /**
-     * Key pressed in GUI
+     * Content pressed in GUI
      */
     @SubscribeEvent
     public void handleKey(GuiScreenEvent.KeyboardInputEvent.Pre e) {
@@ -60,7 +60,7 @@ public class KeyBindingInjector {
     }
 
     /**
-     * Key pressed in game
+     * Content pressed in game
      */
     @SubscribeEvent
     public void handleKey(InputEvent.KeyInputEvent e) {
@@ -76,12 +76,5 @@ public class KeyBindingInjector {
                 // catch all exception
                 PanguCore.getLogger().error("Unable to bind key input for " + entry.getKey().getKeyDescription(), e);
             }
-    }
-
-    @DevOnly
-    @BindKeyPress(description = "key.example", keyCode = Keyboard.KEY_O, category = KeyBindingHelper.CATEGORY_CREATIVE)
-    public void onKeyLPressed() {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
-        System.out.println("Key L Pressed");
     }
 }

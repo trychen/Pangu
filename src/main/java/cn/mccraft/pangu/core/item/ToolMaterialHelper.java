@@ -3,12 +3,24 @@ package cn.mccraft.pangu.core.item;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.EnumHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public interface ToolMaterialHelper {
     @Nullable
-    static Item.ToolMaterial of(String name, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
+    static Item.ToolMaterial of(@Nonnull String name, int harvestLevel, int maxUses, float efficiency, float damage, int enchantability) {
         return EnumHelper.addToolMaterial(name, harvestLevel, maxUses, efficiency, damage, enchantability);
+    }
+
+    @Nonnull
+    static Builder builder(@Nonnull String name) {
+        return new Builder(name).init(Item.ToolMaterial.STONE);
+    }
+
+
+    @Nonnull
+    static Builder builder(@Nonnull String name, Item.ToolMaterial material) {
+        return new Builder(name).init(material);
     }
 
     /**
@@ -40,17 +52,8 @@ public interface ToolMaterialHelper {
         /**
          * @param name the name of ToolMaterial ()
          */
-        public Builder(String name) {
-            this(name, Item.ToolMaterial.STONE);
-        }
-
-        public Builder(String name, Item.ToolMaterial material) {
+        private Builder(String name) {
             this.name = name;
-            this.harvestLevel = material.getHarvestLevel();
-            this.maxUses = material.getMaxUses();
-            this.efficiency = material.getEfficiency();
-            this.attackDamage = material.getAttackDamage();
-            this.enchantability = material.getEnchantability();
         }
 
         public Item.ToolMaterial build() {
@@ -59,6 +62,15 @@ public interface ToolMaterialHelper {
 
         public String getName() {
             return name;
+        }
+
+        public Builder init(Item.ToolMaterial material) {
+            this.harvestLevel = material.getHarvestLevel();
+            this.maxUses = material.getMaxUses();
+            this.efficiency = material.getEfficiency();
+            this.attackDamage = material.getAttackDamage();
+            this.enchantability = material.getEnchantability();
+            return this;
         }
 
         /**

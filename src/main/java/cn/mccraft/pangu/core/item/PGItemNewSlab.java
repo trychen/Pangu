@@ -17,9 +17,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class PGItemNewSlab extends ItemBlock
-{
-    public PGItemNewSlab(Block block){
+public class PGItemNewSlab extends ItemBlock {
+    public PGItemNewSlab(Block block) {
         super(block);
     }
 
@@ -86,7 +85,7 @@ public class PGItemNewSlab extends ItemBlock
         return false;
     }
 
-    private boolean isSingle(IBlockState state){
+    private boolean isSingle(IBlockState state) {
         return state.getBlock() == block && state.getValue(PGBlockNewSlab.SLAB_TYPE) != PGBlockNewSlab.EnumBlockSlab.DOUBLE;
     }
 }

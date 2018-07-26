@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.util;
 
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * 环境检查
@@ -16,5 +18,9 @@ public interface Environment {
 
     static void devOnly(Runnable runnable) {
         if (isDevEnv) runnable.run();
+    }
+
+    static Side side() {
+        return FMLCommonHandler.instance().getSide();
     }
 }
