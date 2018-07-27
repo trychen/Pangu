@@ -167,7 +167,6 @@ public class PanguCore {
     public void preInit(FMLPreInitializationEvent event) {
         // Init the network
         network = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
-
         proxy.preInit(event);
     }
 

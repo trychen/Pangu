@@ -1,32 +1,29 @@
 package cn.mccraft.pangu.core.network;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.client.input.BindKeyPress;
-import cn.mccraft.pangu.core.client.input.KeyBindingHelper;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
-import com.github.mouse0w0.fastreflection.accassor.AsmMethodAccessor;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static cn.mccraft.pangu.core.network.Network.*;
 
 /**
  * A simple way to send a notice to server
@@ -37,8 +34,8 @@ import java.util.function.Consumer;
 public interface KeyMessage {
     @Load(LoaderState.INITIALIZATION)
     static void registerMessageHandler(){
-        PanguCore.getNetwork().registerMessage(new Handler(Side.SERVER), Content.class, Network.getNextID(), Side.SERVER);
-        PanguCore.getNetwork().registerMessage(new Handler(Side.CLIENT), Content.class, Network.getNextID(), Side.CLIENT);
+        PanguCore.getNetwork().registerMessage(new Handler(Side.SERVER), Content.class, SERVER_KEY_MESSAGE_ID, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(new Handler(Side.CLIENT), Content.class, CLIENT_KEY_MESSAGE_ID, Side.CLIENT);
     }
 
     static void send(String key) {

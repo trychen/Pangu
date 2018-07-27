@@ -17,6 +17,7 @@ public @interface BindKeyMessage {
      * The message key
      */
     String value();
+
     /**
      * The side receiving message
      */
