@@ -7,11 +7,15 @@ import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
+import com.github.mouse0w0.fastreflection.FastReflection;
+import com.github.mouse0w0.fastreflection.MethodAccessor;
+import com.github.mouse0w0.fastreflection.accassor.AsmMethodAccessor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,7 +31,7 @@ import java.util.function.Consumer;
 /**
  * A simple way to send a notice to server
  *
- * @since 1.0.0.4
+ * @since 1.0.5
  * @author trychen
  */
 public interface KeyMessage {
@@ -45,27 +49,55 @@ public interface KeyMessage {
         PanguCore.getNetwork().sendTo(new Content(key), entityPlayer);
     }
 
-    Map<String, Consumer<MessageContext>> name2Receiver = new HashMap<>();
+    Map<String, Consumer<MessageContext>> name2ReceiverForClient = new HashMap<>();
+    Map<String, Consumer<MessageContext>> name2ReceiverForServer = new HashMap<>();
 
-    static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> receiver){
-        return name2Receiver.put(name, receiver);
+    static Consumer<MessageContext> register(@Nonnull String name, @Nonnull Consumer<MessageContext> receiver, Side side){
+        return (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).put(name, receiver);
     }
 
     @AnnotationInjector.StaticInvoke
     static void bind(AnnotationStream<BindKeyMessage> stream) {
         stream.methodStream()
-                .filter(method -> method.getParameterCount() == 0)
                 .forEach(method -> {
+                    boolean hasMessageContext = method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(MessageContext.class);
+                    if (method.getParameterCount() != 0 && !hasMessageContext) {
+                        PanguCore.getLogger().error(String.format("Unexpected parameter while binding key message for method: %s", method.toGenericString()), new IllegalArgumentException());
+                        return;
+                    }
+
                     // check if there is an instance to invoke
-                    if (!Modifier.isStatic(method.getModifiers()) && InstanceHolder.getCachedInstance(method.getDeclaringClass()) == null) {
+                    Object instance = null;
+                    if (!Modifier.isStatic(method.getModifiers()) && (instance = InstanceHolder.getCachedInstance(method.getDeclaringClass())) == null) {
                         PanguCore.getLogger().error("Unable to find any instance to bind key message for method " + method.toString(), new NullPointerException());
                         return;
                     }
-                    // get annotation info
-                    BindKeyMessage bindKeyPress = method.getAnnotation(BindKeyMessage.class);
 
-                    // TODO:
-//                    register(bindKeyPress.value())
+                    MethodAccessor methodAccessor;
+                    try {
+                        methodAccessor = FastReflection.create(method);
+                    } catch (Exception e) {
+                        PanguCore.getLogger().error(String.format("Unable to create AsmMethodAccessor for binding key message (method: %s)", method.toGenericString()), e);
+                        return;
+                    }
+
+                    // get annotation info
+                    BindKeyMessage bindKeyMessage = method.getAnnotation(BindKeyMessage.class);
+
+                    Object finalInstance = instance;
+
+                    register(bindKeyMessage.value(), messageContext -> {
+                        try {
+                            if (!hasMessageContext)
+                                methodAccessor.invoke(finalInstance);
+                            else
+                                methodAccessor.invoke(finalInstance, messageContext);
+                        } catch (Exception e) {
+                            PanguCore.getLogger().error("Exception while invoking key message binding", e);
+                        }
+                    }, bindKeyMessage.side());
+
+                    PanguCore.getLogger().info("Registered KeyMessage Binder for method " + method.toGenericString());
                 });
     }
 
@@ -86,13 +118,13 @@ public interface KeyMessage {
          */
         @Override
         public Content onMessage(Content message, MessageContext ctx) {
-            Consumer<MessageContext> receiver = name2Receiver.get(message.key);
+            Consumer<MessageContext> receiver = (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).get(message.key);
             if (receiver != null) {
                 receiver.accept(ctx);
             } else {
-                PanguCore.getLogger().warn("Client is trying to send an unregistered packet");
+                PanguCore.getLogger().warn("Received an unregistered packet with key " + message.key);
             }
-            return message;
+            return null;
         }
     }
 
@@ -102,30 +134,30 @@ public interface KeyMessage {
     class Content implements IMessage {
         private String key;
 
+        /**
+         * No parameter constructor for message to message codec
+         */
+        public Content() {
+        }
+
         public Content(String key) {
             this.key = key;
         }
 
         /**
          * Convert from the supplied buffer into your specific message type
-         *
-         * @param buf
          */
         @Override
         public void fromBytes(ByteBuf buf) {
-            int length = buf.getInt(0);
-            key = buf.getCharSequence(1, length, StandardCharsets.UTF_8).toString();
+            key = ByteBufUtils.readUTF8String(buf);
         }
 
         /**
          * Deconstruct your message into the supplied byte buffer
-         *
-         * @param buf buffer
          */
         @Override
         public void toBytes(ByteBuf buf) {
-            buf.writeInt(key.getBytes(StandardCharsets.UTF_8).length);
-            buf.writeCharSequence(key, StandardCharsets.UTF_8);
+            ByteBufUtils.writeUTF8String(buf, key);
         }
     }
 }

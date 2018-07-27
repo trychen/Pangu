@@ -2,6 +2,9 @@ package cn.mccraft.pangu.core.client.input;
 
 import java.lang.annotation.*;
 
+/**
+ * Bind key pressed to method.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

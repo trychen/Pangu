@@ -1,7 +1,8 @@
 package cn.mccraft.pangu.core.network;
 
 /**
- * Created by trychen on 17/9/23.
+ * @since 1.0.0
+ * @author trychen
  */
 public class Network {
     private static int discriminatorID = -1;

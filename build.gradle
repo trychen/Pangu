@@ -1,7 +1,8 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url 'https://jitpack.io' }
+        maven { url "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -30,10 +31,6 @@ minecraft {
     replace "@MOD_VERSION@", mod_version
 }
 
-task ideaInfo {
-    println(project.sourceSets.main.allSource.srcDirs)
-}
-
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -48,18 +45,35 @@ processResources {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+dependencies {
+    embed ('com.github.Mouse0w0:FastReflection:1.0.1') {
+        exclude group: 'org.ow2.asm'
+    }
+}
+
 // Either Forge and Project required Java 8
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-// Adds FMLCorePlugin manifest
 jar {
+    // Adds FMLCorePlugin manifest
     manifest {
         attributes 'FMLCorePlugin': mod_core_plugin
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
+
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 // Adds deobfJar
@@ -67,8 +81,10 @@ jar {
 task deobfJar(type: Jar, dependsOn: 'jar') {
     from "build/classes/java/main"
     from "build/resources/main"
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     classifier "dev"
 }
+
 artifacts {
     archives deobfJar
 }
