@@ -27,11 +27,13 @@ public enum ToolTipRenderer {
 
     protected String text = "";
     protected int time;
+    protected int duration;
     protected ToolTipStyle style = ToolTipStyle.NONE;
+    protected boolean animated;
 
     @SubscribeEvent
-    public void render(RenderGameOverlayEvent.Post event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
+    public void render(RenderGameOverlayEvent.Pre event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.SUBTITLES) {
             if (time > 0) {
                 GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
                 if (gui == null) return;
@@ -48,7 +50,7 @@ public enum ToolTipRenderer {
                 int x = -textWidth / 2;
 
                 GlStateManager.pushMatrix();
-                GlStateManager.translate((float) (scaledWidth / 2), (float) (scaledHeight - 62), 0.0F);
+                GlStateManager.translate((float) (scaledWidth / 2), (float) (scaledHeight - getY()), 0.0F);
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
@@ -82,6 +84,16 @@ public enum ToolTipRenderer {
         }
     }
 
+    public int getY() {
+        if (animated)
+            if (time <= 30) {
+                return 62 - (30 - time) * 2;
+            } else if (duration - time <= 30){
+                return Math.min((duration - time) * 2, 67);
+            }
+        return 62;
+    }
+
     /**
      * Display ToolTip, will replace the previous one if exists.
      * ToolTip text width (from {@code FontRenderer.getStringWidth(String text)})
@@ -89,15 +101,11 @@ public enum ToolTipRenderer {
      * will be cut.
      */
     public void set(ToolTip toolTip) {
-        Message.actionBar(toolTip.getText());
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
-        time = 60;
-    }
-
-    @SubscribeEvent
-    public void render(ServerChatEvent event) {
-        PanguCore.getNetwork().sendTo(new ToolTip(event.getMessage(), ToolTipStyle.TRANSPARENT), event.getPlayer());
+        time = toolTip.getDuration();
+        duration = toolTip.getDuration();
+        animated = toolTip.isAnimated();
     }
 
     /**

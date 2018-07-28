@@ -8,6 +8,7 @@ public class ToolTip implements IMessage {
     private String text;
     private int duration;
     private ToolTipStyle style;
+    private boolean animated;
 
     public ToolTip() {
     }
@@ -17,16 +18,21 @@ public class ToolTip implements IMessage {
     }
 
     public ToolTip(String text, ToolTipStyle type) {
-        this(text, 60, type);
+        this(text, 200, type);
     }
     public ToolTip(String text, int duration) {
         this(text, duration, ToolTipStyle.NORMAL);
     }
 
     public ToolTip(String text, int duration, ToolTipStyle style) {
+        this(text, duration, style, false);
+    }
+
+    public ToolTip(String text, int duration, ToolTipStyle style, boolean animated) {
         this.text = text;
         this.duration = duration;
         this.style = style;
+        this.animated = animated;
     }
 
     public String getText() {
@@ -39,6 +45,26 @@ public class ToolTip implements IMessage {
 
     public int getDuration() {
         return duration;
+    }
+
+    public boolean isAnimated() {
+        return animated;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setStyle(ToolTipStyle style) {
+        this.style = style;
+    }
+
+    public void setAnimated(boolean animated) {
+        this.animated = animated;
     }
 
     @Override
