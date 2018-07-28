@@ -6,17 +6,52 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class ToolTip implements IMessage {
     private String text;
-    private ToolTipType type;
+    private int duration;
+    private ToolTipStyle style;
+
+    public ToolTip() {
+    }
+
+    public ToolTip(String text) {
+        this(text, ToolTipStyle.NORMAL);
+    }
+
+    public ToolTip(String text, ToolTipStyle type) {
+        this(text, 60, type);
+    }
+    public ToolTip(String text, int duration) {
+        this(text, duration, ToolTipStyle.NORMAL);
+    }
+
+    public ToolTip(String text, int duration, ToolTipStyle style) {
+        this.text = text;
+        this.duration = duration;
+        this.style = style;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public ToolTipStyle getStyle() {
+        return style;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
 
     @Override
     public void fromBytes(ByteBuf byteBuf) {
         text = ByteBufUtils.readUTF8String(byteBuf);
-        type = ToolTipType.valueOf(byteBuf.readByte());
+        duration = byteBuf.readInt();
+        style = ToolTipStyle.valueOf(byteBuf.readByte());
     }
 
     @Override
     public void toBytes(ByteBuf byteBuf) {
         ByteBufUtils.writeUTF8String(byteBuf, text);
-        byteBuf.writeByte(type.getId());
+        byteBuf.writeInt(duration);
+        byteBuf.writeByte(style.getId());
     }
 }

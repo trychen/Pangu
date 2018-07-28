@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ToolTipHandler implements IMessageHandler<ToolTip, ToolTip> {
     @Override
     public ToolTip onMessage(ToolTip toolTip, MessageContext messageContext) {
-
+        ToolTipRenderer.INSTANCE.set(toolTip);
         return null;
     }
 }

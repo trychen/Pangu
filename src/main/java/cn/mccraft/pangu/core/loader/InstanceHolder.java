@@ -57,10 +57,10 @@ public interface InstanceHolder {
             if (!isStatic) cachedInstance = object;
 
             // try to find instance in class
-            if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "instance");
-            if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "INSTANCE");
-            if (cachedInstance == null) cachedInstance = ReflectUtils.invokeMethod(loaderClass, "getInstance");
-            if (cachedInstance == null) cachedInstance = ReflectUtils.invokeMethod(loaderClass, "instance");
+            if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "instance", loaderClass);
+            if (cachedInstance == null) cachedInstance = ReflectUtils.getField(loaderClass, "INSTANCE", loaderClass);
+            if (cachedInstance == null) cachedInstance = ReflectUtils.invokeMethod(loaderClass, "getInstance", loaderClass);
+            if (cachedInstance == null) cachedInstance = ReflectUtils.invokeMethod(loaderClass, "instance", loaderClass);
             if (cachedInstance != null) loaderInstanceMap.put(loaderClass, cachedInstance);
         }
 

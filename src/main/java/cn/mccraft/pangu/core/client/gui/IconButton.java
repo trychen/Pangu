@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
-import static cn.mccraft.pangu.core.client.ClientProxy.PG_BUTTONS_TEXTURE;
+import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
 public class IconButton extends GuiButton {
     /**

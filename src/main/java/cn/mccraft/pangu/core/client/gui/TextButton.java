@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import static cn.mccraft.pangu.core.client.ClientProxy.PG_BUTTONS_TEXTURE;
+import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
 /**
  * An GuiButton with custom texture

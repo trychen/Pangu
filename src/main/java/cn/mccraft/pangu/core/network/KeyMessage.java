@@ -8,7 +8,10 @@ import cn.mccraft.pangu.core.loader.Load;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -115,12 +118,15 @@ public interface KeyMessage {
          */
         @Override
         public Content onMessage(Content message, MessageContext ctx) {
-            Consumer<MessageContext> receiver = (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).get(message.key);
-            if (receiver != null) {
-                receiver.accept(ctx);
-            } else {
-                PanguCore.getLogger().warn("Received an unregistered packet with key " + message.key);
-            }
+            IThreadListener threadListener = side.isServer() ? (WorldServer) ctx.getServerHandler().player.world : Minecraft.getMinecraft();
+            threadListener.addScheduledTask(() -> {
+                Consumer<MessageContext> receiver = (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).get(message.key);
+                if (receiver != null) {
+                    receiver.accept(ctx);
+                } else {
+                    PanguCore.getLogger().warn("Received an unregistered packet with key " + message.key);
+                }
+            });
             return null;
         }
     }

@@ -33,11 +33,11 @@ public class CommonProxy {
 
     public void construction(FMLConstructionEvent event) {
         AnnotationInjector.INSTANCE.startSolveAutoWireds();
-        AnnotationInjector.INSTANCE.startSolveInjectors();
         Proxy.INSTANCE.invoke(event, LoaderState.CONSTRUCTING, Side.SERVER);
     }
 
     public void preInit(FMLPreInitializationEvent event) {
+        AnnotationInjector.INSTANCE.startSolveInjectors();
         InstanceHolder.storeAllModInstance();
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);
     }

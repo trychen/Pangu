@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import static cn.mccraft.pangu.core.client.ClientProxy.PG_ICONS_TEXTURE;
+import static cn.mccraft.pangu.core.client.PGClient.PG_ICONS_TEXTURE;
 
 @DevOnly
 @SideOnly(Side.CLIENT)

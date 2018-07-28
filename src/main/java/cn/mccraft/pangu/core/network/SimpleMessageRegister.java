@@ -20,13 +20,16 @@ public interface SimpleMessageRegister {
                 RegSimpleMessage anno = clazz.getAnnotation(RegSimpleMessage.class);
 
                 // check class
-                if (!clazz.isAssignableFrom(IMessageHandler.class)) {
+                if (!IMessageHandler.class.isAssignableFrom(clazz)) {
                     PanguCore.getLogger().error("You can only use @RegSimpleMessage to an IMessageHandler class, but given " + clazz.toGenericString(), new IllegalArgumentException());
                     return;
                 }
 
+                Object mod = ModFinder.getModContainer(clazz).get().getMod();
+
                 // finding SimpleNetworkWrapper from mod
-                SimpleNetworkWrapper channel = ReflectUtils.getField(ModFinder.getModContainer(clazz).get().getMod(), "network", SimpleNetworkWrapper.class);
+                SimpleNetworkWrapper channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
+
                 if (channel == null) {
                     PanguCore.getLogger().error("Unable to find a SimpleNetworkWrapper for mod's class " + clazz.toGenericString(), new NoSuchFieldException());
                     return;
