@@ -7,7 +7,8 @@ import cn.mccraft.pangu.core.loader.buildin.RecipeRegister;
 import java.lang.annotation.*;
 
 /**
- * You can use this annotation in an IRecipeProvider or IRecipe field.
+ * Register {@code IRecipe} or invoke {@code IRecipeProvider#createRecipes()} automatically
+ * You can use this annotation in an {@code IRecipeProvider} or {@code IRecipe} field.
  *
  * @see RecipeRegister
  * @since 1.0.0.2

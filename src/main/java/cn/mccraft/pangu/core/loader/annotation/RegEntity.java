@@ -3,7 +3,12 @@ package cn.mccraft.pangu.core.loader.annotation;
 import java.lang.annotation.*;
 
 /**
- * You can only use this anno in a {@link net.minecraftforge.fml.common.registry.EntityEntry} field.
+ * Register {@code EntityEntry} automatically.
+ * You can only use this anno in a {@code EntityEntry} field.
+ *
+ * @see cn.mccraft.pangu.core.loader.buildin.EntityRegister
+ * @since 1.0.2
+ * @author trychen
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

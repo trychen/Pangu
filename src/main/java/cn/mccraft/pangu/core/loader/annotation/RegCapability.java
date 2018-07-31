@@ -7,8 +7,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import java.lang.annotation.*;
 
 /**
- * @author trychen
- * @since 1.0.4
+ * Register {@code Capability} automatically.
+ *
+ * @author Lasm_Gratel
+ * @since 1.0.3
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

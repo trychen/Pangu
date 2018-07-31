@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader;
 
+import cn.mccraft.pangu.core.util.ReflectUtils;
 import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
@@ -7,7 +8,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -51,29 +51,24 @@ public class AnnotationStream<T extends Annotation> {
     /**
      * Returns a sequential {@code Stream} with classes from element's declaring class.
      */
-    public Stream<? extends Class<?>> classStream() {
+    public Stream<Class<?>> classStream() {
         return asmDatas
                 .stream()
                 // get class name
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(className -> {
-                    try {
-                        return Class.forName(className);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                // clean class could get instance
-                .filter(Objects::nonNull);
+                .map(ReflectUtils::forName)
+                .filter(Objects::nonNull)
+                .map(it -> it);
+        // TODO: Unnecessary map
     }
 
     /**
      * Returns a sequential {@code Stream} with classes annotated
      */
     @SuppressWarnings("unchecked")
-    public Stream<? extends Class<?>> typeStream() {
+    public Stream<Class<?>> typeStream() {
         return asmDatas
                 .stream()
                 // filter that clean non-class object
@@ -82,15 +77,10 @@ public class AnnotationStream<T extends Annotation> {
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(className -> {
-                    try {
-                        return Class.forName(className);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                // clean class could get instance
-                .filter(Objects::nonNull);
+                .map(ReflectUtils::forName)
+                .filter(Objects::nonNull)
+                .map(it -> it);
+        // TODO: Unnecessary map
     }
 
     /**

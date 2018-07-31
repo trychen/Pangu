@@ -9,8 +9,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * auto load item with base info
+ * Register {@code Item} automatically.
+ * You can only use this anno in a {@code Item} field.
  *
+ * @see ItemRegister
  * @since 1.0.0.2
  */
 @Retention(RetentionPolicy.RUNTIME)
