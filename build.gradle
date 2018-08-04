@@ -58,6 +58,8 @@ dependencies {
     embed ('com.github.Mouse0w0:FastReflection:1.0.1') {
         exclude group: 'org.ow2.asm'
     }
+
+    testCompile 'junit:junit:4.12'
 }
 
 // Either Forge and Project required Java 8

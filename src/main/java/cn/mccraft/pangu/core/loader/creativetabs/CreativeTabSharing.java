@@ -8,6 +8,7 @@ import cn.mccraft.pangu.core.loader.InstanceHolder;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,26 +35,32 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
     @Override
     public void registerField(Field field, Object o, SharedCreativeTab annotation, String domain) {
         if (isCreateTabSetable(field))
-            setCreativeTab(field, annotation.value());
+            setCreativeTab(field, annotation.value(), annotation.asTabIcon());
     }
 
     @Override
     public void registerClass(Class clazz, SharedCreativeTab annotation, String domain) {
         Arrays.stream(clazz.getDeclaredFields())
+                // clean special annotated field
+                .filter(field -> !field.isAnnotationPresent(SharedCreativeTab.class))
+                // clean unsetable field
                 .filter(this::isCreateTabSetable)
-                .forEach(field -> setCreativeTab(field, annotation.value()));
+                .forEach(field -> setCreativeTab(field, annotation.value(), annotation.asTabIcon()));
     }
 
     /**
      * setCreativeTab of field using {@link InstanceHolder#getInstance(Object)} and {@link CreativeTabSharing#getTab(String)}
-     * @param field
-     * @param tabKey
+     * @param field the field to set value
+     * @param tabKey the unlocalized name of the group
+     * @param setIcon If set tab icon for CustomIconCreativeTab
      */
-    public void setCreativeTab(Field field, String tabKey) {
+    public void setCreativeTab(@Nonnull Field field, @Nonnull String tabKey, boolean setIcon) {
+        CreativeTabs tab = getTab(tabKey);
+
         if (CreativeTabs.class.isAssignableFrom(field.getType())) {
             // for CreativeTabs field
             try {
-                InstanceHolder.setObject(field, getTab(tabKey));
+                InstanceHolder.setObject(field, tab);
             } catch (IllegalAccessException e) {
                 PanguCore.getLogger().error("Unable to find any instance to set value of " + field.getName() + " from " + field.getDeclaringClass(), e);
             }
@@ -67,16 +74,24 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
             return;
         }
         if (object instanceof Item) {
-            ((Item) object).setCreativeTab(getTab(tabKey));
+            ((Item) object).setCreativeTab(tab);
+
+            if (setIcon && tab instanceof CustomIconCreativeTab) {
+                ((CustomIconCreativeTab) tab).setTabIconItemIfNull(new ItemStack((Item) object));
+            }
         } else if (object instanceof Block) {
-            ((Block) object).setCreativeTab(getTab(tabKey));
+            ((Block) object).setCreativeTab(tab);
+
+            if (setIcon && tab instanceof CustomIconCreativeTab) {
+                ((CustomIconCreativeTab) tab).setTabIconItemIfNull(new ItemStack((Block) object));
+            }
         }
     }
 
     /**
      * @return if the field is a block or a item
      */
-    public boolean isCreateTabSetable(Field field) {
+    public boolean isCreateTabSetable(@Nonnull Field field) {
         return CreativeTabs.class.isAssignableFrom(field.getType())
                 || Item.class.isAssignableFrom(field.getType())
                 || Block.class.isAssignableFrom(field.getType());
@@ -86,7 +101,7 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
      * get or create {@link CustomIconCreativeTab}
      */
     @Nonnull
-    public CreativeTabs getTab(String key) {
+    public CreativeTabs getTab(@Nonnull String key) {
         // Reflesh creative tab.
         int currentLength = CreativeTabs.CREATIVE_TAB_ARRAY.length;
         if (creativeTabsLength != currentLength) {

@@ -20,7 +20,7 @@ class CustomIconCreativeTab extends CreativeTabs {
         tabIconItem = new ItemStack(Items.AIR);
     }
 
-    public CustomIconCreativeTab(String label, ItemStack tabIconItem) {
+    public CustomIconCreativeTab(@Nonnull String label, @Nonnull ItemStack tabIconItem) {
         super(label);
         setTabIconItem(tabIconItem);
     }

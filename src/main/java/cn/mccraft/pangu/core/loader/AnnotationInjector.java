@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.discovery.ModDiscoverer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -100,7 +102,7 @@ public enum AnnotationInjector {
                 });
     }
 
-    public void startSolveInjectorMethod(Method method, Object instance) {
+    public void startSolveInjectorMethod(@Nonnull Method method, @Nullable Object instance) {
         if (!Modifier.isStatic(method.getModifiers()) && instance == null) return;
 
         try {
@@ -137,6 +139,9 @@ public enum AnnotationInjector {
     public ModDiscoverer getDiscoverer() {
         if (discoverer == null) {
             discoverer = ReflectUtils.getField(Loader.class, Loader.instance(), "discoverer", ModDiscoverer.class, true);
+
+            if (discoverer == null)
+                throw new RuntimeException("Unable to get ModDiscoverer to hook annotation, please check SecurityManager to make sure that reflection is enabled");
         }
         return discoverer;
     }

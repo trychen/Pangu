@@ -2,31 +2,32 @@ package cn.mccraft.pangu.core.util;
 
 import cn.mccraft.pangu.core.PanguCore;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
- * 反射工具类。
- * 如方法或变量不存在，该类下的方法都不会抛出异常。
+ * Reflection Utils without any exception.
  *
  * @since 1.0.0.2
+ * @author trychen
  */
 public interface ReflectUtils {
     /**
-     * 设置变量
+     * Set field value
      *
-     * @param ownerClass 要修改的类
-     * @param owner 要修改的对象，如为静态变量时可空
-     * @param name 变量名
-     * @param object 要修改成的对象
-     * @param breakPrivate 是否反射修改为变量可见
+     * @param ownerClass declaring class
+     * @param owner the object whose field should be modified
+     * @param name the name of field
+     * @param object value the new value for the field of {@code obj} being modified
+     * @param breakPrivate whether set field accessible
+     *
+     * @return true if succeed
      */
-    static void setField(Class ownerClass, Object owner, String name, Object object, boolean breakPrivate){
+    static boolean setField(Class ownerClass, Object owner, String name, Object object, boolean breakPrivate) {
         try {
             // resolve break private
             Field field;
@@ -34,13 +35,14 @@ public interface ReflectUtils {
                 field = breakPrivate ? ownerClass.getDeclaredField(name) : ownerClass.getField(name);
             } catch (NoSuchFieldException e){
                 // check no field
-                return;
+                return false;
             }
 
             // break access
             if (!field.isAccessible()) field.setAccessible(true);
 
             field.set(owner, object);
+            return true;
         } catch (Exception e) {
             PanguCore.getLogger().error(
                     String.format(
@@ -50,22 +52,31 @@ public interface ReflectUtils {
                             object,
                             breakPrivate
                     ), e);
+            return false;
         }
     }
 
+    static boolean setField(Object owner, String name, Object obj) {
+        return setField(owner.getClass(), owner, name, obj, false);
+    }
+
+    static boolean setField(Class clazz, String name, Object obj) {
+        return setField(clazz, null, name, obj, false);
+    }
+
     /**
-     * 获取变量的值
+     * Get field value
      *
-     * @param ownerClass 要修改的类
-     * @param owner 要修改的对象，如为静态变量时可空
-     * @param name 变量名
-     * @param typeCheck 返回类型转换
-     * @param breakPrivate 是否反射修改为变量可见
-     * @param <T>
-     * @return
+     * @param ownerClass declaring class
+     * @param owner the object whose field should be modified
+     * @param name the name of field
+     * @param typeCheck check field type
+     * @param breakPrivate whether set field accessible
+     *
+     * @return null if failed
      */
     @Nullable
-    static <T> T getField(Class ownerClass, Object owner, String name, Class<T> typeCheck, boolean breakPrivate) {
+    static <T> T getField(@Nonnull Class ownerClass, Object owner, @Nonnull String name, Class<T> typeCheck, boolean breakPrivate) {
         try {
             // resolve break private
             Field field;
@@ -82,36 +93,33 @@ public interface ReflectUtils {
             if (!field.isAccessible()) field.setAccessible(true);
 
             Object object = field.get(owner);
-            return (T) object;
 
+            //noinspection unchecked
+            return (T) object;
         } catch (Exception e) {
             PanguCore.getLogger().error(
                     String.format(
                             "Unable to get field in %s#%s typed %s, breakPrivate?%b",
                             ownerClass.getName(),
                             name,
-                            typeCheck.getName(),
+                            typeCheck,
                             breakPrivate
                     ), e);
         }
         return null;
     }
-
     @Nullable
     static <T> T getField(Object owner, String name, Class<T> typeCheck) {
         return getField(owner.getClass(), owner, name, typeCheck, false);
     }
-
     @Nullable
     static <T> T getField(Class ownerClass, String name, Class<T> typeCheck) {
         return getField(ownerClass, null, name, typeCheck, false);
     }
-
     @Nullable
     static Object getField(Object owner, String name) {
         return getField(owner.getClass(), owner, name, null, false);
     }
-
     @Nullable
     static Object getField(Class ownerClass, String name) {
         return getField(ownerClass, null, name, null, false);
@@ -126,17 +134,16 @@ public interface ReflectUtils {
      * @param returnTypeCheck the type of method's return, null for void
      * @param breakPrivate if set accessible to true
      * @param parameters the parameters to invoke
-     * @param <T>
-     * @return
      */
     @Nullable
     static <T> T invokeMethod(Class ownerClass, Object owner, String name, Class<T> returnTypeCheck, boolean breakPrivate, Object... parameters) {
         try {
-            Class[] parameterTypes = toTypes(parameters);
+            Class<?>[] parameterTypes = toTypes(parameters);
 
             // resolve break private
             Method method;
             try {
+                //noinspection unchecked
                 method = breakPrivate ? ownerClass.getDeclaredMethod(name, parameterTypes) : ownerClass.getMethod(name, parameterTypes);
             } catch (NoSuchMethodException e){
                 return null;
@@ -146,9 +153,10 @@ public interface ReflectUtils {
             if (returnTypeCheck != null && !returnTypeCheck.isAssignableFrom(method.getReturnType())) return null;
 
             // break access
-            if (!method.isAccessible()) method.setAccessible(true);
+            if (breakPrivate && !method.isAccessible()) method.setAccessible(true);
 
             Object object = method.invoke(owner, parameters);
+            //noinspection unchecked
             return (T) object;
         } catch (Exception e) {
             PanguCore.getLogger().error(
@@ -163,9 +171,6 @@ public interface ReflectUtils {
         return null;
     }
 
-    /*
-            invoke method with one less arg
-     */
     static <T> T invokeMethod(Annotation anno, String name, Class<T> returnTypeCheck, boolean breakPrivate, Object... parameters) {
         return invokeMethod(anno.annotationType(), anno, name,returnTypeCheck, breakPrivate, parameters);
     }
@@ -176,9 +181,6 @@ public interface ReflectUtils {
         return invokeMethod(owner.getClass(), owner, name,returnTypeCheck, breakPrivate, parameters);
     }
 
-    /*
-            invoke method with two less args
-     */
     static <T> T invokeMethod(Class ownerClass, String name, Class<T> returnTypeCheck) {
         return invokeMethod(ownerClass, null, name,returnTypeCheck, false);
     }
@@ -189,9 +191,6 @@ public interface ReflectUtils {
         return invokeMethod(anno.annotationType(), anno, name, returnTypeCheck, false);
     }
 
-    /*
-            invoke method with two args
-     */
     static <T> T invokeMethod(Object owner, String name) {
         return invokeMethod(owner, name, null);
     }
@@ -202,58 +201,55 @@ public interface ReflectUtils {
         return invokeMethod(anno.annotationType(), anno, name, null, false);
     }
 
-
     /**
      * transforms parameters array to class array
      */
-    static Class[] toTypes(Object... parameters){
-        return Arrays.stream(parameters).map(parameter -> parameter.getClass()).collect(Collectors.toList()).toArray(new Class[0]);
+    static Class<?>[] toTypes(Object... parameters){
+        return Arrays.stream(parameters).map(Object::getClass).toArray(Class[]::new);
     }
 
     /**
-     * 无异常的 {@link Class#forName(String)}
+     * Get a instance of class by class name
      *
-     * @return 类不存在时返回 null
+     * @return null if failed
      */
     static Class<?> forName(String name){
         try {
             return Class.forName(name);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            PanguCore.getLogger().error(e);
         }
         return null;
     }
 
     /**
-     * 无异常的 {@link Class#newInstance()}
+     * Creates a new instance of the class
      *
-     * @param name 类名
-     * @return 异常时返回 null
+     * @param name the name of the class
+     * @return null if failed
      */
-    static Object forInstance(String name){
+    @Nullable
+    static Object forInstance(@Nonnull String name){
         try {
-            return forName(name).newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+            //noinspection ConstantConditions
+            return Class.forName(name).newInstance();
+        } catch (Exception e) {
+            PanguCore.getLogger().error(e);
         }
         return null;
     }
 
     /**
-     * 无异常的 {@link Class#newInstance()}
+     * Creates a new instance of the class
      *
-     * @param clazz 创建的对象的类
-     * @return 异常时返回 null
+     * @return null if failed
      */
-    static <T> T forInstance(Class<T> clazz){
+    @Nullable
+    static <T> T forInstance(@Nonnull Class<T> clazz){
         try {
             return clazz.newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            PanguCore.getLogger().error(e);
         }
         return null;
     }
