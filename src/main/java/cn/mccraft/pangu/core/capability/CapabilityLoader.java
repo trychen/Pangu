@@ -6,6 +6,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 public class CapabilityLoader {
     @Load
     public static void registerCapabilities() {
-        CapabilityManager.INSTANCE.register(FoodStats.class, new CapabilityFood.Storage(), CapabilityFood.Implementation.class);
+        CapabilityManager.INSTANCE.register(FoodStats.class, new CapabilityFood.Storage(), CapabilityFood.Implementation::new);
     }
 }

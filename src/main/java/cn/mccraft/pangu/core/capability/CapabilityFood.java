@@ -148,8 +148,8 @@ public interface CapabilityFood {
         }
 
         @Override
-        public FoodStats setUnlocalizedName(String unlocalizedName) {
-            this.unlocalizedName = unlocalizedName;
+        public FoodStats setTranslationKey(String translationKey) {
+            this.unlocalizedName = translationKey;
             return this;
         }
 
@@ -234,7 +234,7 @@ public interface CapabilityFood {
                     .setAction(EnumAction.values()[tagCompound.getInteger("action")])
                     .setPotion(PotionEffect.readCustomPotionEffectFromNBT(tagCompound.getCompoundTag("potion")))
                     .setPotionEffectProbability(tagCompound.getFloat("potionEffectProbability"))
-                    .setUnlocalizedName(tagCompound.getString("unlocalizedName"));
+                    .setTranslationKey(tagCompound.getString("unlocalizedName"));
             if (tagCompound.getBoolean("wolfFood"))
                 instance.setWolfFood();
             if (tagCompound.getBoolean("alwaysEdible"))

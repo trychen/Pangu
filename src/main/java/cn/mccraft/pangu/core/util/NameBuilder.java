@@ -1,6 +1,9 @@
 package cn.mccraft.pangu.core.util;
 
+import mcp.MethodsReturnNonnullByDefault;
+
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +17,8 @@ import java.util.regex.Pattern;
  *
  * @since 1.0.0.3
  */
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public interface NameBuilder {
     /**
      * Building the registry name, liking [hello, world] to hello_world
@@ -32,12 +37,6 @@ public interface NameBuilder {
             stringBuilder.append(params[i].toLowerCase());
         }
 
-//        unnecessary copy
-//        String[] copied = Arrays.copyOfRange(params, 1, params.length);
-//        for (String s : copied) {
-//            stringBuilder.append('_');
-//            stringBuilder.append(s.toLowerCase());
-//        }
         return stringBuilder.toString();
     }
 
@@ -48,22 +47,31 @@ public interface NameBuilder {
      *
      * @param params all parts of name
      * @return built name
+     *
+     * @deprecated Using {@code buildTranslationKey} instead
      */
     @Nonnull
+    @Deprecated
     static String buildUnlocalizedName(String... params) {
+        return buildTranslationKey(params);
+    }
+
+    /**
+     * Building the translation key, liking [hello, world] to helloWorld
+     *
+     * 将字符串数组转换成小驼峰写法的字符串，例如：[hello, world] 转换成 helloWorld
+     *
+     * @param params all parts of name
+     * @return built name
+     * @since 1.1.0
+     */
+    static String buildTranslationKey(String... params) {
         StringBuilder stringBuilder = new StringBuilder(params[0].toLowerCase());
 
         for (int i = 1; i < params.length; i++) {
             stringBuilder.append(Character.toUpperCase(params[i].charAt(0)));
             stringBuilder.append(params[i].substring(1).toLowerCase());
         }
-
-//        unnecessary copy
-//        String[] copied = Arrays.copyOfRange(params, 1, params.length);
-//        for (String s : copied) {
-//            stringBuilder.append(Character.toUpperCase(s.charAt(0)));
-//            stringBuilder.append(s.substring(1));
-//        }
 
         return stringBuilder.toString();
     }
@@ -118,6 +126,5 @@ public interface NameBuilder {
             return underline.substring(1);
         }
         return underline;
-
     }
 }

@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 public class SoundRegister extends StoredElementRegister<SoundEvent, RegSound> {
     @Override
     public void registerField(Field field, SoundEvent soundEvent, RegSound regSound, String domain) {
-        String location = regSound.value();
-        soundEvent.setRegistryName(location.isEmpty() ? soundEvent.getSoundName() : PanguResLoc.of(domain, location));
+        String location = regSound.value().isEmpty() ? field.getName() : regSound.value();
+        soundEvent.setRegistryName(PanguResLoc.of(domain, location));
         super.registerField(field, soundEvent, regSound, domain);
     }
 

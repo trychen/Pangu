@@ -40,7 +40,7 @@ public class BlockRegister extends StoredElementRegister<Block, RegBlock> {
         // set registry name
         block.setRegistryName(PanguResLoc.of(domain, NameBuilder.buildRegistryName(name)))
                 // set unlocalized name
-                .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name));
+                .setTranslationKey(NameBuilder.buildTranslationKey(name));
 
         super.registerField(field, block, regBlock, domain);
     }

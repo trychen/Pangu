@@ -65,7 +65,7 @@ public class PGItemNewSlab extends ItemBlock {
                 return true;
         }
 
-        return isSingle(iblockstate) ? true : super.canPlaceBlockOnSide(worldIn, pos, side, player, stack);
+        return isSingle(iblockstate) || super.canPlaceBlockOnSide(worldIn, pos, side, player, stack);
     }
 
     private boolean tryPlace(EntityPlayer player, ItemStack stack, World worldIn, BlockPos pos) {

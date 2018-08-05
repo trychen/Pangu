@@ -37,7 +37,7 @@ public class ItemRegister extends StoredElementRegister<Item, RegItem> {
         // set registry name
         item.setRegistryName(PanguResLoc.of(domain, NameBuilder.buildRegistryName(name)))
                 // set unlocalized name
-                .setUnlocalizedName(NameBuilder.buildUnlocalizedName(name));
+                .setTranslationKey(NameBuilder.buildTranslationKey(name));
 
         super.registerField(field, item, regItem, domain);
     }

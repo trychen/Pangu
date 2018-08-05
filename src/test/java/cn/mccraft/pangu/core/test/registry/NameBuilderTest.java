@@ -18,12 +18,12 @@ public class NameBuilderTest {
 
     @Test
     public void buildUnlocalizedName() {
-        assertEquals("hello", NameBuilder.buildUnlocalizedName("hello"));
-        assertEquals("helloWorld", NameBuilder.buildUnlocalizedName("hello", "world"));
-        assertEquals("helloMinecraftWorld", NameBuilder.buildUnlocalizedName("hello", "minecraft", "world"));
-        assertEquals("helloWorld", NameBuilder.buildUnlocalizedName("hello", "WORLD"));
-        assertEquals("helloWorld", NameBuilder.buildUnlocalizedName("Hello", "World"));
-        assertEquals("a", NameBuilder.buildUnlocalizedName("a"));
+        assertEquals("hello", NameBuilder.buildTranslationKey("hello"));
+        assertEquals("helloWorld", NameBuilder.buildTranslationKey("hello", "world"));
+        assertEquals("helloMinecraftWorld", NameBuilder.buildTranslationKey("hello", "minecraft", "world"));
+        assertEquals("helloWorld", NameBuilder.buildTranslationKey("hello", "WORLD"));
+        assertEquals("helloWorld", NameBuilder.buildTranslationKey("Hello", "World"));
+        assertEquals("a", NameBuilder.buildTranslationKey("a"));
     }
 
     @Test

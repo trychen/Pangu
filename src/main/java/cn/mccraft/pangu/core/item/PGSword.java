@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.item;
 
 import cn.mccraft.pangu.core.util.LoreHelper;
+import com.google.common.collect.Lists;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -38,7 +39,7 @@ public class PGSword extends ItemSword {
     }
 
     public PGSword addPotionEffectHitEntity(PotionEffect... potionEffects) {
-        if (potionEffectsHitEntity == null) potionEffectsHitEntity = Arrays.asList(potionEffects);
+        if (potionEffectsHitEntity == null) potionEffectsHitEntity = Lists.newArrayList(potionEffects);
         else Collections.addAll(potionEffectsHitEntity, potionEffects);
         return this;
     }
@@ -111,6 +112,6 @@ public class PGSword extends ItemSword {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if (hasI18nLore()) LoreHelper.shiftLoreWithI18n(tooltip, getUnlocalizedName());
+        if (hasI18nLore()) LoreHelper.shiftLoreWithI18n(tooltip, getTranslationKey());
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -174,14 +175,12 @@ public class MultiBlockChecker {
             return this.check(state.getBlock(), state.getBlock().getMetaFromState(state));
         }
 
-        public boolean check(Block block, int data) {
+        public boolean check(@Nullable Block block, int data) {
             if (block == null) return false;
 
             if (!block.equals(this.block)) return false;
 
-            if (this.data != -1 && data != this.data) return false;
-
-            return true;
+            return this.data == -1 || data == this.data;
         }
 
         public Rule copy() {
