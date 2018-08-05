@@ -1,13 +1,15 @@
 package cn.mccraft.pangu.core.util.entity;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
- * Created by trychen on 17/9/30.
+ * @since 1.0.1
+ * @author trychen
  */
 public class AIUtils {
 
@@ -44,7 +46,7 @@ public class AIUtils {
 
                 // If non solid block is in the way then proceed to continue
                 // tracing
-                if (hitBlock != null && !hitBlock.getMaterial().isSolid() && MathHelper.absMax(
+                if (hitBlock.getBlock() != Blocks.AIR && !hitBlock.getMaterial().isSolid() && MathHelper.absMax(
                         MathHelper.absMax(traceStart.x - traceEnd.x, traceStart.y - traceEnd.y),
                         traceStart.z - traceEnd.z) > 1) {
                     // Start at new position and continue

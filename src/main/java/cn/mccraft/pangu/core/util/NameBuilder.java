@@ -25,12 +25,19 @@ public interface NameBuilder {
      */
     @Nonnull
     static String buildRegistryName(String... params) {
-        StringBuilder stringBuilder = new StringBuilder(params[0]);
-        String[] copied = Arrays.copyOfRange(params, 1, params.length);
-        for (String s : copied) {
+        StringBuilder stringBuilder = new StringBuilder(params[0].toLowerCase());
+
+        for (int i = 1; i < params.length; i++) {
             stringBuilder.append('_');
-            stringBuilder.append(s);
+            stringBuilder.append(params[i].toLowerCase());
         }
+
+//        unnecessary copy
+//        String[] copied = Arrays.copyOfRange(params, 1, params.length);
+//        for (String s : copied) {
+//            stringBuilder.append('_');
+//            stringBuilder.append(s.toLowerCase());
+//        }
         return stringBuilder.toString();
     }
 
@@ -44,12 +51,20 @@ public interface NameBuilder {
      */
     @Nonnull
     static String buildUnlocalizedName(String... params) {
-        StringBuilder stringBuilder = new StringBuilder(params[0]);
-        String[] copied = Arrays.copyOfRange(params, 1, params.length);
-        for (String s : copied) {
-            stringBuilder.append(Character.toUpperCase(s.charAt(0)));
-            stringBuilder.append(s.substring(1));
+        StringBuilder stringBuilder = new StringBuilder(params[0].toLowerCase());
+
+        for (int i = 1; i < params.length; i++) {
+            stringBuilder.append(Character.toUpperCase(params[i].charAt(0)));
+            stringBuilder.append(params[i].substring(1).toLowerCase());
         }
+
+//        unnecessary copy
+//        String[] copied = Arrays.copyOfRange(params, 1, params.length);
+//        for (String s : copied) {
+//            stringBuilder.append(Character.toUpperCase(s.charAt(0)));
+//            stringBuilder.append(s.substring(1));
+//        }
+
         return stringBuilder.toString();
     }
 
@@ -98,7 +113,11 @@ public interface NameBuilder {
             matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
         }
         matcher.appendTail(sb);
-        return sb.toString();
+        String underline = sb.toString();
+        if (underline.charAt(0) == '_') {
+            return underline.substring(1);
+        }
+        return underline;
 
     }
 }

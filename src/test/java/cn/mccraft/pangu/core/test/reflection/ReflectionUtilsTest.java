@@ -33,7 +33,28 @@ public class ReflectionUtilsTest {
 
         assertNotNull(instance);
 
-        assertNull(ReflectUtils.getField(instance, "hello"));
-        assertNotNull(ReflectUtils.getField(instance, "hello"));
+        assertNull(ReflectUtils.getField(SimpleParent.class, instance, "hello", null, false));
+        assertEquals("Hello~", ReflectUtils.getField(SimpleParent.class, instance, "hello", null, true));
+
+        assertEquals("HelloWorld", ReflectUtils.invokeMethod(instance, "sayHello"));
+        assertNull(ReflectUtils.invokeMethod(instance, "sayPrivateHello"));
+        assertEquals("HelloPrivate", ReflectUtils.invokeMethod(instance.getClass(), instance, "sayPrivateHello", null, true));
+    }
+
+    @Test
+    public void testFieldSet() {
+        SimpleChild instance = ReflectUtils.forInstance(SimpleChild.class);
+
+        assertNotNull(instance);
+
+        assertEquals(1, ReflectUtils.getField(instance, "field"));
+        assertEquals(Integer.valueOf(-1), ReflectUtils.getField(instance.getClass(), instance, "privateField", int.class, true));
+
+        assertTrue("Unable to set value", ReflectUtils.setField(instance, "field", 2));
+        assertEquals(2, ReflectUtils.getField(instance, "field"));
+        
+        assertTrue("Unable to set value for private field", ReflectUtils.setField(instance.getClass(), instance, "privateField", -2, true));
+        assertEquals(Integer.valueOf(-2), ReflectUtils.getField(instance.getClass(), instance, "privateField", int.class, true));
+
     }
 }
