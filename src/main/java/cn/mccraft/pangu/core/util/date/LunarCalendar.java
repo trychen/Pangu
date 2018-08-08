@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.util.date;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +12,17 @@ import java.util.Date;
  */
 @SuppressWarnings("unused")
 public final class LunarCalendar {
-    public static final LunarCalendar INSTANCE = new LunarCalendar(Calendar.getInstance());
+    private static LunarCalendar instance;
+
+    public static LunarCalendar getInstance() {
+        if (instance == null) {
+            instance = new LunarCalendar(Calendar.getInstance());
+        }
+        return instance;
+    }
+    public static LunarCalendar getInstance(int year, int month, int day) {
+        return new LunarCalendar(new Calendar.Builder().setDate(year, month, day).build());
+    }
 
     private int year;// 农历年
     private int month;// 农历月
@@ -24,16 +33,16 @@ public final class LunarCalendar {
     /**
      * 中文月名称
      */
-    final static String chineseNumber[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二" };
+    public final static String chineseNumber[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二" };
     /**
      * 中文日期格式
      */
-    static SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+    public final static SimpleDateFormat chineseDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 
     /**
      * 农历数据， 1901 ~ 2100 年之间正确
      */
-    final static long[] lunarInfo = new long[] { 0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
+    public final static long[] lunarInfo = new long[] { 0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
             0x056a0, 0x09ad0, 0x055d2, 0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0,
             0x14977, 0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970, 0x06566,
             0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950, 0x0d4a0, 0x1d8a6, 0x0b550,
@@ -81,10 +90,11 @@ public final class LunarCalendar {
             return 30;
     }
 
+    public static final String[] animals = new String[] { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
+
     // ====== 传回农历 y年的生肖
     public String animalsYear() {
-        final String[] Animals = new String[] { "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪" };
-        return Animals[(year - 4) % 12];
+        return animals[(year - 4) % 12];
     }
 
     // ====== 传入 月日的offset 传回干支, 0=甲子
@@ -125,15 +135,12 @@ public final class LunarCalendar {
     /**
      * 使用指定日历日期构造一个农历日历
      */
-    private LunarCalendar(Calendar cal) {
+    public LunarCalendar(Calendar cal) {
         @SuppressWarnings("unused")
         int yearCyl, monCyl, dayCyl;
         int leapMonth = 0;
-        Date baseDate = null;
-        try {
-            baseDate = chineseDateFormat.parse("1900年1月31日");
-        } catch (ParseException e) {
-        }
+
+        Date baseDate = new Calendar.Builder().setDate(1900, 0, 31).build().getTime();
 
         // 求出和1900年1月31日相差的天数
         int offset = (int) ((cal.getTime().getTime() - baseDate.getTime()) / 86400000L);

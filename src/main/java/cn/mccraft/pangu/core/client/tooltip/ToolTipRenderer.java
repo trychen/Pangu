@@ -1,22 +1,19 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
-import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
-import cn.mccraft.pangu.core.util.debug.Message;
+import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
@@ -60,15 +57,15 @@ public enum ToolTipRenderer {
                     textureManager.bindTexture(PG_TOOLTIPS_TEXTURE);
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-                    drawTexturedModalRect(
-                            x - extendWidth / 2, 0,
+                    RenderUtils.drawTexturedModalRect(
+                            x - extendWidth / 2F, 0,
                             style.getX(), style.getY(),
-                            width / 2, style.getHeight());
+                            width / 2F, style.getHeight());
 
-                    drawTexturedModalRect(
-                            x + textWidth / 2, 0,
-                            style.getWidth() - width / 2, style.getY(),
-                            width / 2, style.getHeight());
+                    RenderUtils.drawTexturedModalRect(
+                            x + textWidth / 2F, 0,
+                            style.getWidth() - width / 2F, style.getY(),
+                            width / 2F, style.getHeight());
                 }
 
                 GlStateManager.disableBlend();
@@ -111,13 +108,16 @@ public enum ToolTipRenderer {
     /**
      * Cut string into a displayable size
      */
-    public String fixStringWidth(String text) {
+    @Nonnull
+    public String fixStringWidth(@Nonnull String text) {
         return fixStringWidth(text, 1);
     }
+
     /**
      * Cut string into a displayable size
      */
-    public String fixStringWidth(String text, int level) {
+    @Nonnull
+    public String fixStringWidth(@Nonnull String text, int level) {
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
         if (fontRenderer.getStringWidth(text) > 387) {
             if (text.length() > 129)
@@ -126,20 +126,5 @@ public enum ToolTipRenderer {
                 return fixStringWidth(text.substring(0, text.length() - level), level + 1);
         }
         return text;
-    }
-
-    public static void drawTexturedModalRect(int para1, int para2, int para3, int para4, int para5, int para6) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        int zLevel = -1;
-
-        buffer.pos((double) para1, (double) (para2 + para6), (double) zLevel).tex((double) ((float) (para3) * 0.00390625F), (double) ((float) (para4 + para6) * 0.00390625F)).endVertex();
-        buffer.pos((double) (para1 + para5), (double) (para2 + para6), (double) zLevel).tex((double) ((float) (para3 + para5) * 0.00390625F), (double) ((float) (para4 + para6) * 0.00390625F)).endVertex();
-        buffer.pos((double) (para1 + para5), (double) para2, (double) zLevel).tex((double) ((float) (para3 + para5) * 0.00390625F), (double) ((float) (para4) * 0.00390625F)).endVertex();
-        buffer.pos((double) para1, (double) para2, (double) zLevel).tex((double) ((float) (para3) * 0.00390625F), (double) ((float) (para4) * 0.00390625F)).endVertex();
-
-        tessellator.draw();
     }
 }

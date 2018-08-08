@@ -26,4 +26,9 @@ public @interface SharedCreativeTab {
      * the name of the creative tabs
      */
     String value();
+
+    /**
+     * Set tab icon into the annotated item/block field
+     */
+    boolean asTabIcon() default false;
 }

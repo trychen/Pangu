@@ -80,7 +80,7 @@ public interface FoodStats {
 
     String getUnlocalizedName();
 
-    FoodStats setUnlocalizedName(String unlocalizedName);
+    FoodStats setTranslationKey(String translationKey);
 
     ModelResourceLocation getModel();
 

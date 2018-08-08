@@ -1,11 +1,9 @@
 package cn.mccraft.pangu.core.block;
 
-import cn.mccraft.pangu.core.block.PGBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -30,7 +28,7 @@ public class PGBlockWall extends PGBlock {
 
     public PGBlockWall(Material material) {
         super(material);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(UP, Boolean.valueOf(false)).withProperty(NORTH, Boolean.valueOf(false)).withProperty(EAST, Boolean.valueOf(false)).withProperty(SOUTH, Boolean.valueOf(false)).withProperty(WEST, Boolean.valueOf(false)));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(UP, false).withProperty(NORTH, false).withProperty(EAST, false).withProperty(SOUTH, false).withProperty(WEST, false));
     }
 
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
@@ -46,19 +44,19 @@ public class PGBlockWall extends PGBlock {
 
     private static int getAABBIndex(IBlockState state) {
         int i = 0;
-        if (((Boolean) state.getValue(NORTH)).booleanValue()) {
+        if (state.getValue(NORTH)) {
             i |= 1 << EnumFacing.NORTH.getHorizontalIndex();
         }
 
-        if (((Boolean) state.getValue(EAST)).booleanValue()) {
+        if (state.getValue(EAST)) {
             i |= 1 << EnumFacing.EAST.getHorizontalIndex();
         }
 
-        if (((Boolean) state.getValue(SOUTH)).booleanValue()) {
+        if (state.getValue(SOUTH)) {
             i |= 1 << EnumFacing.SOUTH.getHorizontalIndex();
         }
 
-        if (((Boolean) state.getValue(WEST)).booleanValue()) {
+        if (state.getValue(WEST)) {
             i |= 1 << EnumFacing.WEST.getHorizontalIndex();
         }
 
@@ -98,7 +96,7 @@ public class PGBlockWall extends PGBlock {
 
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-        return side == EnumFacing.DOWN ? super.shouldSideBeRendered(blockState, blockAccess, pos, side) : true;
+        return side != EnumFacing.DOWN || blockState.shouldSideBeRendered(blockAccess, pos, side);
     }
 
     public IBlockState getStateFromMeta(int meta) {
@@ -115,11 +113,11 @@ public class PGBlockWall extends PGBlock {
         boolean flag2 = this.canWallConnectTo(worldIn, pos, EnumFacing.SOUTH);
         boolean flag3 = this.canWallConnectTo(worldIn, pos, EnumFacing.WEST);
         boolean flag4 = flag && !flag1 && flag2 && !flag3 || !flag && flag1 && !flag2 && flag3;
-        return state.withProperty(UP, Boolean.valueOf(!flag4 || !worldIn.isAirBlock(pos.up()))).withProperty(NORTH, Boolean.valueOf(flag)).withProperty(EAST, Boolean.valueOf(flag1)).withProperty(SOUTH, Boolean.valueOf(flag2)).withProperty(WEST, Boolean.valueOf(flag3));
+        return state.withProperty(UP, !flag4 || !worldIn.isAirBlock(pos.up())).withProperty(NORTH, flag).withProperty(EAST, Boolean.valueOf(flag1)).withProperty(SOUTH, Boolean.valueOf(flag2)).withProperty(WEST, Boolean.valueOf(flag3));
     }
 
     protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, new IProperty[]{UP, NORTH, EAST, WEST, SOUTH});
+        return new BlockStateContainer(this, UP, NORTH, EAST, WEST, SOUTH);
     }
 
     public boolean canBeConnectedTo(IBlockAccess world, BlockPos pos, EnumFacing facing) {

@@ -26,8 +26,8 @@ public class AABBUtils {
         if (worldObj.isRemote) return null;
 
         AxisAlignedBB axis = new AxisAlignedBB(
-                pos.addVector(-turretRange, -turretRange, turretRange),
-                pos.addVector(-downLowAmount, turretRange, turretRange)
+                pos.add(-turretRange, -turretRange, turretRange),
+                pos.add(-downLowAmount, turretRange, turretRange)
         );
 
         return worldObj.getEntitiesWithinAABB(type, axis)

@@ -119,7 +119,7 @@ public class PGFood extends ItemFood {
             if (stats.isWolfFood())
                 tooltip.add(I18n.format("lore.food.wolfFood"));
         } else {
-            LoreHelper.shiftLoreWithI18n(tooltip, getUnlocalizedName());
+            LoreHelper.shiftLoreWithI18n(tooltip, getTranslationKey());
         }
     }
 

@@ -66,11 +66,11 @@ public class PGItem extends Item {
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
         if (repairableItems != null) return repairableItems.stream().anyMatch(repairableItem -> OreDictionary.itemMatches(repairableItem, repair, false));
-        return super.getIsRepairable(toRepair, repair);
+        return false;
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if (hasI18nLore()) LoreHelper.shiftLoreWithI18n(tooltip, getUnlocalizedName());
+        if (hasI18nLore()) LoreHelper.shiftLoreWithI18n(tooltip, getTranslationKey());
     }
 }

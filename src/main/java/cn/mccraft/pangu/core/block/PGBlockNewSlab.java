@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.block;
 
-import cn.mccraft.pangu.core.block.PGBlock;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -19,8 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Random;
 
 public class PGBlockNewSlab extends PGBlock {
-
-    public static final PropertyEnum<EnumBlockSlab> SLAB_TYPE = PropertyEnum.<EnumBlockSlab>create("type", EnumBlockSlab.class);
+    public static final PropertyEnum<EnumBlockSlab> SLAB_TYPE = PropertyEnum.create("type", EnumBlockSlab.class);
     protected static final AxisAlignedBB AABB_BOTTOM_HALF = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
     protected static final AxisAlignedBB AABB_TOP_HALF = new AxisAlignedBB(0.0D, 0.5D, 0.0D, 1.0D, 1.0D, 1.0D);
 
@@ -28,8 +26,8 @@ public class PGBlockNewSlab extends PGBlock {
         this(materialIn, materialIn.getMaterialMapColor());
     }
 
-    public PGBlockNewSlab(Material p_i47249_1_, MapColor p_i47249_2_) {
-        super(p_i47249_1_, p_i47249_2_);
+    public PGBlockNewSlab(Material material, MapColor mapColor) {
+        super(material, mapColor);
         this.setDefaultState(getDefaultState().withProperty(SLAB_TYPE, EnumBlockSlab.BOTTOM));
         this.setLightOpacity(255);
 
@@ -116,14 +114,14 @@ public class PGBlockNewSlab extends PGBlock {
         return state.getValue(SLAB_TYPE) == EnumBlockSlab.DOUBLE;
     }
 
-    public static enum EnumBlockSlab implements IStringSerializable {
+    public enum EnumBlockSlab implements IStringSerializable {
         TOP("top"),
         BOTTOM("bottom"),
         DOUBLE("double");
 
         private final String name;
 
-        private EnumBlockSlab(String name) {
+        EnumBlockSlab(String name) {
             this.name = name;
         }
 

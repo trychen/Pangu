@@ -1,6 +1,10 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
 public enum  ToolTipStyle {
@@ -12,7 +16,7 @@ public enum  ToolTipStyle {
     private final ResourceLocation texture;
     private final int x, y, width, height, textOffset, fontColor;
 
-    ToolTipStyle(byte id, ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor) {
+    ToolTipStyle(byte id, @Nullable ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor) {
         this.id = id;
         this.texture = texture;
         this.x = x;
@@ -27,6 +31,7 @@ public enum  ToolTipStyle {
         return this.id;
     }
 
+    @Nullable
     public ResourceLocation getTexture() {
         return texture;
     }
@@ -55,6 +60,7 @@ public enum  ToolTipStyle {
         return fontColor;
     }
 
+    @Nonnull
     public static ToolTipStyle valueOf(byte id) {
         for (ToolTipStyle value : values()) {
             if (value.id == id) return value;

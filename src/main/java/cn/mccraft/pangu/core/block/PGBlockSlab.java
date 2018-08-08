@@ -15,6 +15,8 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class PGBlockSlab extends BlockSlab {
@@ -23,7 +25,7 @@ public class PGBlockSlab extends BlockSlab {
     private final boolean isDouble;
     private final PGBlockSlab singleSlab;
 
-    public PGBlockSlab(Material materialIn, boolean isDouble, PGBlockSlab singleSlab) {
+    public PGBlockSlab(Material materialIn, boolean isDouble, @Nullable PGBlockSlab singleSlab) {
         super(materialIn);
         this.isDouble = isDouble;
         this.useNeighborBrightness = !isDouble;
@@ -33,30 +35,30 @@ public class PGBlockSlab extends BlockSlab {
 
         if (!this.isDouble()) {
             iblockstate = iblockstate.withProperty(HALF, BlockSlab.EnumBlockHalf.BOTTOM);
-            //setCreativeTab(CCCreativeTabs.tabCore);
         }
 
         this.setDefaultState(iblockstate.withProperty(VARIANT, EnumType.DEFAULT));
     }
 
     @Override
-    public Block setCreativeTab(CreativeTabs tab) {
+    @Nonnull
+    public Block setCreativeTab(@Nonnull CreativeTabs tab) {
         if(isDouble()) // Don't add double slab.
             return this;
         return super.setCreativeTab(tab);
     }
 
+    @Nonnull
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Item.getItemFromBlock(singleSlab);
     }
 
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-        return new ItemStack(singleSlab);
-    }
-
+    /**
+     * Returns the slab block name with the type associated with it
+     */
     @Override
-    public String getUnlocalizedName(int meta) {
-        return getUnlocalizedName();
+    public String getTranslationKey(int meta) {
+        return null;
     }
 
     @Override
@@ -103,7 +105,7 @@ public class PGBlockSlab extends BlockSlab {
         return this;
     }
 
-    public static enum EnumType implements IStringSerializable {
+    public enum EnumType implements IStringSerializable {
         DEFAULT;
 
         public String getName() {

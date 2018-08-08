@@ -5,29 +5,51 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class ToolTip implements IMessage {
+    /**
+     * The text to display in the tooltip
+     */
     private String text;
+
+    /**
+     * The duration displaying the tooltip
+     */
     private int duration;
+
+    /**
+     * The style of the tooltip
+     */
     private ToolTipStyle style;
+
+    /**
+     * Whether using animation while displaying and concealing
+     */
     private boolean animated;
 
+    /**
+     * No-parameter construction for message channel
+     */
     public ToolTip() {
     }
 
+    /**
+     * Normal style tooltip with the duration of 200ms
+     */
     public ToolTip(String text) {
         this(text, ToolTipStyle.NORMAL);
     }
 
+    /**
+     * Custom style tooltip with the duration of 200ms
+     */
     public ToolTip(String text, ToolTipStyle type) {
         this(text, 200, type);
     }
     public ToolTip(String text, int duration) {
         this(text, duration, ToolTipStyle.NORMAL);
     }
-
     public ToolTip(String text, int duration, ToolTipStyle style) {
         this(text, duration, style, false);
     }
-
     public ToolTip(String text, int duration, ToolTipStyle style, boolean animated) {
         this.text = text;
         this.duration = duration;

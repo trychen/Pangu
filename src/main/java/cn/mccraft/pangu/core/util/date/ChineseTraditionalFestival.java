@@ -30,8 +30,8 @@ public enum ChineseTraditionalFestival {
         final double[] COEFFICIENT = { 5.15, 5.37, 5.59, 4.82, 5.02, 5.26, 5.48, 4.70, 4.92, 5.135, 5.36, 4.60, 4.81, 5.04, 5.26 };
 
         @Override
-        public boolean isToday() {
-            if (Calendar.getInstance().get(Calendar.MONTH) != 4) return false;
+        public boolean isToday(LunarCalendar calendar) {
+            if (Calendar.getInstance().get(Calendar.MONTH) != Calendar.WEDNESDAY) return false;
             int year = Calendar.getInstance().get(Calendar.YEAR);
             int date = Calendar.getInstance().get(Calendar.DATE);
             if (year == 2232) {
@@ -79,7 +79,11 @@ public enum ChineseTraditionalFestival {
     }
 
     public boolean isToday() {
-        return LunarCalendar.INSTANCE.getMonth() == this.month && LunarCalendar.INSTANCE.getDay() == this.day;
+        return isToday(LunarCalendar.getInstance());
+    }
+
+    public boolean isToday(LunarCalendar calendar) {
+        return calendar.getMonth() == this.month && calendar.getDay() == this.day;
     }
 
     /**
@@ -88,8 +92,19 @@ public enum ChineseTraditionalFestival {
      */
     @Nullable
     public static ChineseTraditionalFestival today() {
-        for (ChineseTraditionalFestival chineseTraditionalFestival : values()) {
-            if (chineseTraditionalFestival.isToday()) return chineseTraditionalFestival;
+        for (ChineseTraditionalFestival festival : values()) {
+            if (festival.isToday()) return festival;
+        }
+        return null;
+    }
+    /**
+     * find festive from lunar calendar
+     * @return null if isn't festive
+     */
+    @Nullable
+    public static ChineseTraditionalFestival valueOf(LunarCalendar calendar) {
+        for (ChineseTraditionalFestival festival : values()) {
+            if (festival.isToday(calendar)) return festival;
         }
         return null;
     }

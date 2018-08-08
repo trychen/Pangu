@@ -20,7 +20,13 @@ class CustomIconCreativeTab extends CreativeTabs {
         tabIconItem = new ItemStack(Items.AIR);
     }
 
-    public CustomIconCreativeTab(String label, ItemStack tabIconItem) {
+    @Override
+    @Nonnull
+    public ItemStack createIcon() {
+        return tabIconItem;
+    }
+
+    public CustomIconCreativeTab(@Nonnull String label, @Nonnull ItemStack tabIconItem) {
         super(label);
         setTabIconItem(tabIconItem);
     }
@@ -34,11 +40,5 @@ class CustomIconCreativeTab extends CreativeTabs {
      */
     public void setTabIconItemIfNull(@Nonnull ItemStack tabIconItem) {
         if (this.tabIconItem == null || this.tabIconItem.getItem() == Items.AIR) this.tabIconItem = tabIconItem;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack getTabIconItem() {
-        return tabIconItem;
     }
 }
