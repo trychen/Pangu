@@ -10,7 +10,7 @@ public class PGBlockStair extends BlockStairs {
         this.useNeighborBrightness = true;
     }
 
-    public PGBlockStair setHarvestLevelReturnBlock(String toolClass, int level) {
+    public PGBlockStair setHarvestLevelR(String toolClass, int level) {
         super.setHarvestLevel(toolClass, level);
         return this;
     }

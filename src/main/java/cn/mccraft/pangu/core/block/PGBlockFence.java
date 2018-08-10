@@ -1,8 +1,11 @@
 package cn.mccraft.pangu.core.block;
 
 import net.minecraft.block.BlockFence;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+
+import javax.annotation.Nonnull;
 
 public class PGBlockFence extends BlockFence {
     public PGBlockFence(Material materialIn) {
@@ -11,5 +14,16 @@ public class PGBlockFence extends BlockFence {
 
     public PGBlockFence(Material materialIn, MapColor mapColorIn) {
         super(materialIn, mapColorIn);
+    }
+
+    @Override
+    public PGBlockFence setSoundType(@Nonnull SoundType sound) {
+        super.setSoundType(sound);
+        return this;
+    }
+
+    public PGBlockFence setHarvestLevelR(String toolClass, int level) {
+        super.setHarvestLevel(toolClass, level);
+        return this;
     }
 }
