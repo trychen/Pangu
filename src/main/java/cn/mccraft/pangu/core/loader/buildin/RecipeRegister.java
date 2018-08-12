@@ -1,10 +1,11 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.item.IRecipeProvider;
+import cn.mccraft.pangu.core.item.RecipeProvider;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.loader.annotation.RegRecipe;
+import cn.mccraft.pangu.core.recipe.RecipeColor;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
@@ -15,7 +16,9 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.GameData;
 
 import javax.annotation.Nonnull;
@@ -29,15 +32,15 @@ import static java.lang.Character.valueOf;
  *
  * @author trychen
  */
-@AutoWired
+@AutoWired(registerCommonEventBus = true)
 public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
     @Load(LoaderState.INITIALIZATION)
     public void registerRecipe() {
         items.forEach(element -> {
             try {
-                if (element.getInstance() instanceof IRecipeProvider) {
+                if (element.getInstance() instanceof RecipeProvider) {
                     // check is a provider
-                    IRecipeProvider provider = (IRecipeProvider) element.getInstance();
+                    RecipeProvider provider = (RecipeProvider) element.getInstance();
                     Arrays.stream(provider.createRecipes()).forEach(GameData::register_impl);
                 } else if (element.getInstance() instanceof IRecipe) {
                     // check if is a recipe
@@ -52,6 +55,11 @@ public class RecipeRegister extends StoredElementRegister<Object, RegRecipe> {
 
     public void registerRecipe(@Nonnull ResourceLocation resourceLocation, @Nonnull IRecipe recipe) {
         GameData.register_impl(recipe.setRegistryName(resourceLocation));
+    }
+
+    @SubscribeEvent
+    public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+        event.getRegistry().register(new RecipeColor().setRegistryName(PanguResLoc.of("color")));
     }
 
     /**

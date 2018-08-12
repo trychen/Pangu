@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "pangu:items/silk",
+    "layer1": "pangu:items/silk_overlay"
+  }
+}

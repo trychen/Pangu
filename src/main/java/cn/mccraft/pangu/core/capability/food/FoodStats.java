@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.core.capability;
+package cn.mccraft.pangu.core.capability.food;
 
 import cn.mccraft.pangu.core.util.function.item.food.FoodEatenCallback;
 import cn.mccraft.pangu.core.util.function.item.food.FoodUseFinishCallback;

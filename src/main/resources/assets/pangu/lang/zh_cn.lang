@@ -1,5 +1,10 @@
-lore.food.amount=饥饿值： %d
-lore.food.saturationModifier=饱和度： %f
+# Items
+item.silk.name=丝绸
+
+# Lores
+lore.silk.color=颜色: #%x
+lore.food.amount=饥饿值: %d
+lore.food.saturationModifier=饱和度: %f
 lore.food.alwaysEdible=永久可食
 lore.food.wolfFood=可喂给狼
 

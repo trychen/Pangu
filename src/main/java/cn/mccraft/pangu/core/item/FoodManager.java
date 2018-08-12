@@ -1,10 +1,9 @@
 package cn.mccraft.pangu.core.item;
 
-import cn.mccraft.pangu.core.capability.CapabilityFood;
-import cn.mccraft.pangu.core.capability.FoodStats;
+import cn.mccraft.pangu.core.capability.food.CapabilityFood;
+import cn.mccraft.pangu.core.capability.food.FoodStats;
 import cn.mccraft.pangu.core.util.Environment;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 
 import java.util.*;
@@ -59,8 +58,8 @@ public enum FoodManager {
     public Set<ItemStack> toStacks() {
         Set<ItemStack> stacks = new HashSet<>();
         for (FoodStats stats : foods) {
-            ItemStack stack = new ItemStack(PanguItems.PANGU_FOOD);
-            FoodStats foodStats = Objects.requireNonNull(stack.getCapability(CapabilityFood.CAPABILITY_FOOD_STATS, null));
+            ItemStack stack = new ItemStack(PanguItems.FOOD);
+            FoodStats foodStats = Objects.requireNonNull(stack.getCapability(CapabilityFood.FOOD_STATS, null));
 
             foodStats
                     .setTranslationKey(stats.getUnlocalizedName())

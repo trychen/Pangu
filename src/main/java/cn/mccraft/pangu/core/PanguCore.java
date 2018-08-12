@@ -17,8 +17,7 @@ import org.apache.logging.log4j.Logger;
  */
 @Mod(
         modid = PanguCore.ID,
-        name = PanguCore.NAME,
-        version = PanguCore.VERSION,
+        useMetadata = true,
         acceptedMinecraftVersions = "[1.12.2,1.13)"
 )
 public class PanguCore {

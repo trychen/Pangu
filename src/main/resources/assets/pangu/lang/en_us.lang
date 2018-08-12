@@ -1,5 +1,10 @@
-lore.food.amount=Amount： %d
-lore.food.saturationModifier=Saturation： %f
+# Items
+item.silk.name=Silk
+
+# Lores
+lore.silk.color=Color: #%x
+lore.food.amount=Amount: %d
+lore.food.saturationModifier=Saturation: %f
 lore.food.alwaysEdible=Always Eatable
 lore.food.wolfFood=Can feed wolf
 

@@ -1,4 +1,4 @@
-package cn.mccraft.pangu.core.capability;
+package cn.mccraft.pangu.core.capability.food;
 
 import cn.mccraft.pangu.core.util.function.item.food.FoodEatenCallback;
 import cn.mccraft.pangu.core.util.function.item.food.FoodUseFinishCallback;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 
 public interface CapabilityFood {
     @CapabilityInject(FoodStats.class)
-    Capability<FoodStats> CAPABILITY_FOOD_STATS = null;
+    Capability<FoodStats> FOOD_STATS = null;
 
     class Implementation implements FoodStats {
         private int amount;
@@ -248,23 +248,23 @@ public interface CapabilityFood {
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == CAPABILITY_FOOD_STATS;
+            return capability == FOOD_STATS;
         }
 
         @Nullable
         @Override
         public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            return capability == CAPABILITY_FOOD_STATS ? (T) stats : null;
+            return capability == FOOD_STATS ? (T) stats : null;
         }
 
         @Override
         public NBTTagCompound serializeNBT() {
-            return (NBTTagCompound) CAPABILITY_FOOD_STATS.getStorage().writeNBT(CAPABILITY_FOOD_STATS, stats, null);
+            return (NBTTagCompound) FOOD_STATS.getStorage().writeNBT(FOOD_STATS, stats, null);
         }
 
         @Override
         public void deserializeNBT(NBTTagCompound nbt) {
-            CAPABILITY_FOOD_STATS.getStorage().readNBT(CAPABILITY_FOOD_STATS, stats, null, nbt);
+            FOOD_STATS.getStorage().readNBT(FOOD_STATS, stats, null, nbt);
         }
     }
 }

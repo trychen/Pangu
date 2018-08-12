@@ -1,7 +1,7 @@
 package cn.mccraft.pangu.core.item;
 
-import cn.mccraft.pangu.core.capability.CapabilityFood;
-import cn.mccraft.pangu.core.capability.FoodStats;
+import cn.mccraft.pangu.core.capability.food.CapabilityFood;
+import cn.mccraft.pangu.core.capability.food.FoodStats;
 import cn.mccraft.pangu.core.util.LoreHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.resources.I18n;
@@ -137,6 +137,6 @@ public class PGFood extends ItemFood {
     }
 
     private FoodStats getStats(@Nonnull ItemStack stack) {
-        return stack.getCapability(CapabilityFood.CAPABILITY_FOOD_STATS, null);
+        return stack.getCapability(CapabilityFood.FOOD_STATS, null);
     }
 }
