@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,6 +47,7 @@ public interface ModFinder {
      * @param target the source to find
      * @return may return empty if target doesn't belongs to any mod
      */
+    @Nullable
     static Optional<ModContainer> getModContainerFromFile(@Nonnull URI target) {
         return Loader.instance().getModList().stream().filter(mod ->
                 target.equals(mod.getSource().toURI()) // check whether the same source
@@ -57,22 +59,29 @@ public interface ModFinder {
      *
      * @param target the class to find
      */
+    @Nonnull
     static Optional<ModContainer> getModContainerFromClassByPackageName(@Nonnull Class<?> target) {
         return Loader.instance().getModList().stream().filter(mod -> mod.getOwnedPackages().contains(target.getPackage().getName())).findAny();
     }
 
-    Map<Class, Optional<String>> CACHED_MOD_ID = Maps.newHashMap();
+    Map<Class, String> CACHED_MOD_ID = Maps.newHashMap();
 
     /**
      * Find domain that the class belongs to.
      */
-    static Optional<String> getDomain(@Nonnull Class<?> target) {
-        Optional<String> domain = CACHED_MOD_ID.get(target);
-        if (domain == null) {
-            domain = getModContainer(target).map(ModContainer::getModId);
-            CACHED_MOD_ID.put(target, domain);
+    @Nonnull
+    static Optional<String> getDomain(@Nonnull final Class<?> target) {
+        if (CACHED_MOD_ID.containsKey(target)) {
+            return Optional.ofNullable(CACHED_MOD_ID.get(target));
         }
-        return domain;
+
+        Optional<ModContainer> container = getModContainer(target);
+        if (!container.isPresent()) {
+            CACHED_MOD_ID.put(target, null);
+            return Optional.empty();
+        }
+        CACHED_MOD_ID.put(target, container.get().getModId());
+        return Optional.of(container.get().getModId());
     }
 
     /**

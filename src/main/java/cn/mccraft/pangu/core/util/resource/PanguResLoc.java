@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.resource;
 
 import cn.mccraft.pangu.core.PanguCore;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -22,5 +23,8 @@ public class PanguResLoc extends ResourceLocation {
 
     public static ResourceLocation of(String domain, String resourcePathIn) {
         return new ResourceLocation(domain, resourcePathIn);
+    }
+    public static ModelResourceLocation ofModel(String domain, String resourcePathIn) {
+        return new ModelResourceLocation(domain, resourcePathIn);
     }
 }

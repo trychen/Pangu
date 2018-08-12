@@ -66,9 +66,4 @@ public class KeyBindingInjector {
     public void handleKey(InputEvent.KeyInputEvent e) {
         keyBindedList.stream().filter(CachedKeyBinder::enableInGame).forEach(CachedKeyBinder::solve);
     }
-
-    @BindKeyPress(description = "key.example", keyCode = Keyboard.KEY_O)
-    public void test() {
-        KeyMessage.send("HelloWorld");
-    }
 }

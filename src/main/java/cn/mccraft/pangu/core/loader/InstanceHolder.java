@@ -75,8 +75,9 @@ public interface InstanceHolder {
     static <T> T getOrNewInstance(@Nonnull Class<T> clazz) {
         Object object = InstanceHolder.getInstance(clazz);
         if (object == null) {
-            return InstanceHolder.putInstance(ReflectUtils.forInstance(clazz));
+            return InstanceHolder.putInstance(Objects.requireNonNull(ReflectUtils.forInstance(clazz)));
         } else if (clazz.isInstance(object)) {
+            //noinspection unchecked: in fact that it was checked
             return (T) object;
         } else {
             loaderInstanceMap.remove(clazz);

@@ -6,10 +6,14 @@ import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.util.ModFinder;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface SimpleMessageRegister {
     @AnnotationInjector.StaticInvoke
@@ -25,7 +29,14 @@ public interface SimpleMessageRegister {
                     return;
                 }
 
-                Object mod = ModFinder.getModContainer(clazz).get().getMod();
+                // finding mod instance
+                Optional<ModContainer> container = ModFinder.getModContainer(clazz);
+                if (!container.isPresent()) {
+                    PanguCore.getLogger().error("Unable to find a mod to get SimpleNetworkWrapper for class " + clazz.toGenericString(), new NoSuchElementException());
+                    return;
+                }
+
+                Object mod = container.get().getMod();
 
                 // finding SimpleNetworkWrapper from mod
                 SimpleNetworkWrapper channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
@@ -36,13 +47,13 @@ public interface SimpleMessageRegister {
                 }
 
                 // init handler
+                //noinspection unchecked
                 IMessageHandler messageHandler = (IMessageHandler) InstanceHolder.getOrNewInstance(clazz);
 
+                //noinspection unchecked
                 channel.registerMessage(messageHandler, anno.message(), anno.id(), anno.side());
 
                 PanguCore.getLogger().info("Registered SimpleMessage handler for class " + clazz.toGenericString());
-            } catch (NoSuchElementException e) {
-                PanguCore.getLogger().error("Unable to find a mod to get SimpleNetworkWrapper for class " + clazz.toGenericString(), e);
             } catch (Exception e) {
                 PanguCore.getLogger().error("Unexpected error while registering SimpleMessage for class" + clazz.toGenericString(), e);
             }

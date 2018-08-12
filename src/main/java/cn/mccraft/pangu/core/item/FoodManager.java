@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.item;
 import cn.mccraft.pangu.core.capability.CapabilityFood;
 import cn.mccraft.pangu.core.capability.FoodStats;
 import cn.mccraft.pangu.core.util.Environment;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +15,7 @@ public enum FoodManager {
     private Set<FoodStats> foods = new HashSet<>();
 
     FoodManager() {
-        Environment.devOnly(() -> addFood(new CapabilityFood.Implementation().setAmount(2).setTranslationKey("testFood").setModel(new ModelResourceLocation("minecraft:apple"))));
+        Environment.devOnly(() -> addFood(new CapabilityFood.Implementation().setAmount(2).setTranslationKey("testFood").setModel(PanguResLoc.ofModel("minecraft", "apple"))));
     }
 
     /**

@@ -5,6 +5,7 @@ import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
+import cn.mccraft.pangu.core.util.MinecraftThreading;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
 import io.netty.buffer.ByteBuf;
@@ -118,8 +119,7 @@ public interface KeyMessage {
          */
         @Override
         public Content onMessage(Content message, MessageContext ctx) {
-            IThreadListener threadListener = side.isServer() ? (WorldServer) ctx.getServerHandler().player.world : Minecraft.getMinecraft();
-            threadListener.addScheduledTask(() -> {
+            MinecraftThreading.submit(() -> {
                 Consumer<MessageContext> receiver = (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).get(message.key);
                 if (receiver != null) {
                     receiver.accept(ctx);

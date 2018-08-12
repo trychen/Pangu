@@ -10,14 +10,14 @@ import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ModelLoader {
+public interface ModelLoader {
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
-    public static void loadModelMeshDefinitions() {
+    static void loadModelMeshDefinitions() {
         net.minecraftforge.client.model.ModelLoader.setCustomMeshDefinition(PanguItems.PANGU_FOOD, new PGFoodMeshDefinition());
     }
 
     @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
-    public static void addVariantNames() {
+    static void addVariantNames() {
         FoodManager.INSTANCE.getFoods().stream().map(FoodStats::getModel).forEach(model -> ModelBakery.registerItemVariants(PanguItems.PANGU_FOOD, model));
     }
 }
