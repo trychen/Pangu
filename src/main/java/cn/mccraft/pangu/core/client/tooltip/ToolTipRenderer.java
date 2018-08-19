@@ -146,9 +146,4 @@ public enum ToolTipRenderer {
         }
         return text;
     }
-
-    @BindKeyPress(description = "key.example", keyCode = Keyboard.KEY_O)
-    public void press() {
-        set(new ToolTip("Hello World", 20 * 3, ToolTipStyle.NORMAL, true));
-    }
 }

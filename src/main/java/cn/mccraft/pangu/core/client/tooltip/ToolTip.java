@@ -48,7 +48,7 @@ public class ToolTip implements IMessage {
         this(text, duration, ToolTipStyle.NORMAL);
     }
     public ToolTip(String text, int duration, ToolTipStyle style) {
-        this(text, duration, style, false);
+        this(text, duration, style, true);
     }
     public ToolTip(String text, int duration, ToolTipStyle style, boolean animated) {
         this.text = text;
