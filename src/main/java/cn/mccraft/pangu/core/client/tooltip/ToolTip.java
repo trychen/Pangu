@@ -93,13 +93,13 @@ public class ToolTip implements IMessage {
     public void fromBytes(ByteBuf byteBuf) {
         text = ByteBufUtils.readUTF8String(byteBuf);
         duration = byteBuf.readInt();
-        style = ToolTipStyle.valueOf(byteBuf.readByte());
+        style = ToolTipStyle.valueOf(ByteBufUtils.readUTF8String(byteBuf));
     }
 
     @Override
     public void toBytes(ByteBuf byteBuf) {
         ByteBufUtils.writeUTF8String(byteBuf, text);
         byteBuf.writeInt(duration);
-        byteBuf.writeByte(style.getId());
+        ByteBufUtils.writeUTF8String(byteBuf, style.getName());
     }
 }

@@ -24,6 +24,7 @@ public class PanguResLoc extends ResourceLocation {
     public static ResourceLocation of(String domain, String resourcePathIn) {
         return new ResourceLocation(domain, resourcePathIn);
     }
+
     public static ModelResourceLocation ofModel(String domain, String resourcePathIn) {
         return new ModelResourceLocation(domain, resourcePathIn);
     }

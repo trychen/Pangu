@@ -1,70 +1,41 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
+import cn.mccraft.pangu.core.client.gui.Style;
+import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Map;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
-public enum  ToolTipStyle {
-    NONE((byte) 0, null, 0, 0, 0, 0, 0, 0xFFFFFF),
-    NORMAL((byte) 1, PG_TOOLTIPS_TEXTURE, 0, 0, 200, 15, 3, 0xFFFFFF),
-    TRANSPARENT((byte) 2, PG_TOOLTIPS_TEXTURE, 0, 15, 200, 15, 3, 0xFFFFFF);
+public class ToolTipStyle extends Style {
+    private static final Map<String, ToolTipStyle> name2Style = Maps.newHashMap();
 
-    private final byte id;
-    private final ResourceLocation texture;
-    private final int x, y, width, height, textOffset, fontColor;
+    public static final ToolTipStyle NONE = of("NONE", null, 0, 0, 0, 0, 0, 0xFFFFFF, false);
+    public static final ToolTipStyle NORMAL = of("NORMAL", PG_TOOLTIPS_TEXTURE, 0, 0, 200, 15, 3, 0xFFFFFF, false);
+    public static final ToolTipStyle TRANSPARENT = of("TRANSPARENT", PG_TOOLTIPS_TEXTURE, 0, 15, 200, 15, 3, 0xFFFFFF, false);
 
-    ToolTipStyle(byte id, @Nullable ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor) {
-        this.id = id;
-        this.texture = texture;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.textOffset = textOffset;
-        this.fontColor = fontColor;
+    private final String name;
+
+    protected ToolTipStyle(String name, ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor, boolean fontShadow) {
+        super(texture, x, y, width, height, textOffset, fontColor, 0, 0, fontShadow);
+        this.name = name;
     }
 
-    public byte getId() {
-        return this.id;
+    public static ToolTipStyle of(String name, ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor, boolean fontShadow) {
+        ToolTipStyle toolTipStyle = new ToolTipStyle(name, texture, x, y, width, height, textOffset, fontColor, fontShadow);
+        name2Style.put(name, toolTipStyle);
+        return toolTipStyle;
     }
 
-    @Nullable
-    public ResourceLocation getTexture() {
-        return texture;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getTextOffset() {
-        return textOffset;
-    }
-
-    public int getFontColor() {
-        return fontColor;
+    public String getName() {
+        return name;
     }
 
     @Nonnull
-    public static ToolTipStyle valueOf(byte id) {
-        for (ToolTipStyle value : values()) {
-            if (value.id == id) return value;
-        }
-        return NORMAL;
+    public static ToolTipStyle valueOf(String name) {
+        ToolTipStyle style = name2Style.get(name);
+        return style == null ? NORMAL : style;
     }
 }

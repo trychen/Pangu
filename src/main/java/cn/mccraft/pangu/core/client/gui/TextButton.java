@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,23 +16,28 @@ import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 public class TextButton extends GuiButton {
     private final static FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 
+    public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 0, 0, 200, 20, 10, 0xE0E0E0, 0x6affec, 0xa0a0a0, true);
+    public static final Style PRIMARY = Style.of(PG_BUTTONS_TEXTURE, 0, 60, 200, 20, 10, 0xE0E0E0, 0xE0E0E0, 0xa0a0a0, true);
+    public static final Style DARK = Style.of(PG_BUTTONS_TEXTURE, 0, 120, 200, 20, 9, 0xDDDDDD, 0xDDDDDD, 0xa0a0a0, true);
+    public static final Style WHITE = Style.of(PG_BUTTONS_TEXTURE, 0, 180, 200, 20, 9, 0x121212, 0x121212, 0xa0a0a0, false);
+
     /**
      * left-align if false
      */
-    private boolean textCenterAlign = true;
-    
-    private Style style;
+    protected boolean textCenterAlign = true;
+
+    protected Style style;
 
     public TextButton(int buttonId, int x, int y, String buttonText) {
-        this(buttonId, x, y, fontRenderer.getStringWidth(buttonText) + 20, 20, buttonText, Style.NORMAL);
+        this(buttonId, x, y, fontRenderer.getStringWidth(buttonText) + 20, 20, buttonText, NORMAL);
     }
-    
+
     public TextButton(int buttonId, int x, int y, String buttonText, Style style) {
         this(buttonId, x, y, fontRenderer.getStringWidth(buttonText) + 20, 20, buttonText, style);
     }
 
     public TextButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
-        this(buttonId, x, y, widthIn, heightIn, buttonText, Style.NORMAL);
+        this(buttonId, x, y, widthIn, heightIn, buttonText, NORMAL);
     }
 
     public TextButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText, Style style) {
@@ -74,12 +78,12 @@ public class TextButton extends GuiButton {
             fontColor = style.getHoverFontColor();
         }
 
-            fontRenderer.drawString(
-                    this.displayString,
-                    isTextCenterAlign()?(float)(this.x + this.width / 2 - fontRenderer.getStringWidth(displayString) / 2):(float)this.x + 10,
-                    this.y + (float)(this.height - style.getTextOffset()) / 2,
-                    fontColor,
-                    style.hasFontShadow());
+        fontRenderer.drawString(
+                this.displayString,
+                isTextCenterAlign() ? (float) (this.x + this.width / 2 - fontRenderer.getStringWidth(displayString) / 2) : (float) this.x + 10,
+                this.y + (float) (this.height - style.getTextOffset()) / 2,
+                fontColor,
+                style.hasFontShadow());
     }
 
     public boolean isTextCenterAlign() {
@@ -94,69 +98,5 @@ public class TextButton extends GuiButton {
     public TextButton setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
-    }
-    
-    public enum Style {
-        NORMAL(PG_BUTTONS_TEXTURE, 0, 0, 200, 20, 10, 0xE0E0E0, 0x6affec, 0xa0a0a0, true),
-        PRIMARY(PG_BUTTONS_TEXTURE, 0, 60, 200, 20, 10, 0xE0E0E0, 0xE0E0E0, 0xa0a0a0, true),
-        DARK(PG_BUTTONS_TEXTURE, 0, 120, 200, 20, 9, 0xDDDDDD, 0xDDDDDD, 0xa0a0a0, true),
-        WHITE(PG_BUTTONS_TEXTURE, 0, 180, 200, 20, 9, 0x121212, 0x121212, 0xa0a0a0, false);
-
-        private final ResourceLocation texture;
-        private final int x, y, width, height, textOffset, fontColor, hoverFontColor, disabledFontColor;
-        private final boolean fontShadow;
-
-        Style(ResourceLocation texture, int x, int y, int width, int height, int textOffset, int fontColor, int hoverColor, int disabledColor, boolean fontShadow) {
-            this.texture = texture;
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.textOffset = textOffset;
-            this.fontColor = fontColor;
-            this.hoverFontColor = hoverColor;
-            this.disabledFontColor = disabledColor;
-            this.fontShadow = fontShadow;
-        }
-
-        public ResourceLocation getTexture() {
-            return texture;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public int getTextOffset() {
-            return textOffset;
-        }
-
-        public int getFontColor() {
-            return fontColor;
-        }
-
-        public int getHoverFontColor() {
-            return hoverFontColor;
-        }
-
-        public int getDisabledFontColor() {
-            return disabledFontColor;
-        }
-
-        public boolean hasFontShadow() {
-            return fontShadow;
-        }
     }
 }

@@ -121,11 +121,8 @@ public interface KeyMessage {
         public Content onMessage(Content message, MessageContext ctx) {
             MinecraftThreading.submit(() -> {
                 Consumer<MessageContext> receiver = (side.isServer() ? name2ReceiverForServer : name2ReceiverForClient).get(message.key);
-                if (receiver != null) {
-                    receiver.accept(ctx);
-                } else {
-                    PanguCore.getLogger().warn("Received an unregistered packet with key " + message.key);
-                }
+                if (receiver != null) receiver.accept(ctx);
+                else PanguCore.getLogger().warn("Received an unregistered packet with key " + message.key);
             });
             return null;
         }

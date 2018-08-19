@@ -69,8 +69,6 @@ public interface RenderUtils {
 
     /**
      * get the render timer ticks
-     *
-     * @return
      */
     static float getRenderPartialTicks() {
         return minecraft.getRenderPartialTicks();
