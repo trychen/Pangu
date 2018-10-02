@@ -253,4 +253,20 @@ public interface ReflectUtils {
         }
         return null;
     }
+
+    /**
+     * Creates a new instance of the class with construction
+     *
+     * @param parameter the parameter array
+     * @return null if failed
+     */
+    @Nullable
+    static <T> T forInstance(@Nonnull Class<T> clazz, Object... parameter){
+        try {
+            return clazz.getConstructor(toTypes(parameter)).newInstance(parameter);
+        } catch (Exception e) {
+            PanguCore.getLogger().error(e);
+        }
+        return null;
+    }
 }

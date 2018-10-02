@@ -83,6 +83,11 @@ public interface NameBuilder {
      * "helloWorld"、"hello_world"、"HELLO_WORLD" 转换成 ["hello", "world"]
      */
     static String[] apart(String name) {
+        // FIXED: HELLO -> H_E_L_L_O
+        if (name.toUpperCase().equals(name)) {
+            return apartUnderline(name);
+        }
+
         return name.contains("_") ? apartUnderline(name) : apartHump(name);
     }
 

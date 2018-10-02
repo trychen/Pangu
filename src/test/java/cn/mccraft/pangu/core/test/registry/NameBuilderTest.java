@@ -50,6 +50,7 @@ public class NameBuilderTest {
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apartUnderline("hello_world"));
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apartUnderline("hello_World"));
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apartUnderline("Hello_World"));
+        assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apartUnderline("HELLO_WORLD"));
         assertArrayEquals(new String[]{"hello", "hump", "world"}, NameBuilder.apartUnderline("hello_hump_world"));
     }
 
@@ -57,9 +58,11 @@ public class NameBuilderTest {
     public void autoApart() {
         assertArrayEquals(new String[]{"hello"}, NameBuilder.apart("hello"));
         assertArrayEquals(new String[]{"hello"}, NameBuilder.apart("Hello"));
+        assertArrayEquals(new String[]{"hello"}, NameBuilder.apart("HELLO"));
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apart("hello_world"));
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apart("helloWorld"));
         assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apart("HelloWorld"));
+        assertArrayEquals(new String[]{"hello", "world"}, NameBuilder.apart("HELLO_WORLD"));
         assertArrayEquals(new String[]{"hello", "hump", "world"}, NameBuilder.apart("hello_hump_world"));
         assertArrayEquals(new String[]{"hello", "hump", "world"}, NameBuilder.apart("helloHumpWorld"));
     }

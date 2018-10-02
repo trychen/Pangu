@@ -6,6 +6,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class PGBlockFence extends BlockFence {
     public PGBlockFence(Material materialIn) {
@@ -17,7 +18,7 @@ public class PGBlockFence extends BlockFence {
     }
 
     @Override
-    public PGBlockFence setSoundType(@Nonnull SoundType sound) {
+    public PGBlockFence setSoundType(SoundType sound) {
         super.setSoundType(sound);
         return this;
     }

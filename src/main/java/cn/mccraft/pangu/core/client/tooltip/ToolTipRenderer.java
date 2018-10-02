@@ -116,8 +116,8 @@ public enum ToolTipRenderer {
     public void set(ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
-        time = toolTip.getDuration();
-        duration = toolTip.getDuration();
+        duration = toolTip.getDuration() < 300 ? 300 : duration;
+        time = duration;
         animated = toolTip.isAnimated();
         if (animated) {
             animationStart = Minecraft.getSystemTime();

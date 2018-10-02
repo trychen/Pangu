@@ -5,7 +5,7 @@ import net.minecraft.entity.Entity;
 import java.lang.annotation.*;
 
 /**
- * Register model for entity with simple {@code Render<T>}.
+ * Register model/render for entity.
  * The model should implement {@link ITextureProvider} to provide
  * any {@code ResourceLocation} for entity.
  *
@@ -15,7 +15,12 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface RegEntityModel {
+public @interface RegEntityRender {
     Class<? extends Entity> value();
+
+    /**
+     *
+     * @return
+     */
     float shadowSize() default 1;
 }
