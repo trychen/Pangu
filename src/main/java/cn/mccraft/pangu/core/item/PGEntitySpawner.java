@@ -1,30 +1,69 @@
 package cn.mccraft.pangu.core.item;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class PGEntitySpawner extends Item {
     private final EntityFactory entityFactory;
+    private SoundEvent soundEvent;
+    private SoundCategory soundCategory;
 
     public PGEntitySpawner(EntityFactory entityFactory) {
         this.entityFactory = entityFactory;
     }
 
-    @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase entity, int timeLeft) {
-        if (!world.isRemote)
-            world.spawnEntity(entityFactory.createEntity());
+    public EntityFactory getEntityFactory() {
+        return entityFactory;
+    }
 
-        if (entity instanceof EntityPlayer && !((EntityPlayer) entity).capabilities.isCreativeMode) {
-            stack.shrink(1);
+    @Nullable
+    public SoundEvent getSoundEvent() {
+        return soundEvent;
+    }
+
+    @Nullable
+    public SoundCategory getSoundCategory() {
+        return soundCategory;
+    }
+
+    public PGEntitySpawner setSoundOnClick(SoundEvent soundEvent, SoundCategory soundCategory) {
+        this.soundEvent = soundEvent;
+        this.soundCategory = soundCategory;
+        return this;
+    }
+
+    /**
+     * Called when the equipped item is right clicked.
+     */
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+        if (soundEvent != null)
+            worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, soundEvent, soundCategory, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+
+        if (!worldIn.isRemote) {
+            Entity entity = entityFactory.createEntity(playerIn);
+            if (entity != null) worldIn.spawnEntity(entity);
+            return new ActionResult<>(EnumActionResult.FAIL, itemstack);
         }
+
+        if (!playerIn.capabilities.isCreativeMode)
+            itemstack.shrink(1);
+
+
+        playerIn.addStat(StatList.getObjectUseStats(this));
+        return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
     }
 
     interface EntityFactory {
-        Entity createEntity();
+        @Nullable
+        Entity createEntity(EntityPlayer entityPlayer);
     }
 }
