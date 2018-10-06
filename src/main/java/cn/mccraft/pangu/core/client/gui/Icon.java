@@ -28,4 +28,20 @@ public final class Icon {
     public int getSize() {
         return size;
     }
+
+    public static Icon of(ResourceLocation texture) {
+        return new Icon(texture, 0, 0, 11);
+    }
+
+    public static Icon of(ResourceLocation texture, int size) {
+        return new Icon(texture, 0, 0, size);
+    }
+
+    public static Icon of(ResourceLocation texture, int offsetX, int offsetY) {
+        return new Icon(texture, offsetX, offsetY, 11);
+    }
+
+    public static Icon of(ResourceLocation texture, int offsetX, int offsetY, int size) {
+        return new Icon(texture, offsetX, offsetY, size);
+    }
 }

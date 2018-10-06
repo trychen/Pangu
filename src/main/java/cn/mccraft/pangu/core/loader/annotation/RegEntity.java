@@ -1,5 +1,8 @@
 package cn.mccraft.pangu.core.loader.annotation;
 
+import cn.mccraft.pangu.core.loader.RegisteringHandler;
+import cn.mccraft.pangu.core.loader.buildin.EntityRegister;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,6 +15,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@RegisteringHandler(EntityRegister.class)
 public @interface RegEntity {
     String value();
     /**

@@ -5,12 +5,12 @@ import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.util.ReflectUtils;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public interface EntityModelRegister {
 
-    @SuppressWarnings("unchecked")
     @AnnotationInjector.StaticInvoke
     static void injectAnnotation(AnnotationStream<RegEntityRender> stream) {
         stream
@@ -21,10 +21,12 @@ public interface EntityModelRegister {
                         ModelBase model = (ModelBase) ReflectUtils.forInstance(clazz);
 
                         if (EntityLiving.class.isAssignableFrom(meta.value()))
-                            RenderingRegistry.registerEntityRenderingHandler(meta.value(), renderManager -> new RenderEntityLivingModel(renderManager, model, meta.shadowSize(), (ITextureProvider) model));
+                            //noinspection unchecked
+                            RenderingRegistry.registerEntityRenderingHandler((Class<? extends EntityLiving>) meta.value(), renderManager -> new RenderEntityLivingModel(renderManager, model, meta.shadowSize(), (ITextureProvider) model));
                         else
                             RenderingRegistry.registerEntityRenderingHandler(meta.value(), renderManager -> new RenderEntityModel(renderManager, model, (ITextureProvider) model));
                     } else if (Render.class.isAssignableFrom(clazz)) {
+                        //noinspection unchecked
                         RenderingRegistry.registerEntityRenderingHandler(meta.value(), it -> (Render) ReflectUtils.forInstance(clazz, it));
                     }
                 });

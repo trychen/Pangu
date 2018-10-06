@@ -20,8 +20,8 @@ public class GuiTest extends GuiScreen {
         addButton(new TextButton(2, 0, 50, 100, 20, "Hello Button", TextButton.PRIMARY).setTextCenterAlign(false));
         addButton(new TextButton(3, 0, 100, "Hello DARK", TextButton.DARK));
         addButton(new TextButton(4, 0, 150, "Hello WHITE", TextButton.WHITE));
-        addButton(new IconButton(5, 100, 0, PG_ICONS_TEXTURE, 11).setEnabled(false));
-        addButton(new IconButton(6, 150, 0, PG_ICONS_TEXTURE, 11, 0, 11, IconButton.CONTAINER));
+        addButton(new IconButton(5, 100, 0, Icons.DOT_GREEN).setEnabled(false));
+        addButton(new IconButton(6, 150, 0, IconButton.CONTAINER, Icons.POINTER_RIGHT));
     }
 
     @Override
@@ -33,5 +33,10 @@ public class GuiTest extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         System.out.println(button.id);
+    }
+
+    @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_Y)
+    public static void onKeyDown() {
+        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
     }
 }
