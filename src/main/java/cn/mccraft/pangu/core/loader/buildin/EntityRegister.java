@@ -22,6 +22,7 @@ import java.util.Map;
  * @author trychen
  * @since 1.0.1
  */
+@AutoWired
 public class EntityRegister implements IRegister<RegEntity, Entity> {
     private Map<String, Integer> increaseEntityID = new HashMap<>();
 
