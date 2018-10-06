@@ -3,8 +3,7 @@ package cn.mccraft.pangu.core.loader.annotation;
 import java.lang.annotation.*;
 
 /**
- * Register {@code EntityEntry} automatically.
- * You can only use this anno in a {@code EntityEntry} field.
+ * Register {@code Entity} automatically.
  *
  * @see cn.mccraft.pangu.core.loader.buildin.EntityRegister
  * @since 1.0.2
@@ -12,8 +11,24 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 public @interface RegEntity {
+    String value();
+    /**
+     * The range at which MC will send tracking updates
+     */
+    int trackingRange() default 40;
+
+    /**
+     * The frequency of tracking updates
+     */
+    int updateFrequency() default 5;
+
+    /**
+     * Whether to send velocity information packets as well
+     */
+    boolean sendsVelocityUpdates() default true;
+
     /**
      * @return true if you want to add a spawn egg
      */

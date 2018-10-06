@@ -9,17 +9,18 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 public class PGEntitySpawner extends Item {
-    private final EntityFactory entityFactory;
+    private final Function<EntityPlayer, Entity> entityFactory;
     private SoundEvent soundEvent;
     private SoundCategory soundCategory;
 
-    public PGEntitySpawner(EntityFactory entityFactory) {
+    public PGEntitySpawner(Function<EntityPlayer, Entity> entityFactory) {
         this.entityFactory = entityFactory;
     }
 
-    public EntityFactory getEntityFactory() {
+    public Function<EntityPlayer, Entity> getEntityFactory() {
         return entityFactory;
     }
 
@@ -49,7 +50,7 @@ public class PGEntitySpawner extends Item {
             worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, soundEvent, soundCategory, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            Entity entity = entityFactory.createEntity(playerIn);
+            Entity entity = entityFactory.apply(playerIn);
             if (entity != null) worldIn.spawnEntity(entity);
             return new ActionResult<>(EnumActionResult.FAIL, itemstack);
         }
@@ -60,10 +61,5 @@ public class PGEntitySpawner extends Item {
 
         playerIn.addStat(StatList.getObjectUseStats(this));
         return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
-    }
-
-    interface EntityFactory {
-        @Nullable
-        Entity createEntity(EntityPlayer entityPlayer);
     }
 }
