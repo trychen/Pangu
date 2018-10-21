@@ -94,6 +94,7 @@ public class ToolTip implements IMessage {
         text = ByteBufUtils.readUTF8String(byteBuf);
         duration = byteBuf.readInt();
         style = ToolTipStyle.valueOf(ByteBufUtils.readUTF8String(byteBuf));
+        animated = byteBuf.readBoolean();
     }
 
     @Override
@@ -101,5 +102,6 @@ public class ToolTip implements IMessage {
         ByteBufUtils.writeUTF8String(byteBuf, text);
         byteBuf.writeInt(duration);
         ByteBufUtils.writeUTF8String(byteBuf, style.getName());
+        byteBuf.writeBoolean(animated);
     }
 }

@@ -8,6 +8,7 @@ import cn.mccraft.pangu.core.item.PanguItems;
 import cn.mccraft.pangu.core.loader.Load;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
