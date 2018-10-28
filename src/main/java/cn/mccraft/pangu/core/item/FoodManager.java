@@ -14,7 +14,7 @@ public enum FoodManager {
     private Set<FoodStats> foods = new HashSet<>();
 
     FoodManager() {
-        Environment.devOnly(() -> addFood(new CapabilityFood.Implementation().setAmount(2).setTranslationKey("testFood").setModel(PanguResLoc.ofModel("minecraft", "apple"))));
+//        Environment.devOnly(() -> addFood(new CapabilityFood.Implementation().setAmount(2).setTranslationKey("testFood").setModel(PanguResLoc.ofModel("minecraft", "apple"))));
     }
 
     /**
