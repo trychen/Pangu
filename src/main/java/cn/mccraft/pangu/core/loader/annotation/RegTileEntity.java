@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * @see TileEntityRegister
- * @since 1.0.0.3
+ * @since 1.2.1.1
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

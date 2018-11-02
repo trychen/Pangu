@@ -9,12 +9,17 @@ import java.util.Map;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
+/**
+ * Custom style of ToolTip.
+ * Can only defined on client-side!
+ */
 public class ToolTipStyle extends Style {
     private static final Map<String, ToolTipStyle> name2Style = Maps.newHashMap();
 
-    public static final ToolTipStyle NONE = of("NONE", null, 0, 0, 0, 0, 0, 0xFFFFFF, false);
-    public static final ToolTipStyle NORMAL = of("NORMAL", PG_TOOLTIPS_TEXTURE, 0, 0, 200, 15, 3, 0xFFFFFF, false);
-    public static final ToolTipStyle TRANSPARENT = of("TRANSPARENT", PG_TOOLTIPS_TEXTURE, 0, 15, 200, 15, 3, 0xFFFFFF, false);
+    public static final ToolTipStyle
+            NONE = of("NONE", null, 0, 0, 0, 0, 0, 0xFFFFFF, false),
+            NORMAL = of("NORMAL", PG_TOOLTIPS_TEXTURE, 0, 0, 200, 15, 3, 0xFFFFFF, false),
+            TRANSPARENT = of("TRANSPARENT", PG_TOOLTIPS_TEXTURE, 0, 15, 200, 15, 3, 0xFFFFFF, false);
 
     private final String name;
 
@@ -29,13 +34,13 @@ public class ToolTipStyle extends Style {
         return toolTipStyle;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Nonnull
     public static ToolTipStyle valueOf(String name) {
         ToolTipStyle style = name2Style.get(name);
         return style == null ? NORMAL : style;
+    }
+
+    public String getName() {
+        return name;
     }
 }

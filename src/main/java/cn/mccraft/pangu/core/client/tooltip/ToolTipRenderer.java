@@ -19,6 +19,9 @@ import javax.annotation.Nonnull;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
+/**
+ * Renderer of ToolTip
+ */
 @SideOnly(Side.CLIENT)
 @AutoWired(registerCommonEventBus = true)
 public enum ToolTipRenderer {
@@ -113,7 +116,7 @@ public enum ToolTipRenderer {
      * cannot be longer than 387. If text width is longer than 387, the beyond part
      * will be cut.
      */
-    public void set(ToolTip toolTip) {
+    public void set(@Nonnull ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
         duration = toolTip.getDuration() < 300 ? 300 : duration;
