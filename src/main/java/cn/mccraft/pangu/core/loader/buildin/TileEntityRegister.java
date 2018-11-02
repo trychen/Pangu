@@ -13,6 +13,6 @@ import java.lang.reflect.Field;
 public class TileEntityRegister implements IRegister<RegTileEntity, TileEntity> {
     @Override
     public void registerClass(Class<? extends TileEntity> tileEntity, RegTileEntity regTileEntity, String domain) {
-        GameRegistry.registerTileEntity(tileEntity, PanguResLoc.of(domain, regTileEntity.value()));
+        TileEntity.register(PanguResLoc.of(domain, regTileEntity.value()).toString(), tileEntity);
     }
 }

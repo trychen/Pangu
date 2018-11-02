@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader.annotation;
 
+import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import cn.mccraft.pangu.core.loader.buildin.TileEntityRegister;
 
 import java.lang.annotation.*;
@@ -11,6 +12,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@RegisteringHandler(TileEntityRegister.class)
 public @interface RegTileEntity {
     /**
      * TileEntity Name
