@@ -38,6 +38,8 @@ public @interface RegItem {
      */
     boolean registerModel() default true;
 
+    String model() default "";
+
     /**
      * if auto create model automatically
      *

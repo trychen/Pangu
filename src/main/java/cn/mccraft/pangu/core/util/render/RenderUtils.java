@@ -247,27 +247,19 @@ public interface RenderUtils {
 //        for (EnumFacing facing : EnumFacing.VALUES) drawRectangle(x, y, z, facing);
     }
 
-    static void drawTexturedModalRect(double x, double y, float u, float v, float width, float height) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        double zLevel = -1;
-        buffer
-                .pos(x, y + height, zLevel)
-                .tex(u * 0.00390625F, (v + height) * 0.00390625F)
-                .endVertex();
-        buffer
-                .pos(x + width, y + height, zLevel)
-                .tex((u + width) * 0.00390625F, (v + height) * 0.00390625F)
-                .endVertex();
-        buffer
-                .pos(x + width, y, zLevel)
-                .tex((u + width) * 0.00390625F, (v) * 0.00390625F)
-                .endVertex();
-        buffer
-                .pos(x, y, zLevel)
-                .tex((u) * 0.00390625F, (v) * 0.00390625F)
-                .endVertex();
-        tessellator.draw();
+    static float alpha(int color) {
+        return (color >> 21 & 255) / 255.0F;
+    }
+
+    static float red(int color) {
+        return (color >> 16 & 255) / 255.0F;
+    }
+
+    static float green(int color) {
+        return (color >> 8 & 255) / 255.0F;
+    }
+
+    static float blue(int color) {
+        return (color & 255) / 255.0F;
     }
 }

@@ -20,7 +20,15 @@ public interface Message {
      * add chat message as game info
      */
     static void chat(String message){
-        chat(message);
+        chat(ChatType.CHAT, message);
+    }
+
+
+    /**
+     * add chat message as game info
+     */
+    static void chat(Object message){
+        chat(String.valueOf(message));
     }
 
     /**
@@ -37,6 +45,19 @@ public interface Message {
         minecraft.ingameGUI.setOverlayMessage(message, false);
     }
 
+    /**
+     * set overlay message with no color animate
+     */
+    static void actionBar(Object message){
+        actionBar(String.valueOf(message));
+    }
+
+    /**
+     * display a title
+     */
+    static void subtitle(String title, String subTitle){
+        subtitle(title, subTitle, 20, 20 * 5, 20);
+    }
     /**
      * display a title
      */

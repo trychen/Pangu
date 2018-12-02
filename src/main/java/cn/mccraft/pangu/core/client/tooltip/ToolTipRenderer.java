@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.client.tooltip;
 
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -65,12 +66,12 @@ public enum ToolTipRenderer {
                 textureManager.bindTexture(PG_TOOLTIPS_TEXTURE);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-                RenderUtils.drawTexturedModalRect(
+                Rect.drawTextured(
                         x - extendWidth / 2F, 0,
                         style.getX(), style.getY(),
                         width / 2F, style.getHeight());
 
-                RenderUtils.drawTexturedModalRect(
+                Rect.drawTextured(
                         x + textWidth / 2F, 0,
                         style.getWidth() - width / 2F, style.getY(),
                         width / 2F, style.getHeight());

@@ -74,9 +74,14 @@ public class ItemRegister extends StoredElementRegister<Item, RegItem> {
                 .filter(it -> it.getAnnotation().registerModel())
                 .forEach(it -> {
                     try {
-                        ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getInstance().getRegistryName(), "inventory");
-                        ModelLoader.registerItemVariants(it.getInstance(), modelResourceLocation);
-                        masher.register(it.getInstance(), 0, modelResourceLocation);
+                        String model = it.getAnnotation().model();
+                        if (model.isEmpty()) {
+                            ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getInstance().getRegistryName(), "inventory");
+                            ModelLoader.registerItemVariants(it.getInstance(), modelResourceLocation);
+                            masher.register(it.getInstance(), 0, modelResourceLocation);
+                        } else if (model.contains(":")) {
+
+                        }
                     } catch (Exception ex) {
                         PanguCore.getLogger().error("Unable to register model of " + it.getField().toGenericString(), ex);
                     }
