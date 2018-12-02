@@ -12,8 +12,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
-
 @DevOnly
 @SideOnly(Side.CLIENT)
 @Blur.Gui(fadeTime = 3000)
@@ -22,6 +20,7 @@ public class GuiTest extends GuiScreen {
 
     @Override
     public void initGui() {
+        addButton(new TextLabel(99, 0, 5, "Hello Text", font));
 //        addButton(new TextButton(1, 0, 0, "Hello Text"));
 //        addButton(new TextButton(2, 0, 50, 100, 20, "Hello Button", TextButton.PRIMARY).setTextCenterAlign(false));
 //        addButton(new TextButton(3, 0, 100, "Hello DARK", TextButton.DARK));
@@ -35,7 +34,7 @@ public class GuiTest extends GuiScreen {
         drawDefaultBackground();
         font.drawCenteredString("Hello", width / 2, height / 2, 0xFFFFFFFF, false);
 
-        Rect.drawGradient(0, 0, width, 30, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000);
+//        Rect.drawGradient(0, 0, width, 30, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
