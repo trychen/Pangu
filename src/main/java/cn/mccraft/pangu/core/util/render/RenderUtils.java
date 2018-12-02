@@ -248,7 +248,7 @@ public interface RenderUtils {
     }
 
     static float alpha(int color) {
-        return (color >> 21 & 255) / 255.0F;
+        return (color >> 24 & 255) / 255.0F;
     }
 
     static float red(int color) {
