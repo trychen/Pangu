@@ -34,6 +34,7 @@ public enum Blur {
     public static final ResourceLocation SHADER_LOCATION = PanguResLoc.of("shaders/post/blur.json");
 
     private Map<String, BlurData> blurDataMap = new HashMap<>();
+    private boolean isActived;
     private FieldAccessor listShadersAccessor;
     private long start;
     private int fadeTime, radius;
@@ -89,8 +90,10 @@ public enum Blur {
         if (!er.isShaderActive() && include) {
             er.loadShader(SHADER_LOCATION);
             start = System.currentTimeMillis();
+            isActived = true;
         } else if (er.isShaderActive() && !include) {
             er.stopUseShader();
+            isActived = false;
         }
 
     }
@@ -127,9 +130,7 @@ public enum Blur {
 
     @SubscribeEvent
     public void onHUDRendering(RenderGameOverlayEvent.Pre event) {
-        if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!Minecraft.getMinecraft().entityRenderer.isShaderActive()) return;
-        if (!isBlurGui(Minecraft.getMinecraft().currentScreen)) return;
+        if (!isActived) return;
         event.setCanceled(true);
     }
 
