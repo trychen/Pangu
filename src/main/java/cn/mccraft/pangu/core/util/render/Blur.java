@@ -41,12 +41,7 @@ public enum Blur {
 
     public static int getGuiBackgroundColor(GuiScreen guiScreen, boolean second) {
         if (INSTANCE.isBlurGui(guiScreen)) return second ? -804253680 : -1072689136;
-        int color = second ? INSTANCE.endColor : INSTANCE.startColor;
-        int a = color >>> 24;
-        int r = (color >> 16) & 0xFF;
-        int b = (color >> 8) & 0xFF;
-        int g = color & 0xFF;
-        return a << 24 | r << 16 | b << 8 | g;
+        return second ? INSTANCE.endColor : INSTANCE.startColor;
     }
 
     public boolean isBlurGui(GuiScreen guiScreen) {

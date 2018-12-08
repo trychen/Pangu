@@ -250,16 +250,26 @@ public interface RenderUtils {
     static float alpha(int color) {
         return (color >> 24 & 255) / 255.0F;
     }
-
     static float red(int color) {
         return (color >> 16 & 255) / 255.0F;
     }
-
     static float blue(int color) {
         return (color >> 8 & 255) / 255.0F;
     }
-
     static float green(int color) {
         return (color & 255) / 255.0F;
+    }
+
+    static int alphaInt(int color) {
+        return color >> 24 & 255;
+    }
+    static int redInt(int color) {
+        return color >> 16 & 255;
+    }
+    static int blueInt(int color) {
+        return color >> 8 & 255;
+    }
+    static int greenInt(int color) {
+        return color & 255;
     }
 }
