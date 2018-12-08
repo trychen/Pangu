@@ -1,5 +1,8 @@
 package cn.mccraft.pangu.core.client.gui;
 
+import cn.mccraft.pangu.core.util.render.Rect;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public final class Icon {
@@ -27,6 +30,22 @@ public final class Icon {
 
     public int getSize() {
         return size;
+    }
+
+    public void draw(int x, int y) {
+        draw(x, y, size);
+    }
+
+    public void draw(int x, int y, int boxSize) {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(getTexture());
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        Rect.drawTextured(
+                x + (float) (boxSize - getSize()) / 2, y + (float) (boxSize - getSize()) / 2,
+                getOffsetX(), getOffsetY(),
+                getSize(), getSize());
     }
 
     public static Icon of(ResourceLocation texture) {

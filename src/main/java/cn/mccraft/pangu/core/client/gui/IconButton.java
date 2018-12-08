@@ -1,10 +1,10 @@
 package cn.mccraft.pangu.core.client.gui;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -14,6 +14,7 @@ public class IconButton extends GuiButton {
 
     public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 200, 0, 20);
     public static final Style CONTAINER = Style.of(PG_BUTTONS_TEXTURE, 220, 0, 22);
+    public static final Style GREEN = Style.of(PG_BUTTONS_TEXTURE, 220, 66, 22);
 
     /**
      * The style of button
@@ -54,22 +55,15 @@ public class IconButton extends GuiButton {
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        this.drawTexturedModalRect(
+        Rect.drawTextured(
                 this.x, this.y,
                 style.getX(), style.getY() + state * style.getWidth(),
                 this.width, this.height);
+
         GlStateManager.popMatrix();
 
         // draw icon
-        minecraft.getTextureManager().bindTexture(icon.getTexture());
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        this.drawTexturedModalRect(
-                this.x + (float) (style.getWidth() - icon.getSize()) / 2, this.y + (float) (style.getWidth() - icon.getSize()) / 2,
-                icon.getOffsetX(), icon.getOffsetY(),
-                icon.getSize(), icon.getSize());
+        icon.draw(x, y, style.getWidth());
 
         this.mouseDragged(minecraft, mouseX, mouseY);
     }
@@ -83,12 +77,12 @@ public class IconButton extends GuiButton {
         return icon;
     }
 
-    public Style getStyle() {
-        return style;
-    }
-
     public IconButton setIcon(@Nonnull Icon icon) {
         this.icon = icon;
         return this;
+    }
+
+    public Style getStyle() {
+        return style;
     }
 }
