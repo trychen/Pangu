@@ -12,16 +12,16 @@ public interface Rect {
     /**
      * draw a gradient color rect
      *
-     * @param left x1
-     * @param top y2
-     * @param right x2
-     * @param bottom y2
-     * @param colorLeftTop the color of (x1, y1)
-     * @param colorRightTop the color of (x2, y1)
-     * @param colorLeftBottom the color of (x1, y2)
+     * @param left             x1
+     * @param top              y2
+     * @param right            x2
+     * @param bottom           y2
+     * @param colorLeftTop     the color of (x1, y1)
+     * @param colorRightTop    the color of (x2, y1)
+     * @param colorLeftBottom  the color of (x1, y2)
      * @param colorRightBottom the color of (x2, y2)
      */
-    static void drawGradient(int left, int top, int right, int bottom, int colorLeftTop, int colorRightTop, int colorLeftBottom, int colorRightBottom) {
+    static void drawGradient(double left, double top, double right, double bottom, int colorLeftTop, int colorRightTop, int colorLeftBottom, int colorRightBottom) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
@@ -115,6 +115,31 @@ public interface Rect {
         tessellator.draw();
     }
 
+
+    /**
+     * Draws a solid color rectangle with the specified coordinates and color.
+     */
+    static void drawBox(double left, double top, double width, double height, int color) {
+        float a = alpha(color);
+        float r = RenderUtils.red(color);
+        float g = RenderUtils.green(color);
+        float b = RenderUtils.blue(color);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(r, g, b, a);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos(left, top + height, 0.0D).endVertex();
+        bufferbuilder.pos(left + width, top + height, 0.0D).endVertex();
+        bufferbuilder.pos(left + width, top, 0.0D).endVertex();
+        bufferbuilder.pos(left, top, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+    }
 
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
