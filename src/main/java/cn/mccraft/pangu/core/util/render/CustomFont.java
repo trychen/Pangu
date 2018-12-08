@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
  * @since 1.2.1.1
  */
 public class CustomFont {
-    public int size;
+    private int size;
     private FontCache fontCache;
     private int[] colorCode;
     private String fontName;

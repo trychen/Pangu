@@ -8,10 +8,20 @@ import net.minecraft.client.gui.GuiButton;
 public class TextLabel extends GuiButton {
     private final CustomFont font;
     private boolean renderBox;
+    private int fontYOffset;
 
     public TextLabel(int buttonId, int x, int y, int height, String buttonText, CustomFont font) {
+        this(buttonId, x, y, height, height / 3, buttonText, font);
+    }
+
+    public TextLabel(int buttonId, int x, int y, String buttonText, CustomFont font) {
+        this(buttonId, x, y, font.getSize() / 2, buttonText, font);
+    }
+
+    public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, CustomFont font) {
         super(buttonId, x, y, font.getStringWidth(buttonText), height,  buttonText);
         this.font = font;
+        this.fontYOffset = fontYOffset;
     }
 
     /**
@@ -27,7 +37,7 @@ public class TextLabel extends GuiButton {
         font.drawString(
                 this.displayString,
                 this.x,
-                this.y + height / 2,
+                this.y + fontYOffset,
                 0xFFFFFFFF,
                 hovered);
     }
