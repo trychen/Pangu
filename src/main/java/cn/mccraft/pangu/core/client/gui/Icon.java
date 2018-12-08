@@ -40,8 +40,6 @@ public final class Icon {
         Minecraft.getMinecraft().getTextureManager().bindTexture(getTexture());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         Rect.drawTextured(
                 x + (float) (boxSize - getSize()) / 2, y + (float) (boxSize - getSize()) / 2,
                 getOffsetX(), getOffsetY(),

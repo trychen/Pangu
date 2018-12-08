@@ -121,14 +121,15 @@ public interface Rect {
      */
     static void drawBox(double left, double top, double width, double height, int color) {
         float a = alpha(color);
-        float r = RenderUtils.red(color);
-        float g = RenderUtils.green(color);
-        float b = RenderUtils.blue(color);
+        float r = red(color);
+        float g = green(color);
+        float b = blue(color);
+
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.color(r, g, b, a);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
@@ -137,22 +138,23 @@ public interface Rect {
         bufferbuilder.pos(left + width, top, 0.0D).endVertex();
         bufferbuilder.pos(left, top, 0.0D).endVertex();
         tessellator.draw();
-        GlStateManager.enableTexture2D();
+
         GlStateManager.disableBlend();
+        GlStateManager.enableTexture2D();
     }
 
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
-    static void draw(int left, int top, int right, int bottom, int color) {
+    static void draw(double left, double top, double right, double bottom, int color) {
         if (left < right) {
-            int i = left;
+            double i = left;
             left = right;
             right = i;
         }
 
         if (top < bottom) {
-            int j = top;
+            double j = top;
             top = bottom;
             bottom = j;
         }
@@ -169,10 +171,10 @@ public interface Rect {
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.color(r, g, b, a);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos((double) left, (double) bottom, 0.0D).endVertex();
-        bufferbuilder.pos((double) right, (double) bottom, 0.0D).endVertex();
-        bufferbuilder.pos((double) right, (double) top, 0.0D).endVertex();
-        bufferbuilder.pos((double) left, (double) top, 0.0D).endVertex();
+        bufferbuilder.pos(left, bottom, 0.0D).endVertex();
+        bufferbuilder.pos(right, bottom, 0.0D).endVertex();
+        bufferbuilder.pos(right, top, 0.0D).endVertex();
+        bufferbuilder.pos(left, top, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();

@@ -45,25 +45,27 @@ public class IconButton extends GuiButton {
         if (!this.visible) return;
 
         // draw button style
-        GlStateManager.pushMatrix();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableAlpha();
+
         minecraft.getTextureManager().bindTexture(style.getTexture());
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
         int state = this.getHoverState(this.hovered);
-
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         Rect.drawTextured(
                 this.x, this.y,
                 style.getX(), style.getY() + state * style.getHeight(),
                 this.width, this.height);
 
-        GlStateManager.popMatrix();
 
         // draw icon
         icon.draw(x, y, style.getWidth());
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.disableTexture2D();
 
         this.mouseDragged(minecraft, mouseX, mouseY);
     }
