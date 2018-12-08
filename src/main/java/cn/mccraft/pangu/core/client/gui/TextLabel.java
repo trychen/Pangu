@@ -9,6 +9,7 @@ public class TextLabel extends GuiButton {
     private final CustomFont font;
     private boolean renderBox;
     private int fontYOffset;
+    private int fontColor, hoverColor;
 
     public TextLabel(int buttonId, int x, int y, int height, String buttonText, CustomFont font) {
         this(buttonId, x, y, height, height / 3, buttonText, font);
@@ -19,7 +20,7 @@ public class TextLabel extends GuiButton {
     }
 
     public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, CustomFont font) {
-        super(buttonId, x, y, font.getStringWidth(buttonText), height,  buttonText);
+        super(buttonId, x, y, font.getStringWidth(buttonText), height, buttonText);
         this.font = font;
         this.fontYOffset = fontYOffset;
     }
@@ -38,7 +39,7 @@ public class TextLabel extends GuiButton {
                 this.displayString,
                 this.x,
                 this.y + fontYOffset,
-                0xFFFFFFFF,
+                this.hovered ? hoverColor : fontColor,
                 hovered);
     }
 
@@ -47,11 +48,45 @@ public class TextLabel extends GuiButton {
         return this;
     }
 
+    public CustomFont getFont() {
+        return font;
+    }
+
+    public boolean isRenderBox() {
+        return renderBox;
+    }
+
     public TextLabel setRenderBox(boolean renderBox) {
         this.renderBox = renderBox;
         return this;
     }
 
+    public int getFontYOffset() {
+        return fontYOffset;
+    }
+
+    public TextLabel setFontYOffset(int fontYOffset) {
+        this.fontYOffset = fontYOffset;
+        return this;
+    }
+
+    public int getFontColor() {
+        return fontColor;
+    }
+
+    public TextLabel setFontColor(int fontColor) {
+        this.fontColor = fontColor;
+        return this;
+    }
+
+    public int getHoverColor() {
+        return hoverColor;
+    }
+
+    public TextLabel setHoverColor(int hoverColor) {
+        this.hoverColor = hoverColor;
+        return this;
+    }
 
     public TextLabel setHeight(int height) {
         this.height = height;

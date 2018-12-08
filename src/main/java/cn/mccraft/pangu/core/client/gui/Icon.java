@@ -37,13 +37,20 @@ public final class Icon {
     }
 
     public void draw(int x, int y, int boxSize) {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(getTexture());
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        Minecraft.getMinecraft().getTextureManager().bindTexture(getTexture());
         Rect.drawTextured(
                 x + (float) (boxSize - getSize()) / 2, y + (float) (boxSize - getSize()) / 2,
                 getOffsetX(), getOffsetY(),
                 getSize(), getSize());
+
+        GlStateManager.disableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableAlpha();
     }
 
     public static Icon of(ResourceLocation texture) {
