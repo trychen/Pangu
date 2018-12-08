@@ -63,10 +63,10 @@ public class TextButton extends GuiButton {
         this.drawTexturedModalRect(
                 this.x, this.y,
                 style.getX(), style.getY() + state * style.getHeight(),
-                this.width / 2, this.height);
+                this.width, this.height);
 
         this.drawTexturedModalRect(this.x + this.width / 2,
-                this.y, style.getWidth() - this.width / 2,
+                this.y, style.getX() - this.width / 2,
                 style.getY() + state * style.getHeight(), this.width / 2, this.height);
 
         this.mouseDragged(mc, mouseX, mouseY);

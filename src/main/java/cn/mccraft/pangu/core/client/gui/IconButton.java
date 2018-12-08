@@ -34,8 +34,8 @@ public class IconButton extends GuiButton {
         super(buttonId, x, y, style.getWidth(), style.getHeight(), "");
         this.icon = icon;
         this.style = style;
-        if (style.getWidth() < icon.getSize())
-            PanguCore.getLogger().error("Unable to create a IconButton that icon size bigger than style size " + style.getWidth(), new IllegalArgumentException());
+//        if (style.getWidth() < icon.getSize())
+//            PanguCore.getLogger().error("Unable to create a IconButton that icon size bigger than style size " + style.getWidth(), new IllegalArgumentException());
     }
 
     /**
@@ -57,7 +57,7 @@ public class IconButton extends GuiButton {
 
         Rect.drawTextured(
                 this.x, this.y,
-                style.getX(), style.getY() + state * style.getWidth(),
+                style.getX(), style.getY() + state * style.getHeight(),
                 this.width, this.height);
 
         GlStateManager.popMatrix();
