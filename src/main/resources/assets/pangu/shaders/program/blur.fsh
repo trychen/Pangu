@@ -16,7 +16,7 @@ void main() {
     float totalStrength = 0.0;
     float totalAlpha = 0.0;
     float totalSamples = 0.0;
-    float progRadius = floor(Radius * Progress);
+    float progRadius = floor(Radius);
     for(float r = -progRadius; r <= progRadius; r += 1.0) {
         vec4 sample = texture2D(DiffuseSampler, texCoord + oneTexel * r * BlurDir);
 

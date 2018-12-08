@@ -15,7 +15,7 @@ import java.awt.*;
 
 @DevOnly
 @SideOnly(Side.CLIENT)
-@Blur.Gui(fadeTime = 3000)
+@Blur.Gui(radius = 8)
 public class GuiTest extends GuiScreen {
     public CustomFont SANS_SERIF = new CustomFont(Font.SANS_SERIF, 60);
     @Override
@@ -32,7 +32,7 @@ public class GuiTest extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-//        Fonts.SANS_SERIF.drawCenteredString("Hello", width / 2, height / 2, 0xFFFFFFFF, false);
+        SANS_SERIF.drawCenteredString("Hello", width / 2, height / 2, 0xFF99cc66, false);
 
 //        Rect.drawGradient(0, 0, width, 30, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000);
 

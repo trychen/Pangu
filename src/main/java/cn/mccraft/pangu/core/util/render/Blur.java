@@ -36,8 +36,7 @@ public enum Blur {
     private Map<String, BlurData> blurDataMap = new HashMap<>();
     private boolean isActived;
     private FieldAccessor listShadersAccessor;
-    private long start;
-    private int fadeTime, radius;
+    private int radius;
     private int startColor = -1072689136, endColor = -804253680;
 
     public static int getGuiBackgroundColor(GuiScreen guiScreen, boolean second) {
@@ -47,11 +46,6 @@ public enum Blur {
         int r = (color >> 16) & 0xFF;
         int b = (color >> 8) & 0xFF;
         int g = color & 0xFF;
-        float progress = Blur.INSTANCE.getProgress();
-        a *= progress;
-        r *= progress;
-        g *= progress;
-        b *= progress;
         return a << 24 | r << 16 | b << 8 | g;
     }
 
@@ -74,13 +68,11 @@ public enum Blur {
             if (event.getGui().getClass().isAnnotationPresent(Gui.class)) {
                 include = true;
                 Gui gui = event.getGui().getClass().getAnnotation(Gui.class);
-                fadeTime = gui.fadeTime();
                 radius = gui.radius();
                 startColor = gui.startColor();
                 endColor = gui.endColor();
             } else if ((blurData = blurDataMap.get(event.getGui().getClass().getName())) != null) {
                 include = true;
-                fadeTime = blurData.getFadeTime();
                 radius = blurData.getRadius();
                 startColor = blurData.getStartColor();
                 endColor = blurData.getEndColor();
@@ -89,7 +81,6 @@ public enum Blur {
 
         if (!er.isShaderActive() && include) {
             er.loadShader(SHADER_LOCATION);
-            start = System.currentTimeMillis();
             isActived = true;
         } else if (er.isShaderActive() && !include) {
             er.stopUseShader();
@@ -102,10 +93,6 @@ public enum Blur {
         return blurDataMap;
     }
 
-    private float getProgress() {
-        return Math.min((System.currentTimeMillis() - start) / (float) fadeTime, 1);
-    }
-
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.END && Minecraft.getMinecraft().currentScreen != null && Minecraft.getMinecraft().entityRenderer.isShaderActive()) {
@@ -113,10 +100,6 @@ public enum Blur {
             try {
                 List<Shader> shaders = (List<Shader>) listShadersAccessor.get(sg);
                 for (Shader s : shaders) {
-                    ShaderUniform progress = s.getShaderManager().getShaderUniform("Progress");
-                    if (progress != null) {
-                        progress.set(getProgress());
-                    }
                     ShaderUniform radius = s.getShaderManager().getShaderUniform("Radius");
                     if (radius != null) {
                         radius.set(this.radius);
@@ -138,8 +121,6 @@ public enum Blur {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     public @interface Gui {
-        int fadeTime() default 1000;
-
         int radius() default 16;
 
         int startColor() default 0x00000000;
@@ -148,19 +129,13 @@ public enum Blur {
     }
 
     public class BlurData {
-        private int fadeTime = 1000, radius = 16, startColor = 0x00000000, endColor = 0x00000000;
+        private int radius = 16, startColor = 0x00000000, endColor = 0x00000000;
 
-        public BlurData(int fadeTime, int radius, int startColor, int endColor) {
-            this.fadeTime = fadeTime;
+        public BlurData(int radius, int startColor, int endColor) {
             this.radius = radius;
             this.startColor = startColor;
             this.endColor = endColor;
         }
-
-        public int getFadeTime() {
-            return fadeTime;
-        }
-
         public int getRadius() {
             return radius;
         }

@@ -255,11 +255,11 @@ public interface RenderUtils {
         return (color >> 16 & 255) / 255.0F;
     }
 
-    static float green(int color) {
+    static float blue(int color) {
         return (color >> 8 & 255) / 255.0F;
     }
 
-    static float blue(int color) {
+    static float green(int color) {
         return (color & 255) / 255.0F;
     }
 }
