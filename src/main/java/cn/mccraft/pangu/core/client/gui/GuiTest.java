@@ -4,7 +4,6 @@ import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.util.render.Blur;
 import cn.mccraft.pangu.core.util.render.CustomFont;
-import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,11 +15,11 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 @Blur.Gui(fadeTime = 3000)
 public class GuiTest extends GuiScreen {
-    public CustomFont font = new CustomFont("Phosphate", 50);
+    public CustomFont font = new CustomFont("Phosphate", 30);
 
     @Override
     public void initGui() {
-        addButton(new TextLabel(99, 0, 5, "Hello Text", font));
+        addButton(new TextLabel(99, 5, 5, 13, "Hello Text", font).setRenderBox(true));
 //        addButton(new TextButton(1, 0, 0, "Hello Text"));
 //        addButton(new TextButton(2, 0, 50, 100, 20, "Hello Button", TextButton.PRIMARY).setTextCenterAlign(false));
 //        addButton(new TextButton(3, 0, 100, "Hello DARK", TextButton.DARK));

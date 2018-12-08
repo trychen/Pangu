@@ -20,7 +20,6 @@
 package cn.mccraft.pangu.core.util.render;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -57,94 +56,6 @@ public class FontCache {
     private boolean digitGlyphsReady = false;
     private boolean antiAliasEnabled = false;
     private Thread mainThread;
-
-    static private class Key {
-        public String str;
-
-        @Override
-        public int hashCode() {
-            int code = 0, length = str.length();
-            boolean colorCode = false;
-
-            for (int index = 0; index < length; index++) {
-                char c = str.charAt(index);
-                if (c >= '0' && c <= '9' && !colorCode) {
-                    c = '0';
-                }
-                code = (code * 31) + c;
-                colorCode = (c == '\u00A7');
-            }
-            return code;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null) {
-                return false;
-            }
-
-            String other = o.toString();
-            int length = str.length();
-
-            if (length != other.length()) {
-                return false;
-            }
-
-            boolean colorCode = false;
-
-            for (int index = 0; index < length; index++) {
-                char c1 = str.charAt(index);
-                char c2 = other.charAt(index);
-
-                if (c1 != c2 && (c1 < '0' || c1 > '9' || c2 < '0' || c2 > '9' || colorCode)) {
-                    return false;
-                }
-                colorCode = (c1 == '\u00A7');
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return str;
-        }
-    }
-
-    static private class Entry {
-        public WeakReference<Key> keyRef;
-        public int advance;
-        public Glyph glyphs[];
-        public ColorCode colors[];
-        public boolean specialRender;
-    }
-
-    static private class ColorCode implements Comparable<Integer> {
-        public static final byte UNDERLINE = 1;
-        public static final byte STRIKETHROUGH = 2;
-        public int stringIndex;
-        public int stripIndex;
-        public byte colorCode;
-        public byte fontStyle;
-        public byte renderStyle;
-
-        @Override
-        public int compareTo(Integer i) {
-            return (stringIndex == i) ? 0 : (stringIndex < i) ? -1 : 1;
-        }
-    }
-
-    protected static class Glyph implements Comparable<Glyph> {
-        public int stringIndex;
-        public GlyphCache.Entry texture;
-        public int x;
-        public int y;
-        public int advance;
-
-        @Override
-        public int compareTo(Glyph o) {
-            return Integer.compare(stringIndex, o.stringIndex);
-        }
-    }
 
     FontCache(int colors[]) {
         mainThread = Thread.currentThread();
@@ -184,7 +95,7 @@ public class FontCache {
         int boundTextureName = 0;
 
         if (this.antiAliasEnabled) {
-        	glEnable(GL_BLEND);
+            glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
 
@@ -348,42 +259,33 @@ public class FontCache {
         boolean flag1 = false;
         Glyph glyphs[] = cacheString(text).glyphs;
 
-        for (int k = i; k >= 0 && k < text.length() && f < (float)width; k += j)
-        {
+        for (int k = i; k >= 0 && k < text.length() && f < (float) width; k += j) {
             char c0 = text.charAt(k);
             float f1 = glyphs[k].texture.width;
 
-            if (flag)
-            {
+            if (flag) {
                 flag = false;
 
-                if (c0 != 108 && c0 != 76)
-                {
+                if (c0 != 108 && c0 != 76) {
                     if (c0 == 114 || c0 == 82)
                         flag1 = false;
-                }
-                else
-                {
+                } else {
                     flag1 = true;
                 }
-            }
-            else if (f1 < 0.0F)
-            {
+            } else if (f1 < 0.0F) {
                 flag = true;
-            }
-            else
-            {
+            } else {
                 f += f1;
 
                 if (flag1)
                     ++f;
             }
 
-            if (f > (float)width)
+            if (f > (float) width)
                 break;
 
             if (reverse)
-                stringbuilder.insert(0, (char)c0);
+                stringbuilder.insert(0, (char) c0);
             else
                 stringbuilder.append(c0);
         }
@@ -642,5 +544,97 @@ public class FontCache {
             glyph.advance = advance - glyph.x;
         }
         return advance;
+    }
+
+    public GlyphCache getGlyphCache() {
+        return glyphCache;
+    }
+
+    static private class Key {
+        public String str;
+
+        @Override
+        public int hashCode() {
+            int code = 0, length = str.length();
+            boolean colorCode = false;
+
+            for (int index = 0; index < length; index++) {
+                char c = str.charAt(index);
+                if (c >= '0' && c <= '9' && !colorCode) {
+                    c = '0';
+                }
+                code = (code * 31) + c;
+                colorCode = (c == '\u00A7');
+            }
+            return code;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) {
+                return false;
+            }
+
+            String other = o.toString();
+            int length = str.length();
+
+            if (length != other.length()) {
+                return false;
+            }
+
+            boolean colorCode = false;
+
+            for (int index = 0; index < length; index++) {
+                char c1 = str.charAt(index);
+                char c2 = other.charAt(index);
+
+                if (c1 != c2 && (c1 < '0' || c1 > '9' || c2 < '0' || c2 > '9' || colorCode)) {
+                    return false;
+                }
+                colorCode = (c1 == '\u00A7');
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return str;
+        }
+    }
+
+    static private class Entry {
+        public WeakReference<Key> keyRef;
+        public int advance;
+        public Glyph glyphs[];
+        public ColorCode colors[];
+        public boolean specialRender;
+    }
+
+    static private class ColorCode implements Comparable<Integer> {
+        public static final byte UNDERLINE = 1;
+        public static final byte STRIKETHROUGH = 2;
+        public int stringIndex;
+        public int stripIndex;
+        public byte colorCode;
+        public byte fontStyle;
+        public byte renderStyle;
+
+        @Override
+        public int compareTo(Integer i) {
+            return (stringIndex == i) ? 0 : (stringIndex < i) ? -1 : 1;
+        }
+    }
+
+    protected static class Glyph implements Comparable<Glyph> {
+        public int stringIndex;
+        public GlyphCache.Entry texture;
+        public int x;
+        public int y;
+        public int advance;
+
+        @Override
+        public int compareTo(Glyph o) {
+            return Integer.compare(stringIndex, o.stringIndex);
+        }
     }
 }

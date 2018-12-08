@@ -99,10 +99,6 @@ public class CustomFont {
         return size;
     }
 
-    public int getHeight() {
-        return size / 2;
-    }
-
     public String stripColorCodes(String original) {
         String colorCode = "0123456789abcdefklmnor";
         for (int x = 0; x < colorCode.length(); x++)
