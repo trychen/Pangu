@@ -34,6 +34,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -585,9 +586,9 @@ public class GlyphCache {
         }
 
         /* Copy int array to direct buffer; big-endian order ensures a 0xRR, 0xGG, 0xBB, 0xAA byte layout */
-        imageBuffer.clear();
+        ((Buffer)imageBuffer).clear();
         imageBuffer.put(imageData);
-        imageBuffer.flip();
+        ((Buffer)imageBuffer).flip();
     }
 
     /**

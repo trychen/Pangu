@@ -9,7 +9,7 @@ public class TextLabel extends GuiButton {
     private final CustomFont font;
     private boolean renderBox;
     private int fontYOffset;
-    private int fontColor, hoverColor;
+    private int fontColor = 0xFFFFFFFF, hoverColor = 0xFFFFFFFF;
 
     public TextLabel(int buttonId, int x, int y, int height, String buttonText, CustomFont font) {
         this(buttonId, x, y, height, height / 3, buttonText, font);
@@ -40,7 +40,7 @@ public class TextLabel extends GuiButton {
                 this.x,
                 this.y + fontYOffset,
                 this.hovered ? hoverColor : fontColor,
-                hovered);
+                true);
     }
 
     public TextLabel setEnabled(boolean enabled) {
