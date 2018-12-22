@@ -40,7 +40,7 @@ public enum ToolTipRenderer {
     @SubscribeEvent
     public void render(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
-            if (time <= 0 && !endAnimation) return;
+            if (time <= 0 && (animated && !endAnimation)) return;
             if (Minecraft.getMinecraft().ingameGUI == null) return;
 
             int scaledWidth = event.getResolution().getScaledWidth();
@@ -58,6 +58,7 @@ public enum ToolTipRenderer {
             GlStateManager.pushMatrix();
             GlStateManager.translate(scaledWidth / 2F, scaledHeight - 62 + 62 * getVisibility(), 0.0F);
             GlStateManager.enableBlend();
+            GlStateManager.enableTexture2D();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
             fontRenderer.drawString(this.text, -textWidth / 2F, style.getTextOffset(), style.getFontColor(), style.hasFontShadow());
@@ -87,7 +88,7 @@ public enum ToolTipRenderer {
     public void tick(TickEvent.ClientTickEvent event) {
         if (time > 0) {
             time--;
-            if (time == 0) endAnimation = true;
+            if (time == 0 && animated) endAnimation = true;
         }
     }
 
@@ -120,7 +121,7 @@ public enum ToolTipRenderer {
     public void set(@Nonnull ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
-        duration = toolTip.getDuration() < 300 ? 300 : duration;
+        duration = toolTip.getDuration() < 200 && toolTip.isAnimated() ? 200 : duration;
         time = duration;
         animated = toolTip.isAnimated();
         if (animated) {

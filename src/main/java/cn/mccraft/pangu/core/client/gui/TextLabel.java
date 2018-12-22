@@ -1,25 +1,26 @@
 package cn.mccraft.pangu.core.client.gui;
 
-import cn.mccraft.pangu.core.util.render.CustomFont;
+import cn.mccraft.pangu.core.util.font.StringRenderer;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class TextLabel extends GuiButton {
-    private final CustomFont font;
+    private final StringRenderer font;
     private boolean renderBox;
     private int fontYOffset;
     private int fontColor = 0xFFFFFFFF, hoverColor = 0xFFFFFFFF;
 
-    public TextLabel(int buttonId, int x, int y, int height, String buttonText, CustomFont font) {
+    public TextLabel(int buttonId, int x, int y, int height, String buttonText, StringRenderer font) {
         this(buttonId, x, y, height, height / 3, buttonText, font);
     }
 
-    public TextLabel(int buttonId, int x, int y, String buttonText, CustomFont font) {
+    public TextLabel(int buttonId, int x, int y, String buttonText, StringRenderer font) {
         this(buttonId, x, y, font.getSize() / 2, buttonText, font);
     }
 
-    public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, CustomFont font) {
+    public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, StringRenderer font) {
         super(buttonId, x, y, font.getStringWidth(buttonText), height, buttonText);
         this.font = font;
         this.fontYOffset = fontYOffset;
@@ -35,12 +36,18 @@ public class TextLabel extends GuiButton {
 
         if (renderBox) Rect.draw(x, y, x + width, y + height, 0xFFBB0000);
 
+        GlStateManager.enableBlend();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
         font.drawString(
                 this.displayString,
                 this.x,
                 this.y + fontYOffset,
                 this.hovered ? hoverColor : fontColor,
                 true);
+        GlStateManager.disableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
     }
 
     public TextLabel setEnabled(boolean enabled) {
@@ -48,7 +55,7 @@ public class TextLabel extends GuiButton {
         return this;
     }
 
-    public CustomFont getFont() {
+    public StringRenderer getFont() {
         return font;
     }
 

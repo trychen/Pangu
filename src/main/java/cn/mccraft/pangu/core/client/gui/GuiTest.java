@@ -2,13 +2,12 @@ package cn.mccraft.pangu.core.client.gui;
 
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
+import cn.mccraft.pangu.core.client.tooltip.ToolTip;
+import cn.mccraft.pangu.core.client.tooltip.ToolTipRenderer;
 import cn.mccraft.pangu.core.util.render.Blur;
-import cn.mccraft.pangu.core.util.render.CustomFont;
 import cn.mccraft.pangu.core.util.render.Rect;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -19,8 +18,6 @@ import java.awt.*;
 @SideOnly(Side.CLIENT)
 @Blur.Gui(radius = 8)
 public class GuiTest extends GuiScreen {
-    public CustomFont SANS_SERIF = new CustomFont(Font.SANS_SERIF, 60);
-
     @Override
     public void initGui() {
 //        addButton(new TextLabel(99, 5, 5, 50, "返回游戏", SANS_SERIF).setRenderBox(true));
@@ -36,8 +33,6 @@ public class GuiTest extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
-        SANS_SERIF.drawCenteredString("Hello", width / 2, height / 2, 0xFF99cc66, false);
-
         Rect.drawBox(100, 100, 30, 30, 0xFFFF0000);
 
         Rect.drawGradient(0, 0, width, 30, 0xFFFFFFFF, 0xFFFFFFFF, 0x00000000, 0x00000000);
@@ -52,6 +47,7 @@ public class GuiTest extends GuiScreen {
 
     @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_Y)
     public static void onKeyDown() {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
+        ToolTipRenderer.INSTANCE.set(new ToolTip("Chenzhilin 红石 800/1750").setDuration(100).setAnimated(false));
+//        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
     }
 }
