@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.gui;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Style {
     private final ResourceLocation texture;

@@ -5,11 +5,14 @@ import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
+@SideOnly(Side.CLIENT)
 public class IconButton extends GuiButton {
 
     public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 200, 0, 20);

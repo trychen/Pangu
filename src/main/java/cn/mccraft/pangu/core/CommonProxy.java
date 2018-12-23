@@ -58,4 +58,8 @@ public class CommonProxy {
      *        FML Initialization
      *  ==============================
      */
+
+    public Side side() {
+        return Side.SERVER;
+    }
 }

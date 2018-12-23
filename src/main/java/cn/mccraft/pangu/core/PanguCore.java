@@ -17,6 +17,8 @@ import org.apache.logging.log4j.Logger;
  */
 @Mod(
         modid = PanguCore.ID,
+        name = "Pangu Core",
+        version = "1.4",
         useMetadata = true,
         acceptedMinecraftVersions = "[1.12.2,1.13)"
 )
@@ -127,6 +129,10 @@ public class PanguCore {
             serverSide = "cn.mccraft.pangu.core.CommonProxy"
     )
     private static CommonProxy proxy;
+
+    public static CommonProxy getProxy() {
+        return proxy;
+    }
 
     /*
        ==============================

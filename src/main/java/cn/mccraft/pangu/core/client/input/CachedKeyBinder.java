@@ -42,7 +42,7 @@ public class CachedKeyBinder {
      * Check key if pressed and then invoke method
      */
     public void solve() {
-        if (keyBinding.isPressed() || Keyboard.isKeyDown(keyBinding.getKeyCode())) try {
+        if ((keyBinding.isPressed() || Keyboard.isKeyDown(keyBinding.getKeyCode())) && keyBinding.getKeyModifier().isActive()) try {
             method.invoke(instance);
         } catch (Exception e) {
             // catch all exception

@@ -58,7 +58,7 @@ public class AnnotationStream<T extends Annotation> {
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(ReflectUtils::forName)
+                .map(ReflectUtils::forNameWithoutException)
                 .filter(Objects::nonNull)
                 .map(it -> it);
         // TODO: Unnecessary map
@@ -77,7 +77,7 @@ public class AnnotationStream<T extends Annotation> {
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(ReflectUtils::forName)
+                .map(ReflectUtils::forNameWithoutException)
                 .filter(Objects::nonNull)
                 .map(it -> it);
         // TODO: Unnecessary map

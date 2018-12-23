@@ -3,7 +3,10 @@ package cn.mccraft.pangu.core.client.ui;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class Container extends Component {
   private NonNullList<Component> components;
   private Focusable focusedComponent;

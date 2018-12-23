@@ -28,7 +28,7 @@ public interface ModFinder {
         try {
             // get source uri
             source = target.getProtectionDomain().getCodeSource().getLocation().toURI();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             return getModContainerFromClassByPackageName(target);
         }
 

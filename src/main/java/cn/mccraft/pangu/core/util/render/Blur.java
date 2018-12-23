@@ -16,6 +16,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.annotation.*;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import java.util.Map;
  * @since 1.2.1.1
  */
 @AutoWired(registerCommonEventBus = true)
+@SideOnly(Side.CLIENT)
 public enum Blur {
     INSTANCE;
 

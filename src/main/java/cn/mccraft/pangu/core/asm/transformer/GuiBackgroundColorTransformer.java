@@ -1,7 +1,8 @@
 package cn.mccraft.pangu.core.asm.transformer;
 
+import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
+import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
@@ -9,39 +10,34 @@ import org.objectweb.asm.tree.*;
 public class GuiBackgroundColorTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        if (transformedName.equals("net.minecraft.client.gui.GuiScreen")) {
-            ClassNode classNode = new ClassNode();
-            ClassReader classReader = new ClassReader(basicClass);
-            classReader.accept(classNode, 0);
+        if (!transformedName.equals("net.minecraft.client.gui.GuiScreen")) return basicClass;
 
-            classNode.methods
-                    .stream()
-                    .filter(m -> m.name.equals("drawWorldBackground") || m.name.equals("func_146270_b"))
-                    .forEach(m -> {
-                        for (int i = 0; i < m.instructions.size(); i++) {
-                            AbstractInsnNode next = m.instructions.get(i);
-                            if (next.getOpcode() == Opcodes.LDC) {
-                                AbstractInsnNode hook = new MethodInsnNode(Opcodes.INVOKESTATIC, "cn/mccraft/pangu/core/util/render/Blur", "getGuiBackgroundColor", "(Lnet/minecraft/client/gui/GuiScreen;Z)I", false);
-                                AbstractInsnNode hook2 = hook.clone(null);
-                                m.instructions.set(next, hook);
-                                m.instructions.set(hook.getNext(), hook2);
+        ClassNode classNode = ASMHelper.newClassNode(basicClass);
 
-                                m.instructions.insertBefore(hook, new VarInsnNode(Opcodes.ALOAD, 0));
-                                m.instructions.insertBefore(hook, new InsnNode(Opcodes.ICONST_1));
+        outer:for (MethodNode m : classNode.methods) {
+            final String mappedMethodName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(classNode.name, m.name, m.desc);
+            if (!mappedMethodName.equals("drawWorldBackground") && !mappedMethodName.equals("func_146270_b")) continue;
+            for (int i = 0; i < m.instructions.size(); i++) {
+                AbstractInsnNode next = m.instructions.get(i);
+                if (next.getOpcode() == Opcodes.LDC) {
+                    AbstractInsnNode hook = new MethodInsnNode(Opcodes.INVOKESTATIC, "cn/mccraft/pangu/core/util/render/Blur", "getGuiBackgroundColor", "(Lnet/minecraft/client/gui/GuiScreen;Z)I", false);
+                    AbstractInsnNode hook2 = hook.clone(null);
+                    m.instructions.set(next, hook);
+                    m.instructions.set(hook.getNext(), hook2);
 
-                                m.instructions.insertBefore(hook2, new VarInsnNode(Opcodes.ALOAD, 0));
-                                m.instructions.insertBefore(hook2, new InsnNode(Opcodes.ICONST_0));
-                                return;
-                            }
-                        }
-                    });
+                    m.instructions.insertBefore(hook, new VarInsnNode(Opcodes.ALOAD, 0));
+                    m.instructions.insertBefore(hook, new InsnNode(Opcodes.ICONST_1));
 
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            classNode.accept(cw);
-            return cw.toByteArray();
+                    m.instructions.insertBefore(hook2, new VarInsnNode(Opcodes.ALOAD, 0));
+                    m.instructions.insertBefore(hook2, new InsnNode(Opcodes.ICONST_0));
+                    break outer;
+                }
+            }
         }
 
-        return basicClass;
+        ClassWriter cw = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
+        classNode.accept(cw);
+        return cw.toByteArray();
     }
 
 }

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public interface ModelLoader {
 //    @Load(value = LoaderState.INITIALIZATION, side = Side.CLIENT)
     static void loadModelMeshDefinitions() {

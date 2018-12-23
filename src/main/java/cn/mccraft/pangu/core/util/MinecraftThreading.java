@@ -1,8 +1,10 @@
 package cn.mccraft.pangu.core.util;
 
+import cn.mccraft.pangu.core.PanguCore;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
@@ -24,5 +26,13 @@ public interface MinecraftThreading {
 
     static ListenableFuture<Object> submit(Runnable runnable) {
         return safe().addScheduledTask(runnable);
+    }
+
+    static Side currentThreadSide() {
+        return FMLCommonHandler.instance().getEffectiveSide();
+    }
+
+    static Side commonSide() {
+        return FMLCommonHandler.instance().getSide();
     }
 }

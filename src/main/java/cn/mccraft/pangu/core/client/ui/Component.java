@@ -3,7 +3,10 @@ package cn.mccraft.pangu.core.client.ui;
 import cn.mccraft.pangu.core.util.render.Rect;
 import javax.annotation.Nullable;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public abstract class Component implements Cloneable, Comparable<Component> {
   private Component parent;
   private int zLevel;

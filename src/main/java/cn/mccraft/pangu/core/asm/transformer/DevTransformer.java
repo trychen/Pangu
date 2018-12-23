@@ -1,6 +1,8 @@
-package cn.mccraft.pangu.core.asm.dev;
+package cn.mccraft.pangu.core.asm.transformer;
 
-import cn.mccraft.pangu.core.asm.transformer.LambdaGatherer;
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
+import cn.mccraft.pangu.core.asm.util.ASMHelper;
+import cn.mccraft.pangu.core.asm.util.LambdaGatherer;
 import cn.mccraft.pangu.core.util.Environment;
 
 import java.util.Iterator;
@@ -25,11 +27,8 @@ public class DevTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (isDevMode) return basicClass;
-        if (basicClass == null) return null;
 
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(basicClass);
-        classReader.accept(classNode, 0);
+        ClassNode classNode = ASMHelper.newClassNode(basicClass);
 
         if (isDevOnly(classNode.invisibleAnnotations))
             throw new RuntimeException(String.format("Attempted to load class %s for invalid environment %s", classNode.name, isDevMode ? "Development" : "Production"));
@@ -54,7 +53,7 @@ public class DevTransformer implements IClassTransformer {
             classNode.methods.forEach(method -> dynamicLambdaHandles.removeIf(dynamicLambdaHandle -> method.name.equals(dynamicLambdaHandle.getName()) && method.desc.equals(dynamicLambdaHandle.getDesc())));
         }
 
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         return writer.toByteArray();
     }

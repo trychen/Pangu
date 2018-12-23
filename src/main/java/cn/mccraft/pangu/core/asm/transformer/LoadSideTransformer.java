@@ -1,9 +1,9 @@
-package cn.mccraft.pangu.core.asm.loader;
+package cn.mccraft.pangu.core.asm.transformer;
 
-import cn.mccraft.pangu.core.asm.transformer.LambdaGatherer;
+import cn.mccraft.pangu.core.asm.util.ASMHelper;
+import cn.mccraft.pangu.core.asm.util.LambdaGatherer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -24,13 +24,9 @@ public class LoadSideTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if (bytes == null) return null;
 
-        ClassNode classNode = new ClassNode();
-        ClassReader classReader = new ClassReader(bytes);
-        classReader.accept(classNode, 0);
+        ClassNode classNode = ASMHelper.newClassNode(bytes);
 
-        if (remove(classNode.visibleAnnotations, SIDE)) {
-            return null;
-        }
+        if (remove(classNode.visibleAnnotations, SIDE)) return null;
 
         classNode.fields.removeIf(field -> remove(field.visibleAnnotations, SIDE));
 
@@ -58,7 +54,7 @@ public class LoadSideTransformer implements IClassTransformer {
             }
         }
 
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         return writer.toByteArray();
     }

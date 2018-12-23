@@ -4,10 +4,13 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 
 @SuppressWarnings("Duplicates")
+@SideOnly(Side.CLIENT)
 public interface Rect {
     /**
      * draw a gradient color rect
@@ -178,5 +181,22 @@ public interface Rect {
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+    }
+
+    static void drawCustomSizeTextured(float x, float y, int uWidth, int vHeight, int width, int height) {
+        Rect.drawCustomSizeTextured(x, y, 0, 0, uWidth, vHeight, width, height);
+    }
+
+    static void drawCustomSizeTextured(float x, float y, float u, float v, int uWidth, int vHeight, int width, int height) {
+        float f = 1.0F / uWidth;
+        float f1 = 1.0F / vHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, 0.0D).tex((double) (u * f), (double) ((v + (float) vHeight) * f1)).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0.0D).tex((double) ((u + (float) uWidth) * f), (double) ((v + (float) vHeight) * f1)).endVertex();
+        bufferbuilder.pos(x + width, y, 0.0D).tex((double) ((u + (float) uWidth) * f), (double) (v * f1)).endVertex();
+        bufferbuilder.pos(x, y, 0.0D).tex((double) (u * f), (double) (v * f1)).endVertex();
+        tessellator.draw();
     }
 }

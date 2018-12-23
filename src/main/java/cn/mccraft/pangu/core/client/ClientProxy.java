@@ -49,4 +49,8 @@ public class ClientProxy extends CommonProxy {
         super.loadComplete(event);
         Proxy.INSTANCE.invoke(event, LoaderState.AVAILABLE,Side.CLIENT);
     }
+
+    public Side side() {
+        return Side.CLIENT;
+    }
 }

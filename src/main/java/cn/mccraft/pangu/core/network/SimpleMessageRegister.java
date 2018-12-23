@@ -28,23 +28,8 @@ public interface SimpleMessageRegister {
                     PanguCore.getLogger().error("You can only use @RegSimpleMessage to an IMessageHandler class, but given " + clazz.toGenericString(), new IllegalArgumentException());
                     return;
                 }
-
-                // finding mod instance
-                Optional<ModContainer> container = ModFinder.getModContainer(clazz);
-                if (!container.isPresent()) {
-                    PanguCore.getLogger().error("Unable to find a mod to get SimpleNetworkWrapper for class " + clazz.toGenericString(), new NoSuchElementException());
-                    return;
-                }
-
-                Object mod = container.get().getMod();
-
-                // finding SimpleNetworkWrapper from mod
-                SimpleNetworkWrapper channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
-
-                if (channel == null) {
-                    PanguCore.getLogger().error("Unable to find a SimpleNetworkWrapper for mod's class " + clazz.toGenericString(), new NoSuchFieldException());
-                    return;
-                }
+                SimpleNetworkWrapper channel = getNetworkWrapper(clazz);
+                if (channel == null) return;
 
                 // init handler
                 //noinspection unchecked
@@ -58,5 +43,25 @@ public interface SimpleMessageRegister {
                 PanguCore.getLogger().error("Unexpected error while registering SimpleMessage for class" + clazz.toGenericString(), e);
             }
         });
+    }
+
+    static SimpleNetworkWrapper getNetworkWrapper(Class<?> clazz) {
+        // finding mod instance
+        Optional<ModContainer> container = ModFinder.getModContainer(clazz);
+        if (!container.isPresent()) {
+            PanguCore.getLogger().error("Unable to find a mod to get SimpleNetworkWrapper for class " + clazz.toGenericString(), new NoSuchElementException());
+            return null;
+        }
+
+        Object mod = container.get().getMod();
+
+        // finding SimpleNetworkWrapper from mod
+        SimpleNetworkWrapper channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
+
+        if (channel == null) {
+            PanguCore.getLogger().error("Unable to find a SimpleNetworkWrapper for mod's class " + clazz.toGenericString(), new NoSuchFieldException());
+            return null;
+        }
+        return channel;
     }
 }

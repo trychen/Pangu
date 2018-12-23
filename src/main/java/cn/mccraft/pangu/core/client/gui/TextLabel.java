@@ -5,7 +5,10 @@ import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class TextLabel extends GuiButton {
     private final StringRenderer font;
     private boolean renderBox;

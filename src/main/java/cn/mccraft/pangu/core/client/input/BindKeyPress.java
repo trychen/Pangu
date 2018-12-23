@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.client.input;
 
+import net.minecraftforge.client.settings.KeyModifier;
+
 import java.lang.annotation.*;
 
 /**
@@ -18,6 +20,8 @@ public @interface BindKeyPress {
      * @return the code of the key to bind from {@link org.lwjgl.input.Keyboard}
      */
     int keyCode();
+
+    KeyModifier modifier() default KeyModifier.NONE;
 
     /**
      * @return the key category, generally start with "key.categories.",

@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.input;
 
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,6 +18,21 @@ public interface KeyBindingHelper {
 
     static KeyBinding of(String description, int keyCode, String category) {
         final KeyBinding keyBinding = new KeyBinding(description, keyCode, category);
+        ClientRegistry.registerKeyBinding(keyBinding);
+        return keyBinding;
+    }
+    static KeyBinding of(String description, int keyCode, String category, KeyModifier keyModifier) {
+        final KeyBinding keyBinding = new KeyBinding(description, new IKeyConflictContext() {
+            @Override
+            public boolean isActive() {
+                return true;
+            }
+
+            @Override
+            public boolean conflicts(IKeyConflictContext other) {
+                return false;
+            }
+        }, keyModifier, keyCode, category);
         ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }

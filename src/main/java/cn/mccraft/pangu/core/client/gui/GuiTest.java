@@ -1,9 +1,11 @@
 package cn.mccraft.pangu.core.client.gui;
 
+import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.client.tooltip.ToolTip;
 import cn.mccraft.pangu.core.client.tooltip.ToolTipRenderer;
+import cn.mccraft.pangu.core.network.RemoteTester;
 import cn.mccraft.pangu.core.util.render.Blur;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.gui.GuiButton;
@@ -47,7 +49,12 @@ public class GuiTest extends GuiScreen {
 
     @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_Y)
     public static void onKeyDown() {
-        ToolTipRenderer.INSTANCE.set(new ToolTip("Chenzhilin 红石 800/1750").setDuration(100).setAnimated(false));
+        try {
+            RemoteTester.test(null, "你好");
+        } catch (Exception e) {
+            PanguCore.getLogger().error("", e);
+        }
+//        ToolTipRenderer.INSTANCE.set(new ToolTip("Chenzhilin 红石 800/1750").setDuration(100).setAnimated(false));
 //        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
     }
 }

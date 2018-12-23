@@ -1,6 +1,9 @@
 package cn.mccraft.pangu.core.util;
 
 import cn.mccraft.pangu.core.PanguCore;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -207,6 +210,35 @@ public interface ReflectUtils {
     static Class<?>[] toTypes(Object... parameters){
         return Arrays.stream(parameters).map(Object::getClass).toArray(Class[]::new);
     }
+    /**
+     * transforms parameters array to class array
+     */
+    static Class<?>[] fromTypes(Type... types){
+        return Arrays.stream(types).map(ReflectUtils::fromType).toArray(Class[]::new);
+    }
+
+    static Class<?> fromType(Type type) {
+        switch (type.getSort()) {
+            case Type.INT:
+                return int.class;
+            case Type.BOOLEAN:
+                return boolean.class;
+            case Type.BYTE:
+                return byte.class;
+            case Type.SHORT:
+                return short.class;
+            case Type.LONG:
+                return long.class;
+            case Type.FLOAT:
+                return float.class;
+            case Type.DOUBLE:
+                return double.class;
+            case Type.CHAR:
+                return char.class;
+            default:
+                return forName(type.getClassName());
+        }
+    }
 
     /**
      * Get a instance of class by class name
@@ -218,6 +250,20 @@ public interface ReflectUtils {
             return Class.forName(name);
         } catch (Exception e) {
             PanguCore.getLogger().error(e);
+        }
+        return null;
+    }
+
+
+    /**
+     * Get a instance of class by class name
+     *
+     * @return null if failed
+     */
+    static Class<?> forNameWithoutException(String name){
+        try {
+            return Class.forName(name);
+        } catch (Exception e) {
         }
         return null;
     }

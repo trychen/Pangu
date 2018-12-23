@@ -5,7 +5,6 @@ import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
-import cn.mccraft.pangu.core.network.KeyMessage;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -13,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -41,7 +39,7 @@ public class KeyBindingInjector {
                     // get annotation info
                     final BindKeyPress bindKeyPress = method.getAnnotation(BindKeyPress.class);
                     // register key binding
-                    final KeyBinding key = KeyBindingHelper.of(bindKeyPress.description(), bindKeyPress.keyCode(), bindKeyPress.category());
+                    final KeyBinding key = KeyBindingHelper.of(bindKeyPress.description(), bindKeyPress.keyCode(), bindKeyPress.category(), bindKeyPress.modifier());
                     // put into cache
                     try {
                         keyBindedList.add(new CachedKeyBinder(key , FastReflection.create(method), instance, bindKeyPress));
