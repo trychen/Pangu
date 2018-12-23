@@ -8,8 +8,8 @@ import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class Screen extends GuiScreen {
-    private boolean drawDefaultBackground = true;
-    private Container rootContainer;
+    protected boolean drawDefaultBackground = true;
+    protected Container rootContainer;
 
     public Screen() {
         rootContainer = new Container(width, height);
@@ -33,7 +33,7 @@ public class Screen extends GuiScreen {
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1){
-            this.mc.displayGuiScreen((GuiScreen)null);
+            this.mc.displayGuiScreen(null);
             if (this.mc.currentScreen == null) this.mc.setIngameFocus();
         } else {
             rootContainer.onKeyTyped(typedChar, keyCode);

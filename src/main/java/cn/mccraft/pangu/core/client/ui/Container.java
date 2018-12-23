@@ -8,8 +8,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class Container extends Component {
-  private NonNullList<Component> components;
-  private Focusable focusedComponent;
+  protected NonNullList<Component> components = NonNullList.create();
+  protected Focusable focusedComponent;
 
   public Container(int width, int height) {
     super(width, height);
@@ -54,7 +54,7 @@ public class Container extends Component {
     components.forEach(c -> c.onUpdata(mouseX, mouseY));
     components
         .stream()
-        .filter(Component::isVisable)
+        .filter(Component::isVisible)
         .forEach(c -> c.onDraw(partialTicks, mouseX, mouseY));
   }
 

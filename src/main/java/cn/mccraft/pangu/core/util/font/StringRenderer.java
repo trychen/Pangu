@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-public class StringRenderer {
+public class StringRenderer implements FontProvider {
     /**
      * Vertical adjustment (in pixels * 2) to string position because Minecraft uses top of string instead of baseline
      */
@@ -381,9 +381,8 @@ public class StringRenderer {
     }
 
     public int drawStringWithShadow(String text, float x, float y, int color) {
-        return drawCenteredString(text, x, y, color, true);
+        return drawString(text, x, y, color, true);
     }
-
 
     public int drawCenteredString(String text, float x, float y, int color, boolean shadow) {
         float half = getStringWidth(text) / 2;

@@ -30,7 +30,8 @@ public class RemoteHandler {
     private static Map<String, CachedRemoteMessage> messages = new HashMap<>();
 
     public static boolean send(String messageType, Object[] objects) {
-        if (MinecraftThreading.commonSide() == Side.CLIENT && Minecraft.getMinecraft().isIntegratedServerRunning()) return false;
+        if (MinecraftThreading.commonSide() == Side.CLIENT && Minecraft.getMinecraft().isIntegratedServerRunning())
+            return false;
         CachedRemoteMessage cached = messages.get(messageType);
         Objects.requireNonNull(cached, "Couldn't find any cached @Remote message");
         if (cached.nativeMessage.side == MinecraftThreading.currentThreadSide()) return false;
@@ -97,23 +98,21 @@ public class RemoteHandler {
                     } else {
                         objects[0] = ctx.getServerHandler().player;
                     }
-                    if (cached.nativeMessage.sync) cached.getMethodAccessor().invoke(cached.isStatic()?null:InstanceHolder.getInstance(cached.getOwner()), objects);
-                    else MinecraftThreading.submit(() -> {
+                    MinecraftThreading.submit(() -> {
                         try {
-                            cached.getMethodAccessor().invoke(cached.isStatic()?null:InstanceHolder.getInstance(cached.getOwner()), objects);
+                            cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects);
                         } catch (Exception e) {
                             PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
                         }
-                    });
+                    }, cached.nativeMessage.sync);
                 } else
-                    if (cached.nativeMessage.sync) cached.getMethodAccessor().invoke(cached.isStatic()?null:InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs));
-                    else MinecraftThreading.submit(() -> {
+                    MinecraftThreading.submit(() -> {
                         try {
-                            cached.getMethodAccessor().invoke(cached.isStatic()?null:InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs));
+                            cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs));
                         } catch (Exception e) {
                             PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
                         }
-                    });
+                    }, cached.nativeMessage.sync);
             } catch (Exception e) {
                 PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
             }

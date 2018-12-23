@@ -2,17 +2,20 @@ package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.util.render.Rect;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class Component implements Cloneable, Comparable<Component> {
-  private Component parent;
-  private int zLevel;
-  private int height, width;
-  private float x = 0, y = 0;
-  private boolean hovered, visable, disabled;
+  protected Component parent;
+  protected int zLevel = 100;
+  protected int height, width;
+  protected float x = 0, y = 0;
+  protected boolean hovered = false, visible = true, disabled = false;
 
   public Component(int width, int height) {
     this.height = height;
@@ -42,8 +45,8 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     return hovered;
   }
 
-  public boolean isVisable() {
-    return visable;
+  public boolean isVisible() {
+    return visible;
   }
 
   public boolean isDisabled() {
@@ -72,6 +75,20 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     this.width = width;
     this.height = height;
     return this;
+  }
+
+  public Component setVisible(boolean visible) {
+    this.visible = visible;
+    return this;
+  }
+
+  public Component setDisabled(boolean disabled) {
+    this.disabled = disabled;
+    return this;
+  }
+
+  public void bindTexture(ResourceLocation resourceLocation) {
+    Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
   }
 
   @Nullable

@@ -28,6 +28,14 @@ public interface MinecraftThreading {
         return safe().addScheduledTask(runnable);
     }
 
+    static void submit(Runnable runnable, boolean onCurrentThread) {
+        if (onCurrentThread) {
+            runnable.run();
+        } else {
+            submit(runnable);
+        }
+    }
+
     static Side currentThreadSide() {
         return FMLCommonHandler.instance().getEffectiveSide();
     }
