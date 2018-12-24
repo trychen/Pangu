@@ -126,7 +126,7 @@ public enum Blur {
         int endColor() default 0x00000000;
     }
 
-    public class BlurData {
+    public static class BlurData {
         private int radius = 16, startColor = 0x00000000, endColor = 0x00000000;
 
         public BlurData(int radius, int startColor, int endColor) {
