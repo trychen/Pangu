@@ -30,14 +30,15 @@ public class GuiBackgroundColorTransformer implements IClassTransformer {
 
                     m.instructions.insertBefore(hook2, new VarInsnNode(Opcodes.ALOAD, 0));
                     m.instructions.insertBefore(hook2, new InsnNode(Opcodes.ICONST_0));
-                    break outer;
+
+                    ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+                    classNode.accept(cw);
+                    return cw.toByteArray();
                 }
             }
         }
 
-        ClassWriter cw = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
-        classNode.accept(cw);
-        return cw.toByteArray();
+        return basicClass;
     }
 
 }

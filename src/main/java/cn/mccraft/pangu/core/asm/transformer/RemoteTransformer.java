@@ -59,6 +59,7 @@ public class RemoteTransformer implements IClassTransformer {
         ClassNode classNode = new ClassNode();
         ClassReader classReader = new ClassReader(basicClass);
         classReader.accept(classNode, 0);
+        boolean edited = false;
         for (MethodNode method : classNode.methods) {
             if (method.visibleAnnotations == null) continue;
             Optional<AnnotationNode> remote = method.visibleAnnotations.stream().filter(it -> REMOTE_ANNOTATION.equals(it.desc)).findAny();
@@ -110,9 +111,10 @@ public class RemoteTransformer implements IClassTransformer {
                 messages.add(remoteMessage);
             else
                 RemoteHandler.registerMessage(remoteMessage);
+            edited = true;
         }
-
-        ClassWriter cw = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        if (!edited) return basicClass;
+        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(cw);
         return cw.toByteArray();
     }

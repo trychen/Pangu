@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
-@DevOnly
+//@DevOnly
 @SideOnly(Side.CLIENT)
 @Blur.Gui
 public class ScreenTest extends Screen {

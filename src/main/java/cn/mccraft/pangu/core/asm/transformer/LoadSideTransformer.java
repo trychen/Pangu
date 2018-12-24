@@ -54,7 +54,7 @@ public class LoadSideTransformer implements IClassTransformer {
             }
         }
 
-        ClassWriter writer = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         return writer.toByteArray();
     }

@@ -29,7 +29,7 @@ public class TextLabel extends GuiButton {
         this.fontYOffset = fontYOffset;
     }
 
-    /**
+    /** 
      * Draws this button to the screen.
      */
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {

@@ -53,7 +53,7 @@ public class DevTransformer implements IClassTransformer {
             classNode.methods.forEach(method -> dynamicLambdaHandles.removeIf(dynamicLambdaHandle -> method.name.equals(dynamicLambdaHandle.getName()) && method.desc.equals(dynamicLambdaHandle.getDesc())));
         }
 
-        ClassWriter writer = ASMHelper.newClassWriter(ClassWriter.COMPUTE_MAXS);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         classNode.accept(writer);
         return writer.toByteArray();
     }
