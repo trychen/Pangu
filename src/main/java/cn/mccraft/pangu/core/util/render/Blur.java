@@ -1,11 +1,15 @@
 package cn.mccraft.pangu.core.util.render;
 
+import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.util.Environment;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.FieldAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
@@ -37,18 +41,24 @@ public enum Blur {
     public static final ResourceLocation SHADER_LOCATION = PanguResLoc.of("shaders/post/blur.json");
 
     private Map<String, BlurData> blurDataMap = new HashMap<>();
-    private boolean isActived;
+    private boolean isActived = false;
     private FieldAccessor listShadersAccessor;
     private int radius;
     private int startColor = -1072689136, endColor = -804253680;
 
+    Blur() {
+        Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
+    }
+
+    private BlurData blurData;
+
     public static int getGuiBackgroundColor(GuiScreen guiScreen, boolean second) {
-        if (INSTANCE.isBlurGui(guiScreen)) return second ? -804253680 : -1072689136;
+        if (!INSTANCE.isBlurGui(guiScreen)) return second ? -804253680 : -1072689136;
         return second ? INSTANCE.endColor : INSTANCE.startColor;
     }
 
     public boolean isBlurGui(GuiScreen guiScreen) {
-        return !guiScreen.getClass().isAnnotationPresent(Gui.class) && blurDataMap.get(guiScreen.getClass().getName()) == null;
+        return guiScreen != null && (guiScreen.getClass().isAnnotationPresent(Gui.class) || blurDataMap.containsKey(guiScreen.getClass().getName()));
     }
 
     @SubscribeEvent
@@ -56,7 +66,10 @@ public enum Blur {
         if (listShadersAccessor == null) {
             listShadersAccessor = FastReflection.create(ReflectionHelper.findField(ShaderGroup.class, "field_148031_d", "listShaders"));
         }
-        if (Minecraft.getMinecraft().world == null) return;
+        if (Minecraft.getMinecraft().world == null) {
+            isActived = false;
+            return;
+        }
         EntityRenderer er = Minecraft.getMinecraft().entityRenderer;
 
         boolean include = false;
@@ -77,12 +90,15 @@ public enum Blur {
             }
         }
 
+        if (!include) isActived = false;
+
         if (!er.isShaderActive() && include) {
             er.loadShader(SHADER_LOCATION);
             isActived = true;
+            PanguCore.getLogger().info("Enabled blur shader for gui " + event.getGui().getClass().getName());
         } else if (er.isShaderActive() && !include) {
+            PanguCore.getLogger().info("Disabled blur shader for gui " + event.getGui().getClass().getName());
             er.stopUseShader();
-            isActived = false;
         }
 
     }
@@ -111,7 +127,7 @@ public enum Blur {
 
     @SubscribeEvent
     public void onHUDRendering(RenderGameOverlayEvent.Pre event) {
-        if (!isActived) return;
+        if (!isBlurGui(Minecraft.getMinecraft().currentScreen)) return;
         event.setCanceled(true);
     }
 
@@ -144,6 +160,10 @@ public enum Blur {
 
         public int getEndColor() {
             return endColor;
+        }
+
+        public static BlurData fromGui(Gui gui) {
+            return null;
         }
     }
 }

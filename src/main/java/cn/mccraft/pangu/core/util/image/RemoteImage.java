@@ -1,9 +1,13 @@
 package cn.mccraft.pangu.core.util.image;
 
+import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.loader.Load;
+import cn.mccraft.pangu.core.util.LocalCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,14 +26,7 @@ import java.util.concurrent.Future;
 public class RemoteImage implements TextureProvider {
     private final ResourceLocation missingTexture;
 
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(3);
-    private static File CACHE_DIR = new File(Loader.instance().getConfigDir(), "../cache/");
-
-    static {
-        if (!CACHE_DIR.exists()) {
-            CACHE_DIR.mkdir();
-        }
-    }
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private final URL url;
     private String id;
@@ -38,15 +35,17 @@ public class RemoteImage implements TextureProvider {
     private Future<BufferedImage> bufferedImage;
     private ResourceLocation resourceLocation;
     private DynamicTexture dynamicTexture;
+    private boolean isTextureUsed;
 
     public RemoteImage(String urlPath, ResourceLocation missingTexture) throws MalformedURLException {
         this.url = new URL(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
         this.missingTexture = missingTexture;
-        this.cachedFilePath = new File(CACHE_DIR, id);
+        this.cachedFilePath = LocalCache.getCachePath("images", id);
 
         bufferedImage = EXECUTOR.submit(() -> {
                 if (!cachedFilePath.exists()) {
+                    PanguCore.getLogger().info("Start fetching image from " + url.toString());
                     DataInputStream dataInputStream = new DataInputStream(url.openStream());
                     FileOutputStream fileOutputStream = new FileOutputStream(cachedFilePath);
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -58,9 +57,11 @@ public class RemoteImage implements TextureProvider {
                         output.write(buffer, 0, length);
                     }
                     fileOutputStream.write(output.toByteArray());
+                    fileOutputStream.flush();
                     dataInputStream.close();
                     fileOutputStream.close();
-                }
+                    PanguCore.getLogger().info("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
+                } else PanguCore.getLogger().info("Loading image " + urlPath + "from local " + cachedFilePath.getAbsolutePath());
                 return ImageIO.read(cachedFilePath);
             });
     }
@@ -69,6 +70,7 @@ public class RemoteImage implements TextureProvider {
     public ResourceLocation getTexture() {
         if (!bufferedImage.isDone()) return missingTexture;
         if (resourceLocation == null) {
+            LocalCache.markFileUsed(cachedFilePath.toPath());
             try {
                 resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("custommenu_banner_" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
             } catch (Exception e) {
@@ -85,7 +87,7 @@ public class RemoteImage implements TextureProvider {
         try {
             return new RemoteImage(url, missingTexture);
         } catch (Exception e){
-            e.printStackTrace();
+            PanguCore.getLogger().error("Couldn't load remote texture",  e);
             return new BuiltinImage(missingTexture);
         }
     }
