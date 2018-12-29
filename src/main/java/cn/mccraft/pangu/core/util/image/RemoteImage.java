@@ -18,10 +18,7 @@ import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class RemoteImage implements TextureProvider {
     private final ResourceLocation missingTexture;
@@ -75,8 +72,32 @@ public class RemoteImage implements TextureProvider {
                 resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("custommenu_banner_" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
             } catch (Exception e) {
                 e.printStackTrace();
-                bufferedImage = new CompletableFuture<>();
-                bufferedImage.cancel(false);
+                bufferedImage = new Future<BufferedImage>() {
+                    @Override
+                    public boolean cancel(boolean mayInterruptIfRunning) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isCancelled() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isDone() {
+                        return false;
+                    }
+
+                    @Override
+                    public BufferedImage get() {
+                        return null;
+                    }
+
+                    @Override
+                    public BufferedImage get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                        return null;
+                    }
+                }
                 return missingTexture;
             }
         }
