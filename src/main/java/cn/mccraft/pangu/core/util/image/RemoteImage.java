@@ -58,7 +58,7 @@ public class RemoteImage implements TextureProvider {
                     dataInputStream.close();
                     fileOutputStream.close();
                     PanguCore.getLogger().info("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
-                } else PanguCore.getLogger().info("Loading image " + urlPath + "from local " + cachedFilePath.getAbsolutePath());
+                } else PanguCore.getLogger().info("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
                 return ImageIO.read(cachedFilePath);
             });
     }

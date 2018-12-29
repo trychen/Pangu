@@ -95,9 +95,9 @@ public enum Blur {
         if (!er.isShaderActive() && include) {
             er.loadShader(SHADER_LOCATION);
             isActived = true;
-            PanguCore.getLogger().info("Enabled blur shader for gui " + event.getGui().getClass().getName());
+            PanguCore.getLogger().info("Enabled blur shader for gui " + event.getGui());
         } else if (er.isShaderActive() && !include) {
-            PanguCore.getLogger().info("Disabled blur shader for gui " + event.getGui().getClass().getName());
+            PanguCore.getLogger().info("Disabled blur shader for gui " + event.getGui());
             er.stopUseShader();
         }
 
