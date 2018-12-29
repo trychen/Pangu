@@ -97,7 +97,7 @@ public class RemoteImage implements TextureProvider {
                     public BufferedImage get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
                         return null;
                     }
-                }
+                };
                 return missingTexture;
             }
         }
