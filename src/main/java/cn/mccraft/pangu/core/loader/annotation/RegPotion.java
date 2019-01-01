@@ -3,15 +3,13 @@ package cn.mccraft.pangu.core.loader.annotation;
 import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import cn.mccraft.pangu.core.loader.buildin.PotionRegister;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author trychen
  * @since 1.0.6
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @RegisteringHandler(PotionRegister.class)

@@ -45,6 +45,7 @@ public enum Proxy {
      * @since 1.0.0.2
      */
     public <T extends FMLStateEvent> void invoke(T event, LoaderState state, Side side) {
+        PanguCore.getLogger().info("Start invoke FML event " + event.getEventType() + " in side " + side.name());
         getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {
             // check side
             if (!method.getAnnotation(Load.class).side().equals(side)) return;
@@ -68,7 +69,7 @@ public enum Proxy {
                 if (method.getParameterCount() == 0) method.invoke(instance);
                 else method.invoke(instance, event);
             } catch (Exception e) {
-                PanguCore.getLogger().warn("Un-able to invoke method " + method.getName(), e);
+                PanguCore.getLogger().error("Un-able to invoke method " + method.getName(), e);
             }
         }));
     }
@@ -137,7 +138,6 @@ public enum Proxy {
                     try {
                         INSTANCE.addLoader(Class.forName(it));
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
                     }
                 });
     }

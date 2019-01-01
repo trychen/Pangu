@@ -71,7 +71,7 @@ public class RemoteImage implements TextureProvider {
             try {
                 resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("custommenu_banner_" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
             } catch (Exception e) {
-                e.printStackTrace();
+                PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
                 bufferedImage = new Future<BufferedImage>() {
                     @Override
                     public boolean cancel(boolean mayInterruptIfRunning) {

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.network;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.transformer.RemoteTransformer;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
@@ -72,7 +73,7 @@ public class RemoteHandler {
             messages.put(message.messageClassName, cached);
             cached.network.registerMessage(new MessageHandler(cached), cached.messageClass, cached.id, cached.nativeMessage.side);
         } catch (Exception e) {
-            e.printStackTrace();
+            PanguPlugin.getLogger().error("Couldn't register message", e);
         }
     }
 

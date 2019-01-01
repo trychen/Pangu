@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.asm.transformer;
 
+import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
@@ -33,10 +34,13 @@ public class GuiBackgroundColorTransformer implements IClassTransformer {
 
                     ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
                     classNode.accept(cw);
+                    PanguPlugin.getLogger().info("Hooked net.minecraft.client.gui.GuiScreen#drawWorldBackground(int);");
                     return cw.toByteArray();
                 }
             }
         }
+
+        PanguPlugin.getLogger().error("Couldn't hook drawWorldBackground!");
 
         return basicClass;
     }

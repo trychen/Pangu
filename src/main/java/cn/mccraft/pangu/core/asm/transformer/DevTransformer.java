@@ -30,8 +30,9 @@ public class DevTransformer implements IClassTransformer {
 
         ClassNode classNode = ASMHelper.newClassNode(basicClass);
 
-        if (isDevOnly(classNode.invisibleAnnotations))
+        if (isDevOnly(classNode.invisibleAnnotations)) {
             throw new RuntimeException(String.format("Attempted to load class %s for invalid environment %s", classNode.name, isDevMode ? "Development" : "Production"));
+        }
 
         // remove fields
         classNode.fields.removeIf(field -> isDevOnly(field.visibleAnnotations));

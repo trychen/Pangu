@@ -120,7 +120,7 @@ public enum Blur {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                PanguCore.getLogger().error("Couldn't solve updata shader.", e);
             }
         }
     }

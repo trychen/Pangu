@@ -2,14 +2,12 @@ package cn.mccraft.pangu.core.network;
 
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @since 1.4
  */
+@Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Remote {

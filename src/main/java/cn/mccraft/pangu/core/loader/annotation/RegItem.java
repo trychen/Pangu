@@ -3,10 +3,7 @@ package cn.mccraft.pangu.core.loader.annotation;
 import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import cn.mccraft.pangu.core.loader.buildin.ItemRegister;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Register {@code Item} automatically.
@@ -15,6 +12,7 @@ import java.lang.annotation.Target;
  * @see ItemRegister
  * @since 1.0.0.2
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @RegisteringHandler(ItemRegister.class)

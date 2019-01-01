@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.util.font;
 
+import cn.mccraft.pangu.core.PanguCore;
+
 import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.io.File;
@@ -143,7 +145,7 @@ public class StringCache {
         try {
             setDefaultFont(Font.createFont(Font.TRUETYPE_FONT, fontFile), fontSize, antiAlias);
         } catch (Exception e) {
-            e.printStackTrace();
+            PanguCore.getLogger().error("Couldn't load custom font from " + fontFile.getAbsolutePath(), e);
         }
     }
 

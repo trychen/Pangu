@@ -42,18 +42,26 @@ public enum AnnotationInjector {
 
     /**
      * start solve all annotation injector
+     * 开始注入 AutoWired
      */
     public void startSolveAutoWireds() {
+        PanguCore.getLogger().info("Start solve @AutoWired");
+
+        // 获取 ASMTable
         InstanceHolder.putInstance(getDiscoverer().getASMTable());
+        PanguCore.getLogger().debug("Put instance of ASMTable successfully");
 
         final AnnotationStream<AutoWired> stream = AnnotationStream.of(AutoWired.class);
 
         // solve types
+        // 注入初始化类型
         stream
                 .typeStream()
                 .forEach(it -> {
                     try {
                         final Object instance = InstanceHolder.getOrNewInstance(it);
+
+                        // 注册监听器
                         if (it.getAnnotation(AutoWired.class).registerCommonEventBus()) {
                             MinecraftForge.EVENT_BUS.register(instance);
                         }
@@ -64,6 +72,7 @@ public enum AnnotationInjector {
 
 
         // solve field
+        // 解决类型注入
         stream
                 .fieldStream()
                 .forEach(field -> {
@@ -90,6 +99,7 @@ public enum AnnotationInjector {
     }
 
     public void startSolveInjectors() {
+        PanguCore.getLogger().info("Start solve @AnnotationInjector.StaticInvoke");
         AnnotationStream.of(StaticInvoke.class)
                 .classStream()
                 .forEach(clazz -> {
@@ -132,9 +142,9 @@ public enum AnnotationInjector {
     private static ModDiscoverer discoverer;
 
     /**
-     * get {@link Loader#discoverer} by {@link ReflectUtils}
+     * get {@see Loader#discoverer} by {@link ReflectUtils}
      * <p>
-     * 通过反射工具类获取 {@link Loader#discoverer}
+     * 通过反射工具类获取 {@see Loader#discoverer}
      */
     public ModDiscoverer getDiscoverer() {
         if (discoverer == null) {
@@ -142,6 +152,7 @@ public enum AnnotationInjector {
 
             if (discoverer == null)
                 throw new RuntimeException("Unable to get ModDiscoverer to hook annotation, please check SecurityManager to make sure that reflection is enabled");
+            PanguCore.getLogger().debug("Got Loader#discoverer successfully.");
         }
         return discoverer;
     }

@@ -40,10 +40,4 @@ public class GuiTest extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         System.out.println(button.id);
     }
-
-    @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_Y)
-    public static void onKeyDown() {
-//        ToolTipRenderer.INSTANCE.set(new ToolTip("Chenzhilin 红石 800/1750").setDuration(100).setAnimated(false));
-//        Minecraft.getMinecraft().displayGuiScreen(new GuiTest());
-    }
 }
