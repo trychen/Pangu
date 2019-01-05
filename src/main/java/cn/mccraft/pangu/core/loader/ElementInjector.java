@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.loader;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ModFinder;
 import com.google.common.collect.Maps;
+import lombok.val;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -32,7 +33,7 @@ public enum ElementInjector {
     @Load
     public void start() {
         annotations.forEach((annoClass, register) -> {
-            final AnnotationStream<? extends Annotation> anno = AnnotationStream.of(annoClass);
+            val anno = AnnotationStream.of(annoClass);
 
             anno.fieldStream().forEach(field -> {
                 try {

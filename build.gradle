@@ -1,5 +1,7 @@
+
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
         maven { url 'https://jitpack.io' }
         maven { url "http://files.minecraftforge.net/maven" }
@@ -7,6 +9,10 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
+}
+
+plugins {
+    id 'net.ltgt.apt' version '0.10'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -46,6 +52,7 @@ processResources {
 }
 
 repositories {
+    mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
@@ -59,6 +66,8 @@ dependencies {
         exclude group: 'org.ow2.asm'
     }
 
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    apt 'org.projectlombok:lombok:1.18.4'
     testCompile 'junit:junit:4.12'
 }
 

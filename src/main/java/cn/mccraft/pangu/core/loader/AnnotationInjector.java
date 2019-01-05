@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -51,7 +52,7 @@ public enum AnnotationInjector {
         InstanceHolder.putInstance(getDiscoverer().getASMTable());
         PanguCore.getLogger().debug("Put instance of ASMTable successfully");
 
-        final AnnotationStream<AutoWired> stream = AnnotationStream.of(AutoWired.class);
+        val stream = AnnotationStream.of(AutoWired.class);
 
         // solve types
         // 注入初始化类型
@@ -77,7 +78,7 @@ public enum AnnotationInjector {
                 .fieldStream()
                 .forEach(field -> {
                     // get annotation info
-                    final AutoWired annotation = field.getAnnotation(AutoWired.class);
+                    val annotation = field.getAnnotation(AutoWired.class);
                     // get typeClass
                     Class typeClass = annotation.value();
                     // set type as typeClass if typeClass is equals to Object.class
@@ -146,7 +147,7 @@ public enum AnnotationInjector {
      * <p>
      * 通过反射工具类获取 {@see Loader#discoverer}
      */
-    public ModDiscoverer getDiscoverer() {
+    public static ModDiscoverer getDiscoverer() {
         if (discoverer == null) {
             discoverer = ReflectUtils.getField(Loader.class, Loader.instance(), "discoverer", ModDiscoverer.class, true);
 

@@ -1,5 +1,10 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.experimental.Delegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -9,22 +14,21 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
+@Accessors(chain = true)
 public class Screen extends GuiScreen {
+    @Getter
+    @Setter
     protected boolean drawDefaultBackground = true;
+
+    @Getter
+    @Setter
     protected boolean doesGuiPauseGame = false;
+
+    @Delegate(excludes = Component.class)
     protected Container rootContainer;
 
     public Screen() {
         rootContainer = new Container(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
-    }
-
-    public Screen addComponent(Component component) {
-        rootContainer.addComponent(component);
-        return this;
-    }
-    public Screen addComponents(Component... cs) {
-        rootContainer.addComponents(cs);
-        return this;
     }
 
     @Override

@@ -1,13 +1,12 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.util.LocalCache;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -21,17 +20,29 @@ import java.util.Base64;
 import java.util.concurrent.*;
 
 public class RemoteImage implements TextureProvider {
-    private final ResourceLocation missingTexture;
+    @Getter
+    @Setter
+    private ResourceLocation missingTexture;
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
+    @Getter
     private final URL url;
+    @Getter
     private String id;
 
+    @Getter
     private File cachedFilePath;
+
+    @Getter
     private Future<BufferedImage> bufferedImage;
+
     private ResourceLocation resourceLocation;
+
+    @Getter
     private DynamicTexture dynamicTexture;
+
+    @Getter
     private boolean isTextureUsed;
 
     public RemoteImage(String urlPath, ResourceLocation missingTexture) throws MalformedURLException {
@@ -108,7 +119,7 @@ public class RemoteImage implements TextureProvider {
         try {
             return new RemoteImage(url, missingTexture);
         } catch (Exception e){
-            PanguCore.getLogger().error("Couldn't load remote texture",  e);
+            PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
             return new BuiltinImage(missingTexture);
         }
     }

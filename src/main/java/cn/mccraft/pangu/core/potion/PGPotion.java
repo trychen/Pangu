@@ -11,7 +11,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author trychen
  */
 public class PGPotion extends Potion {
+    @SideOnly(Side.CLIENT)
     private Icon icon;
+
     public PGPotion(boolean isBadEffect, int liquidColor) {
         super(isBadEffect, liquidColor);
     }

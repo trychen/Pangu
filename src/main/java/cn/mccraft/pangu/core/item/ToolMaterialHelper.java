@@ -1,5 +1,8 @@
 package cn.mccraft.pangu.core.item;
 
+import lombok.Data;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.EnumHelper;
 
@@ -26,7 +29,10 @@ public interface ToolMaterialHelper {
     /**
      * A chain builder to add ToolMaterial simply
      */
+    @Accessors(chain = true)
+    @Data
     class Builder {
+        @NonNull
         private String name;
         /**
          * The level of material this tool can harvest (3 = DIAMOND, 2 = IRON, 1 = STONE, 0 = WOOD/GOLD)
@@ -49,13 +55,6 @@ public interface ToolMaterialHelper {
          */
         private int enchantability;
 
-        /**
-         * @param name the name of ToolMaterial ()
-         */
-        private Builder(String name) {
-            this.name = name;
-        }
-
         public Item.ToolMaterial build() {
             return ToolMaterialHelper.of(name, harvestLevel, maxUses, efficiency, attackDamage, enchantability);
         }
@@ -70,46 +69,6 @@ public interface ToolMaterialHelper {
             this.efficiency = material.getEfficiency();
             this.attackDamage = material.getAttackDamage();
             this.enchantability = material.getEnchantability();
-            return this;
-        }
-
-        /**
-         * The number of uses this material allows. (wood = 59, stone = 131, iron = 250, diamond = 1561, gold = 32)
-         */
-        public Builder setMaxUses(int maxUses) {
-            this.maxUses = maxUses;
-            return this;
-        }
-
-        /**
-         * The strength of this tool material against blocks which it is effective against.
-         */
-        public Builder setEfficiency(float efficiency) {
-            this.efficiency = efficiency;
-            return this;
-        }
-
-        /**
-         * The damage against a given entity.
-         */
-        public Builder setAttackDamage(float attackDamage) {
-            this.attackDamage = attackDamage;
-            return this;
-        }
-
-        /**
-         * The level of material this tool can harvest (3 = DIAMOND, 2 = IRON, 1 = STONE, 0 = IRON/GOLD)
-         */
-        public Builder setHarvestLevel(int harvestLevel) {
-            this.harvestLevel = harvestLevel;
-            return this;
-        }
-
-        /**
-         * Return the natural enchantability factor of the material.
-         */
-        public Builder setEnchantability(int enchantability) {
-            this.enchantability = enchantability;
             return this;
         }
     }

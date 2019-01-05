@@ -9,13 +9,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class Button extends Component {
     private boolean isPlayPressSound = true;
+    private ClickEvent clickEvent;
 
     public Button(int width, int height) {
         super();
         setSize(width, height);
     }
 
-    public abstract void onClick(int mouseButton, int mouseX, int mouseY);
+    public void onClick(int mouseButton, int mouseX, int mouseY) {
+        if (clickEvent != null) clickEvent.onClick(mouseButton, mouseX, mouseY);
+    }
 
     @Override
     public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
@@ -45,5 +48,10 @@ public abstract class Button extends Component {
         if (isDisabled()) i = 0;
         else if (isHovered()) i = 2;
         return i;
+    }
+
+    @FunctionalInterface
+    public interface ClickEvent {
+        void onClick(int mouseButton, int mouseX, int mouseY);
     }
 }

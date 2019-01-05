@@ -3,6 +3,9 @@ package cn.mccraft.pangu.core.client.ui;
 import cn.mccraft.pangu.core.util.render.Rect;
 import javax.annotation.Nullable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -10,11 +13,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@Accessors(chain = true)
 public abstract class Component implements Cloneable, Comparable<Component> {
+  @Getter
+  @Setter
   protected Component parent;
+
+  @Getter
+  @Setter
   protected int zLevel = 100;
+
+  @Getter
   protected int height = 0, width = 0;
+
+  @Getter
   protected float x = 0, y = 0;
+
+  @Getter
+  @Setter
   protected boolean hovered = false, visible = true, disabled = false;
 
   public Component() {
@@ -39,30 +55,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         && mouseY < this.y + this.height;
   }
 
-  public boolean isHovered() {
-    return hovered;
-  }
-
-  public boolean isVisible() {
-    return visible;
-  }
-
-  public boolean isDisabled() {
-    return disabled;
-  }
-
-  public int getZLevel() {
-    return zLevel;
-  }
-
-  public int getHeight() {
-    return height;
-  }
-
-  public int getWidth() {
-    return width;
-  }
-
   public Component setPosition(float x, float y) {
     this.x = x;
     this.y = y;
@@ -75,25 +67,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     return this;
   }
 
-  public Component setVisible(boolean visible) {
-    this.visible = visible;
-    return this;
-  }
-
-  public Component setDisabled(boolean disabled) {
-    this.disabled = disabled;
-    return this;
-  }
-
-  public Component setZLevel(int zLevel) {
-    this.zLevel = zLevel;
-    return this;
-  }
-
-  public Component setParent(Component parent) {
-    this.parent = parent;
-    return this;
-  }
 
   public void bindTexture(ResourceLocation resourceLocation) {
     Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);

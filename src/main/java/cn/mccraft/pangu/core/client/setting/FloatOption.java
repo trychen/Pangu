@@ -9,7 +9,6 @@ public class FloatOption extends Option<Float> {
     private float valueMin;
     private float valueMax;
 
-
     @Override
     public String getDisplayString() {
         return getValue() == 0.0F ? getTranslation() + I18n.format("options.off") : getTranslation() + getValue();

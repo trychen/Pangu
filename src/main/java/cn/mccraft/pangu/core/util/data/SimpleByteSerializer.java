@@ -4,15 +4,13 @@ package cn.mccraft.pangu.core.util.data;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
-public class SimpleByteSerializable<T> implements ByteSerializable<T> {
+public class SimpleByteSerializer<T> implements ByteSerializer<T> {
 
     private Serializer<T> serializer;
     private Deserializer<T> deserializer;
 
-    public SimpleByteSerializable(Serializer<T> serializer, Deserializer<T> deserializer) {
+    public SimpleByteSerializer(Serializer<T> serializer, Deserializer<T> deserializer) {
         this.serializer = serializer;
         this.deserializer = deserializer;
     }
@@ -27,11 +25,11 @@ public class SimpleByteSerializable<T> implements ByteSerializable<T> {
         return deserializer != null? deserializer.accept(in) : null;
     }
 
-    interface Serializer<T> {
+    public interface Serializer<T> {
         void accept(DataOutputStream out, T object) throws IOException;
     }
 
-    interface Deserializer<T> {
+    public interface Deserializer<T> {
         T accept(DataInputStream in) throws IOException;
     }
 

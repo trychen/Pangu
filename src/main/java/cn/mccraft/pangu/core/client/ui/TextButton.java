@@ -4,18 +4,30 @@ import cn.mccraft.pangu.core.client.gui.Style;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.font.FontProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.GlStateManager;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
+@Accessors(chain = true)
 public class TextButton extends Button {
     public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 0, 0, 200, 20, 10, 0xE0E0E0, 0x6affec, 0xa0a0a0, true);
     public static final Style PRIMARY = Style.of(PG_BUTTONS_TEXTURE, 0, 60, 200, 20, 10, 0xE0E0E0, 0xE0E0E0, 0xa0a0a0, true);
     public static final Style DARK = Style.of(PG_BUTTONS_TEXTURE, 0, 120, 200, 20, 9, 0xDDDDDD, 0xDDDDDD, 0xa0a0a0, true);
     public static final Style WHITE = Style.of(PG_BUTTONS_TEXTURE, 0, 180, 200, 20, 9, 0x121212, 0x121212, 0xa0a0a0, false);
 
+    @Getter
+    @Setter
     private String text;
+
+    @Getter
+    @Setter
     private FontProvider font;
+
+    @Getter
+    @Setter
     private Style style = NORMAL;
 
     public TextButton(String text) {
@@ -78,32 +90,5 @@ public class TextButton extends Button {
         GlStateManager.disableBlend();
         GlStateManager.disableAlpha();
         GlStateManager.disableTexture2D();
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public FontProvider getFont() {
-        return font;
-    }
-
-    public TextButton setText(String text) {
-        this.text = text;
-        return this;
-    }
-
-    public TextButton setFont(FontProvider font) {
-        this.font = font;
-        return this;
-    }
-
-    public Style getStyle() {
-        return style;
-    }
-
-    public TextButton setStyle(Style style) {
-        this.style = style;
-        return this;
     }
 }

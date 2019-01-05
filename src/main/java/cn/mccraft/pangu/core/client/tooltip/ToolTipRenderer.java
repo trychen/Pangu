@@ -2,12 +2,14 @@ package cn.mccraft.pangu.core.client.tooltip;
 
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.network.Remote;
 import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,8 +19,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
+import static cn.mccraft.pangu.core.network.Network.TOOLTIP_MESSAGE_ID;
 
 /**
  * Renderer of ToolTip
@@ -118,7 +122,8 @@ public enum ToolTipRenderer {
      * cannot be longer than 387. If text width is longer than 387, the beyond part
      * will be cut.
      */
-    public void set(@Nonnull ToolTip toolTip) {
+    @Remote(value = TOOLTIP_MESSAGE_ID, side = Side.CLIENT)
+    public void set(@Nullable EntityPlayer entityPlayer, @Nonnull ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
         duration = toolTip.getDuration() < 200 && toolTip.isAnimated() ? 200 : duration;

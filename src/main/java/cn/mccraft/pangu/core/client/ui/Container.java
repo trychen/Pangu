@@ -2,13 +2,21 @@ package cn.mccraft.pangu.core.client.ui;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import net.minecraft.util.NonNullList;
+
+import cn.mccraft.pangu.core.util.NonNullList;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class Container extends Component {
+  @Getter
+  @Setter
   protected NonNullList<Component> components = NonNullList.create();
+
+  @Getter
+  @Setter
   protected Focusable focusedComponent;
 
   public Container(int width, int height) {

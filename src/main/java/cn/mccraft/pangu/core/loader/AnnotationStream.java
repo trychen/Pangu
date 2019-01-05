@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.util.ReflectUtils;
 import com.google.common.collect.Sets;
+import lombok.Getter;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import java.lang.annotation.Annotation;
@@ -17,7 +18,10 @@ import java.util.stream.Stream;
  * @since 1.0.2
  */
 public class AnnotationStream<T extends Annotation> {
+    @Getter
     private final String typeName;
+
+    @Getter
     private final Set<ASMDataTable.ASMData> asmDatas;
 
     public AnnotationStream(String typeName) {
@@ -31,14 +35,6 @@ public class AnnotationStream<T extends Annotation> {
 
     public static <T extends Annotation> AnnotationStream<T> of(Class<T> annoClass) {
         return new AnnotationStream<>(annoClass.getName());
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public Set<ASMDataTable.ASMData> getASMDatas() {
-        return asmDatas;
     }
 
     /**

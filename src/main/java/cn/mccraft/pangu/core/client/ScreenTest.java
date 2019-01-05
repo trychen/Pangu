@@ -1,10 +1,10 @@
-package cn.mccraft.pangu.core.client.ui;
+package cn.mccraft.pangu.core.client;
 
-import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
+import cn.mccraft.pangu.core.client.tooltip.ToolTip;
+import cn.mccraft.pangu.core.client.ui.Screen;
 import cn.mccraft.pangu.core.client.ui.builtin.ColorBackground;
 import cn.mccraft.pangu.core.client.ui.builtin.EntityShow;
-import cn.mccraft.pangu.core.util.render.Blur;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,11 +20,13 @@ public class ScreenTest extends Screen {
 
     @BindKeyPress(description = "key.test", keyCode = Keyboard.KEY_Y, modifier = KeyModifier.CONTROL)
     public static void onKeyDown() {
-        Minecraft.getMinecraft().displayGuiScreen(
-                new ScreenTest()
-//                        .addComponent(new TextButton("Hello", TextButton.NORMAL))
-                        .addComponent(new EntityShow(Minecraft.getMinecraft().player).setScale(100).setPosition(200, 300))
-                        .addComponent(new ColorBackground())
-        );
+        Screen screen = new Screen();
+
+        screen.addComponent(new EntityShow(Minecraft.getMinecraft().player).setScale(100).setPosition(200, 300))
+                .addComponent(new ColorBackground());
+
+        new ToolTip("Hello World").display(Minecraft.getMinecraft().player);
+
+        Minecraft.getMinecraft().displayGuiScreen(screen);
     }
 }

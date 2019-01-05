@@ -21,6 +21,7 @@ public interface KeyBindingHelper {
         ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
+
     static KeyBinding of(String description, int keyCode, String category, KeyModifier keyModifier) {
         final KeyBinding keyBinding = new KeyBinding(description, new IKeyConflictContext() {
             @Override

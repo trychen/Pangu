@@ -1,9 +1,15 @@
 package cn.mccraft.pangu.core.network;
 
 import io.netty.buffer.ByteBuf;
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
+@Data
+@RequiredArgsConstructor
 public class ByteMessage implements IMessage {
+    @NonNull
     private byte[] bytes;
 
     @Override
@@ -21,13 +27,5 @@ public class ByteMessage implements IMessage {
         for (byte aByte : bytes) {
             buf.writeByte(aByte);
         }
-    }
-
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
     }
 }

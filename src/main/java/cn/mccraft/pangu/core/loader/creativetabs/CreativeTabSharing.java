@@ -5,6 +5,7 @@ import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.IRegister;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -28,9 +29,10 @@ public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> 
     /**
      * shared creative tabs
      */
+    @Getter
     private Map<String, CreativeTabs> tabs = new HashMap<>();
-    private int creativeTabsLength = -1;
 
+    private int creativeTabsLength = -1;
 
     @Override
     public void registerField(Field field, Object o, SharedCreativeTab annotation, String domain) {

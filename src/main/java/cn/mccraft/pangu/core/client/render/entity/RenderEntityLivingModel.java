@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.render.entity;
 
+import lombok.Setter;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -14,6 +15,7 @@ import javax.annotation.Nullable;
 
 @SideOnly(Side.CLIENT)
 public class RenderEntityLivingModel extends RenderLiving<EntityLiving> {
+    @Setter
     private ITextureProvider textureProvider;
 
     public RenderEntityLivingModel(RenderManager renderManager, ModelBase modelBase, float shadowSize, ITextureProvider textureProvider) {
@@ -23,7 +25,7 @@ public class RenderEntityLivingModel extends RenderLiving<EntityLiving> {
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(@Nonnull EntityLiving entity) {
+    public ResourceLocation getEntityTexture(@Nonnull EntityLiving entity) {
         return textureProvider == null ? null : textureProvider.getTexture(entity);
     }
 }

@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.item;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -12,8 +14,14 @@ import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class PGEntitySpawner extends Item {
+    @Getter
+    @Setter
     private final Function<EntityPlayer, Entity> entityFactory;
+
+    @Getter
     private SoundEvent soundEvent;
+
+    @Getter
     private SoundCategory soundCategory;
 
     public PGEntitySpawner(Function<EntityPlayer, Entity> entityFactory) {
@@ -22,16 +30,6 @@ public class PGEntitySpawner extends Item {
 
     public Function<EntityPlayer, Entity> getEntityFactory() {
         return entityFactory;
-    }
-
-    @Nullable
-    public SoundEvent getSoundEvent() {
-        return soundEvent;
-    }
-
-    @Nullable
-    public SoundCategory getSoundCategory() {
-        return soundCategory;
     }
 
     public PGEntitySpawner setSoundOnClick(SoundEvent soundEvent, SoundCategory soundCategory) {

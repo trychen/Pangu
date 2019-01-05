@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.client.input;
 
 import cn.mccraft.pangu.core.PanguCore;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
+import lombok.Data;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -11,6 +12,7 @@ import org.lwjgl.input.Keyboard;
  * A data class for bound key
  */
 @SideOnly(Side.CLIENT)
+@Data
 public class CachedKeyBinder {
     private final KeyBinding keyBinding;
     private final MethodAccessor method;

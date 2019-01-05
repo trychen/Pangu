@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.loader.creativetabs;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -13,6 +15,8 @@ import javax.annotation.Nonnull;
  * @author trychen
  */
 class CustomIconCreativeTab extends CreativeTabs {
+    @Setter
+    @Getter
     private ItemStack tabIconItem;
 
     public CustomIconCreativeTab(String label) {
@@ -29,10 +33,6 @@ class CustomIconCreativeTab extends CreativeTabs {
     public CustomIconCreativeTab(@Nonnull String label, @Nonnull ItemStack tabIconItem) {
         super(label);
         setTabIconItem(tabIconItem);
-    }
-
-    public void setTabIconItem(@Nonnull ItemStack tabIconItem) {
-        this.tabIconItem = tabIconItem;
     }
 
     /**
