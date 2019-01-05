@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -9,10 +11,20 @@ import java.io.IOException;
 @SideOnly(Side.CLIENT)
 public class Screen extends GuiScreen {
     protected boolean drawDefaultBackground = true;
+    protected boolean doesGuiPauseGame = false;
     protected Container rootContainer;
 
     public Screen() {
-        rootContainer = new Container(width, height);
+        rootContainer = new Container(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+    }
+
+    public Screen addComponent(Component component) {
+        rootContainer.addComponent(component);
+        return this;
+    }
+    public Screen addComponents(Component... cs) {
+        rootContainer.addComponents(cs);
+        return this;
     }
 
     @Override
@@ -24,6 +36,11 @@ public class Screen extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         rootContainer.onMousePressed(mouseButton, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+        return doesGuiPauseGame;
     }
 
     @Override

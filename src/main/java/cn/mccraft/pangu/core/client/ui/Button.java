@@ -11,7 +11,8 @@ public abstract class Button extends Component {
     private boolean isPlayPressSound = true;
 
     public Button(int width, int height) {
-        super(width, height);
+        super();
+        setSize(width, height);
     }
 
     public abstract void onClick(int mouseButton, int mouseX, int mouseY);

@@ -13,13 +13,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class Component implements Cloneable, Comparable<Component> {
   protected Component parent;
   protected int zLevel = 100;
-  protected int height, width;
+  protected int height = 0, width = 0;
   protected float x = 0, y = 0;
   protected boolean hovered = false, visible = true, disabled = false;
 
-  public Component(int width, int height) {
-    this.height = height;
-    this.width = width;
+  public Component() {
   }
 
   public void onDraw(float partialTicks, int mouseX, int mouseY) {}
@@ -30,7 +28,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
   public void onKeyTyped(char typedChar, int keyCode) {}
 
-  public void onUpdata(int mouseX, int mouseY) {
+  public void onUpdate(int mouseX, int mouseY) {
     this.hovered = isHovered(mouseX, mouseY);
   }
 
@@ -84,6 +82,16 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
   public Component setDisabled(boolean disabled) {
     this.disabled = disabled;
+    return this;
+  }
+
+  public Component setZLevel(int zLevel) {
+    this.zLevel = zLevel;
+    return this;
+  }
+
+  public Component setParent(Component parent) {
+    this.parent = parent;
     return this;
   }
 

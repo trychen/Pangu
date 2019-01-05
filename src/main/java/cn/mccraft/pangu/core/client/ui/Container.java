@@ -12,14 +12,23 @@ public class Container extends Component {
   protected Focusable focusedComponent;
 
   public Container(int width, int height) {
-    super(width, height);
+    super();
+    setSize(width, height);
   }
 
   public Container addComponents(Component... cs) {
     if (cs.length == 0) return this;
+
+    // Set parents
+    for (Component c : cs) c.setParent(this);
+
+    // Add component
     Collections.addAll(components, cs);
+
+    // Sort with Z Index
     Collections.sort(components);
 
+    // Check focus
     if (focusedComponent == null) {
       for (Component c : cs) {
         if (c instanceof Focusable) {
@@ -34,6 +43,7 @@ public class Container extends Component {
   public Container addComponent(@Nonnull Component c) {
     components.add(c);
     Collections.sort(components);
+    c.setParent(this);
 
     if (focusedComponent == null && c instanceof Focusable) {
       focus((Focusable) c);
@@ -51,7 +61,7 @@ public class Container extends Component {
 
   @Override
   public void onDraw(float partialTicks, int mouseX, int mouseY) {
-    components.forEach(c -> c.onUpdata(mouseX, mouseY));
+    components.forEach(c -> c.onUpdate(mouseX, mouseY));
     components
         .stream()
         .filter(Component::isVisible)
