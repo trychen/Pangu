@@ -2,7 +2,10 @@ package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.util.render.Rect;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class ColorBackground extends Component {
     public ColorBackground() {
         super();

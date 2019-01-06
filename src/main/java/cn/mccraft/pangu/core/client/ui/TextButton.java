@@ -8,9 +8,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
+@SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public class TextButton extends Button {
     public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 0, 0, 200, 20, 10, 0xE0E0E0, 0x6affec, 0xa0a0a0, true);

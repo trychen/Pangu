@@ -1,9 +1,14 @@
 package cn.mccraft.pangu.core.util.data;
 
 
+import cn.mccraft.pangu.core.util.data.builtin.ItemStackSerializer;
+import cn.mccraft.pangu.core.util.data.builtin.NBTSerializer;
 import lombok.Getter;
 import lombok.val;
 import lombok.var;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -29,13 +34,15 @@ public enum ByteSerialization {
             return bytes;
         }));
 
-        register(String.class, (out, o) -> out.writeUTF(o), in -> in.readUTF());
         register(int.class, (out, o) -> out.writeInt(o), in -> in.readInt());
         register(float.class, (out, o) -> out.writeFloat(o), in -> in.readFloat());
         register(double.class, (out, o) -> out.writeDouble(o), in -> in.readDouble());
         register(boolean.class, (out, o) -> out.writeBoolean(o), in -> in.readBoolean());
         register(short.class, (out, o) -> out.writeShort(o), in -> in.readShort());
         register(byte.class, (out, o) -> out.writeByte(o), in -> in.readByte());
+        register(String.class, (out, o) -> out.writeUTF(o), in -> in.readUTF());
+        register(ItemStack.class, ItemStackSerializer.INSTANCE);
+        register(NBTTagCompound.class, NBTSerializer.INSTANCE);
     }
 
     public void serialize(DataOutputStream out, Object object) throws IOException {
