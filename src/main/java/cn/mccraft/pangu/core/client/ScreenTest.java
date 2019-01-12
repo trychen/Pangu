@@ -32,5 +32,7 @@ public class ScreenTest extends Screen {
         new ToolTip("Hello World").display(Minecraft.getMinecraft().player);
 
         Minecraft.getMinecraft().displayGuiScreen(screen);
+
+        System.out.println(Minecraft.getMinecraft().player.getEntityData());
     }
 }

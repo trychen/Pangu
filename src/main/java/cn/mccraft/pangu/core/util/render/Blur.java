@@ -6,6 +6,9 @@ import cn.mccraft.pangu.core.util.Environment;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.FieldAccessor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -43,8 +46,7 @@ public enum Blur {
     private Map<String, BlurData> blurDataMap = new HashMap<>();
     private boolean isActived = false;
     private FieldAccessor listShadersAccessor;
-    private int radius;
-    private int startColor = -1072689136, endColor = -804253680;
+    public static final int DEFAULT_START_COLOR = -1072689136, DEFAULT_END_COLOR = -804253680;
 
     Blur() {
         Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
@@ -52,9 +54,15 @@ public enum Blur {
 
     private BlurData blurData;
 
+    /**
+     *
+     * @param guiScreen
+     * @param second
+     * @return
+     */
     public static int getGuiBackgroundColor(GuiScreen guiScreen, boolean second) {
-        if (!INSTANCE.isBlurGui(guiScreen)) return second ? -804253680 : -1072689136;
-        return second ? INSTANCE.endColor : INSTANCE.startColor;
+        if (!INSTANCE.isBlurGui(guiScreen)) return second ? DEFAULT_END_COLOR : DEFAULT_START_COLOR;
+        return second ? INSTANCE.blurData.endColor : INSTANCE.blurData.startColor;
     }
 
     public boolean isBlurGui(GuiScreen guiScreen) {
@@ -79,14 +87,10 @@ public enum Blur {
             if (event.getGui().getClass().isAnnotationPresent(Gui.class)) {
                 include = true;
                 Gui gui = event.getGui().getClass().getAnnotation(Gui.class);
-                radius = gui.radius();
-                startColor = gui.startColor();
-                endColor = gui.endColor();
+                this . blurData = BlurData.fromGui(gui);
             } else if ((blurData = blurDataMap.get(event.getGui().getClass().getName())) != null) {
                 include = true;
-                radius = blurData.getRadius();
-                startColor = blurData.getStartColor();
-                endColor = blurData.getEndColor();
+                this.blurData = blurData;
             }
         }
 
@@ -116,7 +120,7 @@ public enum Blur {
                 for (Shader s : shaders) {
                     ShaderUniform radius = s.getShaderManager().getShaderUniform("Radius");
                     if (radius != null) {
-                        radius.set(this.radius);
+                        radius.set(this.blurData.radius);
                     }
                 }
             } catch (Exception e) {
@@ -142,28 +146,12 @@ public enum Blur {
         int endColor() default 0x00000000;
     }
 
+    @AllArgsConstructor
     public static class BlurData {
-        private int radius = 16, startColor = 0x00000000, endColor = 0x00000000;
-
-        public BlurData(int radius, int startColor, int endColor) {
-            this.radius = radius;
-            this.startColor = startColor;
-            this.endColor = endColor;
-        }
-        public int getRadius() {
-            return radius;
-        }
-
-        public int getStartColor() {
-            return startColor;
-        }
-
-        public int getEndColor() {
-            return endColor;
-        }
+        public final int radius, startColor, endColor;
 
         public static BlurData fromGui(Gui gui) {
-            return null;
+            return new BlurData(gui.radius(), gui.startColor(), gui.endColor());
         }
     }
 }

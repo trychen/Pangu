@@ -12,14 +12,14 @@ import java.util.List;
  * @author trychen
  * @since 1.0.0.5
  */
-public class LoreHelper {
+public interface LoreHelper {
     /**
      * 添加可以Shift显示的Lore
      * @param lores addInformation 的arg3 的列表
      * @param def 未按下shift时显示的内容
      * @param shifts 按下shift后显示的内容
      */
-    public static void shiftLore(List<String> lores, String[] def, String[] shifts){
+    static void shiftLore(List<String> lores, String[] def, String[] shifts){
         lores.addAll(Arrays.asList(def));
         
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
@@ -34,7 +34,7 @@ public class LoreHelper {
      * @param lores addInformation 的arg3 的列表
      * @param itemName 未按下shift时显示的内容
      */
-    public static void shiftLoreWithI18n(List<String> lores, String itemName){
+    static void shiftLoreWithI18n(List<String> lores, String itemName){
         if (I18n.hasKey(itemName + ".lore"))
             lores.add(I18n.format(itemName + ".lore"));
         else {

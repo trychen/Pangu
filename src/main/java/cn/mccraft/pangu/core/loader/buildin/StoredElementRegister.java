@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
+import cn.mccraft.pangu.core.loader.AnnotationRegister;
 import cn.mccraft.pangu.core.loader.IRegister;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.google.common.collect.Sets;
@@ -15,7 +16,7 @@ import java.util.Set;
  * @param <T> the registering item
  * @param <A> the annotation for registering
  */
-public abstract class StoredElementRegister<T, A extends Annotation> implements IRegister<A, T> {
+public abstract class StoredElementRegister<T, A extends Annotation> implements AnnotationRegister<A, T> {
     public Set<FieldElement> items = Sets.newHashSet();
 
     /**

@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.loader;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ModFinder;
 import com.google.common.collect.Maps;
+import lombok.experimental.Delegate;
 import lombok.val;
 
 import java.lang.annotation.Annotation;
@@ -15,7 +16,7 @@ import java.util.Map;
 public enum ElementInjector {
     INSTANCE;
 
-    private Map<Class<? extends Annotation>, IRegister> annotations = Maps.newHashMap();
+    private Map<Class<? extends Annotation>, AnnotationRegister> annotations = Maps.newHashMap();
 
     /**
      * auto inject all @RegisteringHandler class
@@ -27,7 +28,7 @@ public enum ElementInjector {
                 // clean non-annotation class
                 .filter(Annotation.class::isAssignableFrom)
                 .forEach(it -> ElementInjector.INSTANCE.annotations
-                        .put((Class<? extends Annotation>) it, (IRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())));
+                        .put((Class<? extends Annotation>) it, (AnnotationRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())));
     }
 
     @Load
@@ -64,7 +65,7 @@ public enum ElementInjector {
         });
     }
 
-    public IRegister get(Class<? extends Annotation> clazz) {
+    public AnnotationRegister get(Class<? extends Annotation> clazz) {
         return annotations.get(clazz);
     }
 }

@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface RegisteringHandler {
-    Class<? extends IRegister> value() default IRegister.class;
+    Class<? extends AnnotationRegister> value() default AnnotationRegister.class;
 }

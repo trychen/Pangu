@@ -22,7 +22,6 @@ public class LocalCache extends Thread {
     private static File CACHE_DIR = new File(Loader.instance().getConfigDir(), "cache");
     private static Map<String, File> groups = new ConcurrentHashMap<>();
     private static Set<Path> usedFiles = new ConcurrentSet<>();
-    private static boolean shouldCleanCache;
 
     static {
         if (!CACHE_DIR.exists()) {

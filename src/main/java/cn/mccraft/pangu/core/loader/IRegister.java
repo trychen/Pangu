@@ -6,11 +6,8 @@ import java.lang.reflect.Field;
 /**
  * @since 1.0.3
  * @author trychen
+ * @deprecated {@link cn.mccraft.pangu.core.loader.AnnotationRegister}
  */
-public interface IRegister<ANNOTATION extends Annotation, INSTANCE> {
-    default void registerField(Field field, INSTANCE instance, ANNOTATION annotation, String domain) {
-    }
-
-    default void registerClass(Class<? extends INSTANCE> clazz, ANNOTATION annotation, String domain) {
-    }
+@Deprecated
+public interface IRegister<ANNOTATION extends Annotation, INSTANCE> extends AnnotationRegister<ANNOTATION, INSTANCE> {
 }

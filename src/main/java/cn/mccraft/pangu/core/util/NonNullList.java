@@ -33,7 +33,7 @@ public class NonNullList<E> extends AbstractList<E> {
         Validate.notNull(fill);
         Object[] aobject = new Object[size];
         Arrays.fill(aobject, fill);
-        return new NonNullList<E>(Arrays.asList((E[]) aobject), fill);
+        return new NonNullList<>(Arrays.asList((E[]) aobject), fill);
     }
 
     public static <E> NonNullList<E> from(E defaultElementIn, E... elements) {
@@ -41,13 +41,13 @@ public class NonNullList<E> extends AbstractList<E> {
     }
 
     @Nonnull
-    public E get(int p_get_1_) {
-        return this.delegate.get(p_get_1_);
+    public E get(int index) {
+        return this.delegate.get(index);
     }
 
-    public E set(int p_set_1_, E p_set_2_) {
-        Validate.notNull(p_set_2_);
-        return this.delegate.set(p_set_1_, p_set_2_);
+    public E set(int index, E element) {
+        Validate.notNull(element);
+        return this.delegate.set(index, element);
     }
 
     public void add(int p_add_1_, E p_add_2_) {
@@ -55,8 +55,13 @@ public class NonNullList<E> extends AbstractList<E> {
         this.delegate.add(p_add_1_, p_add_2_);
     }
 
-    public E remove(int p_remove_1_) {
-        return this.delegate.remove(p_remove_1_);
+    public E remove(int index) {
+        return this.delegate.remove(index);
+    }
+
+
+    public boolean remove(Object element) {
+        return this.delegate.remove(element);
     }
 
     public int size() {

@@ -1,8 +1,5 @@
 package cn.mccraft.pangu.core.util;
 
-import net.minecraftforge.fml.common.Loader;
-
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 

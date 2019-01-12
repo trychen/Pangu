@@ -56,6 +56,7 @@ public enum AnnotationInjector {
 
         // solve types
         // 注入初始化类型
+        PanguCore.getLogger().debug("Creating instance of @AutoWired type");
         stream
                 .typeStream()
                 .forEach(it -> {
@@ -74,6 +75,7 @@ public enum AnnotationInjector {
 
         // solve field
         // 解决类型注入
+        PanguCore.getLogger().debug("Solving instance of @AutoWired field");
         stream
                 .fieldStream()
                 .forEach(field -> {

@@ -54,7 +54,7 @@ public class AnnotationStream<T extends Annotation> {
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(ReflectUtils::forNameWithoutException)
+                .map(ReflectUtils::forNameSilently)
                 .filter(Objects::nonNull)
                 .map(it -> it);
         // TODO: Unnecessary map
@@ -65,6 +65,7 @@ public class AnnotationStream<T extends Annotation> {
      */
     @SuppressWarnings("unchecked")
     public Stream<Class<?>> typeStream() {
+        //noinspection RedundantStreamOptionalCall
         return asmDatas
                 .stream()
                 // filter that clean non-class object
@@ -73,7 +74,7 @@ public class AnnotationStream<T extends Annotation> {
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
                 // map class entity
-                .map(ReflectUtils::forNameWithoutException)
+                .map(ReflectUtils::forNameSilently)
                 .filter(Objects::nonNull)
                 .map(it -> it);
         // TODO: Unnecessary map

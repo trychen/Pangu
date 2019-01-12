@@ -260,7 +260,7 @@ public interface ReflectUtils {
      *
      * @return null if failed
      */
-    static Class<?> forNameWithoutException(String name){
+    static Class<?> forNameSilently(String name){
         try {
             return Class.forName(name);
         } catch (Exception e) {
