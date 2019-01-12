@@ -1,6 +1,7 @@
-package cn.mccraft.pangu.core.client.ui;
+package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.gui.Style;
+import cn.mccraft.pangu.core.client.ui.Button;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.font.FontProvider;
 import cn.mccraft.pangu.core.util.render.Rect;

@@ -8,9 +8,13 @@ import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.util.MinecraftThreading;
 import cn.mccraft.pangu.core.util.PanguClassLoader;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import cn.mccraft.pangu.core.util.Try;
 import cn.mccraft.pangu.core.util.data.ByteSerialization;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
+import lombok.Getter;
+import lombok.experimental.Delegate;
+import lombok.var;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,29 +36,39 @@ public class RemoteHandler {
     private static Map<String, CachedRemoteMessage> messages = new HashMap<>();
 
     public static boolean send(String messageType, Object[] objects) {
-        if (MinecraftThreading.commonSide() == Side.CLIENT && Minecraft.getMinecraft().isIntegratedServerRunning())
-            return false;
-        CachedRemoteMessage cached = messages.get(messageType);
-        Objects.requireNonNull(cached, "Couldn't find any cached @Remote message");
-        if (cached.nativeMessage.side == MinecraftThreading.currentThreadSide()) return false;
+        // 是否在正在运行内置服务器
+        if (MinecraftThreading.isIntegratedServer()) return false;
+
+        // 获取消息
+        CachedRemoteMessage packet = messages.get(messageType);
+
+        // 空检测
+        Objects.requireNonNull(packet, "Couldn't find any cached @Remote message");
+
+        // Side 吻合时直接运行
+        if (packet.getSide() == MinecraftThreading.currentThreadSide()) return false;
+
         try {
-            if (cached.withEntityPlayer) {
-                Object[] datas = Arrays.copyOfRange(objects, 1, objects.length);
-                byte[] bytes = ByteSerialization.INSTANCE.serialize(datas);
-                ByteMessage byteMessage = (ByteMessage) cached.messageClass.newInstance();
+            if (packet.isWithEntityPlayer()) {
+                // 带 EntityPlayer 首参数
+                Object[] data = Arrays.copyOfRange(objects, 1, objects.length);
+
+                byte[] bytes = ByteSerialization.INSTANCE.serialize(data, packet.getActualParameterTypes());
+                ByteMessage byteMessage = (ByteMessage) packet.getMessageClass().newInstance();
                 byteMessage.setBytes(bytes);
-                if (cached.nativeMessage.side == Side.SERVER)
-                    cached.network.sendToServer(byteMessage);
-                else if (cached.nativeMessage.side == Side.CLIENT)
-                    cached.network.sendTo(byteMessage, (EntityPlayerMP) objects[0]);
+                if (packet.getSide() == Side.SERVER)
+                    packet.network.sendToServer(byteMessage);
+                else if (packet.getSide() == Side.CLIENT)
+                    packet.network.sendTo(byteMessage, (EntityPlayerMP) objects[0]);
             } else {
-                byte[] bytes = ByteSerialization.INSTANCE.serialize(objects);
-                ByteMessage byteMessage = (ByteMessage) cached.messageClass.newInstance();
+                // 不带 EntityPlayer 参数
+                byte[] bytes = ByteSerialization.INSTANCE.serialize(objects, packet.getActualParameterTypes());
+                ByteMessage byteMessage = (ByteMessage) packet.messageClass.newInstance();
                 byteMessage.setBytes(bytes);
-                if (cached.nativeMessage.side == Side.SERVER)
-                    cached.network.sendToAll(byteMessage);
-                else if (cached.nativeMessage.side == Side.CLIENT)
-                    cached.network.sendToServer(byteMessage);
+                if (packet.nativeMessage.side == Side.SERVER)
+                    packet.network.sendToAll(byteMessage);
+                else if (packet.nativeMessage.side == Side.CLIENT)
+                    packet.network.sendToServer(byteMessage);
             }
         } catch (Exception e) {
             PanguCore.getLogger().error("Error while sending @Remote info", e);
@@ -64,14 +79,13 @@ public class RemoteHandler {
     @Load
     public static void registerMessages() {
         RemoteTransformer.messages.forEach(RemoteHandler::registerMessage);
-        RemoteTransformer.messages = null;
     }
 
     public static void registerMessage(RemoteTransformer.RemoteMessage message) {
         try {
             CachedRemoteMessage cached = new CachedRemoteMessage(message);
-            messages.put(message.messageClassName, cached);
-            cached.network.registerMessage(new MessageHandler(cached), cached.messageClass, cached.id, cached.nativeMessage.side);
+            messages.put(message.getMessageClassName(), cached);
+            cached.getNetwork().registerMessage(new MessageHandler(cached), cached.getMessageClass(), cached.getId(), cached.getSide());
         } catch (Exception e) {
             PanguPlugin.getLogger().error("Couldn't register message", e);
         }
@@ -87,33 +101,35 @@ public class RemoteHandler {
         @Override
         public IMessage onMessage(ByteMessage message, MessageContext ctx) {
             try {
-                if (cached.withEntityPlayer) {
-                    Object[] objects = new Object[cached.methodArgs.length];
-                    Object[] deserialize = ByteSerialization.INSTANCE.deserialize(message.getBytes(), Arrays.copyOfRange(cached.methodArgs, 1, cached.methodArgs.length));
+                if (cached.isWithEntityPlayer()) {
+                    var objects = new Object[cached.getMethodArgs().length];
+                    Object[] deserialize = ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.getActualParameterTypes());
                     for (int i = 0; i < deserialize.length; i++) {
                         objects[i + 1] = deserialize[i];
                     }
 
-                    if (MinecraftThreading.commonSide() == Side.CLIENT) {
+                    if (MinecraftThreading.commonSide().isClient()) {
                         objects[0] = Minecraft.getMinecraft().player;
                     } else {
                         objects[0] = ctx.getServerHandler().player;
                     }
-                    MinecraftThreading.submit(() -> {
-                        try {
-                            cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects);
-                        } catch (Exception e) {
-                            PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
-                        }
-                    }, cached.nativeMessage.sync);
-                } else
-                    MinecraftThreading.submit(() -> {
-                        try {
-                            cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs));
-                        } catch (Exception e) {
-                            PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
-                        }
-                    }, cached.nativeMessage.sync);
+
+                    MinecraftThreading.submit(
+                            Try.safe(
+                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects),
+                                    "Unable to handle @Remote for " + cached.messageClass.toGenericString()
+                            ),
+                            cached.isSync()
+                    );
+                } else {
+                    MinecraftThreading.submit(
+                            Try.safe(
+                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs)),
+                                    "Unable to handle @Remote for " + cached.messageClass.toGenericString()
+                            ),
+                            cached.isSync()
+                    );
+                }
             } catch (Exception e) {
                 PanguCore.getLogger().error("Unable to handle @Remote for " + cached.messageClass.toGenericString(), e);
             }
@@ -122,22 +138,37 @@ public class RemoteHandler {
     }
 
     public static class CachedRemoteMessage {
-        private int id;
+        @Getter
         private Class messageClass;
-        private MethodAccessor methodAccessor;
-        private Class owner;
+
+        @Getter
         private Class[] methodArgs;
+
+        @Getter
+        @Delegate
         private RemoteTransformer.RemoteMessage nativeMessage;
-        private boolean withEntityPlayer, isStatic;
+
+        @Getter
+        private boolean withEntityPlayer;
+
+        @Getter
         private SimpleNetworkWrapper network;
 
+        private MethodAccessor methodAccessor;
+        private Method method;
+        private Class owner;
+        private Class[] actualParameterTypes;
+        private boolean isStatic;
+
         public CachedRemoteMessage(RemoteTransformer.RemoteMessage remoteMessage) throws Exception {
-            this.id = remoteMessage.id;
             this.messageClass = PanguClassLoader.getInstance().defineClass(remoteMessage.messageClassName, remoteMessage.messageClassBytes);
-            this.methodArgs = ReflectUtils.fromTypes(remoteMessage.methodArgs);
+            this.methodArgs = ReflectUtils.fromTypes(remoteMessage.methodArgTypes);
             this.network = Network.getNetworkWrapper(messageClass);
             this.withEntityPlayer = methodArgs.length > 0 && EntityPlayer.class.isAssignableFrom(methodArgs[0]);
             this.nativeMessage = remoteMessage;
+
+            // clean useless data
+            remoteMessage.messageClassBytes = null;
         }
 
         public Class getOwner() {
@@ -149,11 +180,29 @@ public class RemoteHandler {
 
         public MethodAccessor getMethodAccessor() throws Exception {
             if (methodAccessor == null) {
-                Method method = getOwner().getDeclaredMethod(nativeMessage.methodName, methodArgs);
+                var method = getMethod();
                 this.methodAccessor = FastReflection.create(method);
                 this.isStatic = Modifier.isStatic(method.getModifiers());
             }
             return methodAccessor;
+        }
+
+        public Method getMethod() throws NoSuchMethodException {
+            if (method == null) {
+                method = getOwner().getDeclaredMethod(nativeMessage.methodName, methodArgs);
+            }
+            return method;
+        }
+
+        public Class[] getActualParameterTypes() throws NoSuchMethodException {
+            if (actualParameterTypes == null) {
+                var method = getMethod();
+                var parameterTypes = method.getParameterTypes();
+                if (isWithEntityPlayer()) {
+                    this.actualParameterTypes = Arrays.copyOfRange(parameterTypes, 1, parameterTypes.length);
+                } else this.actualParameterTypes = parameterTypes;
+            }
+            return actualParameterTypes;
         }
 
         public boolean isStatic() throws Exception {

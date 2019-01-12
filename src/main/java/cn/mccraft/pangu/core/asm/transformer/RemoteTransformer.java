@@ -3,6 +3,8 @@ package cn.mccraft.pangu.core.asm.transformer;
 import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import cn.mccraft.pangu.core.network.RemoteHandler;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -63,14 +65,19 @@ public class RemoteTransformer implements IClassTransformer {
         classReader.accept(classNode, 0);
         boolean edited = false;
         for (MethodNode method : classNode.methods) {
+            // 空检测，检测是否存在注解
             if (method.visibleAnnotations == null) continue;
             Optional<AnnotationNode> remote = method.visibleAnnotations.stream().filter(it -> REMOTE_ANNOTATION.equals(it.desc)).findAny();
             if (!remote.isPresent()) continue;
-            if ((method.access & ACC_STATIC) != 0) {
-                PanguPlugin.getLogger().error("Couln't use @Remote in a non-static method: " + classNode.name + "#" + method.name + method.signature, classNode, method);
-                continue;
-            }
 
+            // note: @version 1.4.4 无需检测，支持 @AutoWired
+            // 检测是否为 static
+//            if ((method.access & ACC_STATIC) == 0) {
+//                PanguPlugin.getLogger().error("Couln't use @Remote in a non-static method: " + classNode.name + "#" + method.name + method.signature, classNode, method);
+//                continue;
+//            }
+
+            // 获取注解信息
             Map<String, Object> values = mapAnnotationValues(remote.get());
             int id = (int) values.get("value");
             Side side;
@@ -85,6 +92,7 @@ public class RemoteTransformer implements IClassTransformer {
 
             Type[] args = Type.getArgumentTypes(method.desc);
 
+            // 生成类名
             String messageClassName = classNode.name + "$Message_" + method.name;
             String transformedNameMessageClassName = transformedName + "$Message_" + method.name;
             byte[] messageClass = createMessage(messageClassName);
@@ -140,25 +148,16 @@ public class RemoteTransformer implements IClassTransformer {
         return map;
     }
 
+    @Data
+    @AllArgsConstructor
     public static class RemoteMessage {
         public final int id;
-        public final byte[] messageClassBytes;
+        public byte[] messageClassBytes;
         public final String messageClassName;
         public final String ownerClass;
         public final String methodName;
-        public final Type[] methodArgs;
+        public final Type[] methodArgTypes;
         public final Side side;
         public final boolean sync;
-
-        public RemoteMessage(int id, byte[] messageClassBytes, String messageClassName, String ownerClass, String methodName, Type[] methodArgs, Side side, boolean sync) {
-            this.id = id;
-            this.messageClassBytes = messageClassBytes;
-            this.messageClassName = messageClassName;
-            this.ownerClass = ownerClass;
-            this.methodName = methodName;
-            this.methodArgs = methodArgs;
-            this.side = side;
-            this.sync = sync;
-        }
     }
 }

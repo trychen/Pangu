@@ -1,6 +1,10 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import com.github.mouse0w0.fastreflection.FastReflection;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -10,9 +14,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.lang.reflect.Field;
+
+@Accessors(chain = true)
 @SideOnly(Side.CLIENT)
 public class EntityShow extends Component {
+    @Getter
+    @Setter
     private EntityLivingBase entity;
+
+    @Getter
+    @Setter
     private float scale = 30;
 
     public EntityShow(EntityLivingBase entity) {
@@ -22,9 +34,9 @@ public class EntityShow extends Component {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         int aimX = (int) (x - mouseX);
         int aimY = (int) (y - 75 - mouseY);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
@@ -64,23 +76,4 @@ public class EntityShow extends Component {
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GlStateManager.disableBlend();
     }
-
-    public EntityLivingBase getEntity() {
-        return entity;
-    }
-
-    public EntityShow setEntity(EntityLivingBase entity) {
-        this.entity = entity;
-        return this;
-    }
-
-    public float getScale() {
-        return scale;
-    }
-
-    public EntityShow setScale(float scale) {
-        this.scale = scale;
-        return this;
-    }
-
 }

@@ -4,6 +4,7 @@ import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ModFinder;
 import cn.mccraft.pangu.core.util.ReflectUtils;
 import lombok.val;
+import lombok.var;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import java.util.NoSuchElementException;
@@ -26,7 +27,9 @@ public interface Network {
         Object mod = container.get().getMod();
 
         // finding SimpleNetworkWrapper from mod
-        val channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
+        var channel = ReflectUtils.getField(mod.getClass(), mod, "network", SimpleNetworkWrapper.class, true);
+        if (channel == null) channel = ReflectUtils.getField(mod.getClass(), mod, "NETWORK", SimpleNetworkWrapper.class, true);
+        if (channel == null) channel = ReflectUtils.invokeMethod(mod, "getNetwork", SimpleNetworkWrapper.class, true);
 
         if (channel == null) {
             PanguCore.getLogger().error("Unable to find a SimpleNetworkWrapper for mod's class " + clazz.toGenericString(), new NoSuchFieldException());

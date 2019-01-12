@@ -1,17 +1,13 @@
 package cn.mccraft.pangu.core.network;
 
 import io.netty.buffer.ByteBuf;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 @NoArgsConstructor
 public class ByteMessage implements IMessage {
-    @NonNull
     private byte[] bytes;
 
     @Override

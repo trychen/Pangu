@@ -148,6 +148,8 @@ public enum Blur {
 
     @AllArgsConstructor
     public static class BlurData {
+        public static final BlurData DEFAULT = new BlurData(16, 0, 0);
+
         public final int radius, startColor, endColor;
 
         public static BlurData fromGui(Gui gui) {

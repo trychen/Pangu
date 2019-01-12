@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class PGEntitySpawner extends Item {
     @Getter
     @Setter
-    private final Function<EntityPlayer, Entity> entityFactory;
+    private Function<EntityPlayer, Entity> entityFactory;
 
     @Getter
     private SoundEvent soundEvent;
@@ -26,10 +26,6 @@ public class PGEntitySpawner extends Item {
 
     public PGEntitySpawner(Function<EntityPlayer, Entity> entityFactory) {
         this.entityFactory = entityFactory;
-    }
-
-    public Function<EntityPlayer, Entity> getEntityFactory() {
-        return entityFactory;
     }
 
     public PGEntitySpawner setSoundOnClick(SoundEvent soundEvent, SoundCategory soundCategory) {

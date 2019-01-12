@@ -1,13 +1,17 @@
 package cn.mccraft.pangu.core.util.data;
 
 
+import cn.mccraft.pangu.core.util.data.builtin.BlockPosSerializer;
 import cn.mccraft.pangu.core.util.data.builtin.ItemStackSerializer;
 import cn.mccraft.pangu.core.util.data.builtin.NBTSerializer;
+import cn.mccraft.pangu.core.util.data.builtin.TextComponentSerializer;
 import lombok.Getter;
 import lombok.val;
 import lombok.var;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.io.*;
@@ -43,10 +47,16 @@ public enum ByteSerialization {
         register(String.class, (out, o) -> out.writeUTF(o), in -> in.readUTF());
         register(ItemStack.class, ItemStackSerializer.INSTANCE);
         register(NBTTagCompound.class, NBTSerializer.INSTANCE);
+        register(BlockPos.class, BlockPosSerializer.INSTANCE);
+        register(ITextComponent.class, TextComponentSerializer.INSTANCE);
     }
 
     public void serialize(DataOutputStream out, Object object) throws IOException {
-        var byteSerializable = serializer.get(object.getClass());
+        serialize(out, object, object.getClass());
+    }
+
+    public void serialize(DataOutputStream out, Object object, Type type) throws IOException {
+        var byteSerializable = serializer.get(type);
         if (byteSerializable == null && object instanceof ByteSerializer) {
             serializer.put(byteSerializable.getClass(), byteSerializable = (ByteSerializer) object);
         }
@@ -55,11 +65,34 @@ public enum ByteSerialization {
         byteSerializable.serialize(out, object);
     }
 
+    /**
+     * 序列化参数
+     * @param object
+     * @return
+     * @throws IOException
+     */
     public byte[] serialize(Object[] object) throws IOException {
         val stream = new ByteArrayOutputStream();
         val out = new DataOutputStream(stream);
         for (Object o : object) {
             serialize(out, o);
+        }
+        return stream.toByteArray();
+    }
+
+    /**
+     * 序列化参数
+     * @param object
+     * @param types 类型
+     * @return
+     * @throws IOException
+     */
+    public byte[] serialize(Object[] object, Type[] types) throws IOException {
+        if (object.length != types.length) throw new IllegalArgumentException("objects.length != types.length");
+        val stream = new ByteArrayOutputStream();
+        val out = new DataOutputStream(stream);
+        for (int i = 0; i < object.length; i++) {
+            serialize(out, object[i], types[i]);
         }
         return stream.toByteArray();
     }

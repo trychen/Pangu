@@ -43,4 +43,8 @@ public interface MinecraftThreading {
     static Side commonSide() {
         return FMLCommonHandler.instance().getSide();
     }
+
+    static boolean isIntegratedServer() {
+        return commonSide().isClient() && Minecraft.getMinecraft().isIntegratedServerRunning();
+    }
 }
