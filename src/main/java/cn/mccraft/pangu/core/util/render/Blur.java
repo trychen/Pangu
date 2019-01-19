@@ -49,7 +49,7 @@ public enum Blur {
     public static final int DEFAULT_START_COLOR = -1072689136, DEFAULT_END_COLOR = -804253680;
 
     Blur() {
-        Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
+//        Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
     }
 
     private BlurData blurData;

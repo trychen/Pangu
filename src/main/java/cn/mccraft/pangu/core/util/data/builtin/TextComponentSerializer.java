@@ -1,23 +1,20 @@
 package cn.mccraft.pangu.core.util.data.builtin;
 
-import cn.mccraft.pangu.core.util.data.ByteSerializer;
-import net.minecraft.util.math.BlockPos;
+import com.trychen.bytedatastream.*;
 import net.minecraft.util.text.ITextComponent;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-public enum TextComponentSerializer implements ByteSerializer<ITextComponent> {
+public enum TextComponentSerializer implements ByteSteamSerializer<ITextComponent>, ByteSteamDeserializer<ITextComponent> {
     INSTANCE;
 
     @Override
-    public void serialize(DataOutputStream stream, ITextComponent object) throws IOException {
-        stream.writeUTF(ITextComponent.Serializer.componentToJson(object));
+    public ITextComponent deserialize(DataInput in) throws IOException {
+        return ITextComponent.Serializer.jsonToComponent(in.readUTF());
     }
 
     @Override
-    public ITextComponent deserialize(DataInputStream in) throws IOException {
-        return ITextComponent.Serializer.jsonToComponent(in.readUTF());
+    public void serialize(DataOutput out, ITextComponent object) throws IOException {
+        out.writeUTF(ITextComponent.Serializer.componentToJson(object));
     }
 }

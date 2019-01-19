@@ -1,6 +1,6 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
-import cn.mccraft.pangu.core.util.data.ByteSerialization;
+import com.trychen.bytedatastream.ByteSerialization;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.val;
@@ -17,7 +17,7 @@ public class ToolTip {
      * Register byte serializer
      */
     static {
-        ByteSerialization.INSTANCE.register(ToolTip.class, (out, toolTip) -> {
+        ByteSerialization.register(ToolTip.class, (out, toolTip) -> {
             out.writeUTF(toolTip.getText());
             out.writeInt(toolTip.getDuration());
             out.writeUTF(toolTip.getStyle().getName());

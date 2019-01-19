@@ -9,6 +9,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -129,7 +130,7 @@ public class RemoteTransformer implements IClassTransformer {
             else
                 RemoteHandler.registerMessage(remoteMessage);
             edited = true;
-            PanguPlugin.getLogger().info("Hook @Remote method: " + classNode.name + "#" + method.name + method.signature + "");
+            PanguPlugin.getLogger().info("Hook @Remote method: " + classNode.name + "#" + method.name + method.desc + "");
         }
         if (!edited) return basicClass;
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);

@@ -1,20 +1,18 @@
 package cn.mccraft.pangu.core.util.data.builtin;
 
-import cn.mccraft.pangu.core.util.data.ByteSerializer;
+import com.trychen.bytedatastream.*;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-public enum NBTSerializer implements ByteSerializer<NBTTagCompound> {
+public enum NBTSerializer implements ByteSteamSerializer<NBTTagCompound>, ByteSteamDeserializer<NBTTagCompound> {
     INSTANCE;
 
     @Override
-    public void serialize(DataOutputStream stream, NBTTagCompound nbt) throws IOException {
+    public void serialize(DataOutput stream, NBTTagCompound nbt) throws IOException {
         if (nbt == null) {
             stream.writeByte(0);
         } else {
@@ -28,7 +26,7 @@ public enum NBTSerializer implements ByteSerializer<NBTTagCompound> {
     }
 
     @Override
-    public NBTTagCompound deserialize(DataInputStream in) throws IOException {
+    public NBTTagCompound deserialize(DataInput in) throws IOException {
         byte b0 = in.readByte();
 
         if (b0 == 0) {

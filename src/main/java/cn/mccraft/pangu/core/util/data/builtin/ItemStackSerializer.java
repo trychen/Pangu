@@ -1,19 +1,17 @@
 package cn.mccraft.pangu.core.util.data.builtin;
 
-import cn.mccraft.pangu.core.util.data.ByteSerializer;
+import com.trychen.bytedatastream.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-public enum ItemStackSerializer implements ByteSerializer<ItemStack> {
+public enum ItemStackSerializer implements ByteSteamSerializer<ItemStack>, ByteSteamDeserializer<ItemStack> {
     INSTANCE;
 
     @Override
-    public void serialize(DataOutputStream stream, ItemStack stack) throws IOException {
+    public void serialize(DataOutput stream, ItemStack stack) throws IOException {
         if (stack.isEmpty()) {
             stream.writeShort(-1);
         } else {
@@ -24,14 +22,14 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack> {
 
             if (stack.getItem().isDamageable() || stack.getItem().getShareTag()) {
                 nbttagcompound = stack.getItem().getNBTShareTag(stack);
-            }
+            } else nbttagcompound = new NBTTagCompound();
 
             NBTSerializer.INSTANCE.serialize(stream, nbttagcompound);
         }
     }
 
     @Override
-    public ItemStack deserialize(DataInputStream in) throws IOException {
+    public ItemStack deserialize(DataInput in) throws IOException {
         int i = in.readShort();
 
         if (i < 0) {

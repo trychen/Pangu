@@ -9,9 +9,9 @@ import cn.mccraft.pangu.core.util.MinecraftThreading;
 import cn.mccraft.pangu.core.util.PanguClassLoader;
 import cn.mccraft.pangu.core.util.ReflectUtils;
 import cn.mccraft.pangu.core.util.Try;
-import cn.mccraft.pangu.core.util.data.ByteSerialization;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
+import com.trychen.bytedatastream.ByteSerialization;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 import lombok.var;
@@ -26,7 +26,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +52,7 @@ public class RemoteHandler {
                 // 带 EntityPlayer 首参数
                 Object[] data = Arrays.copyOfRange(objects, 1, objects.length);
 
-                byte[] bytes = ByteSerialization.INSTANCE.serialize(data, packet.getActualParameterTypes());
+                byte[] bytes = ByteSerialization.serialize(data, packet.getActualParameterTypes());
                 ByteMessage byteMessage = (ByteMessage) packet.getMessageClass().newInstance();
                 byteMessage.setBytes(bytes);
                 if (packet.getSide() == Side.SERVER)
@@ -62,13 +61,14 @@ public class RemoteHandler {
                     packet.network.sendTo(byteMessage, (EntityPlayerMP) objects[0]);
             } else {
                 // 不带 EntityPlayer 参数
-                byte[] bytes = ByteSerialization.INSTANCE.serialize(objects, packet.getActualParameterTypes());
+                byte[] bytes = ByteSerialization.serialize(objects, packet.getActualParameterTypes());
+                System.out.println(Arrays.toString(bytes));
                 ByteMessage byteMessage = (ByteMessage) packet.messageClass.newInstance();
                 byteMessage.setBytes(bytes);
-                if (packet.nativeMessage.side == Side.SERVER)
-                    packet.network.sendToAll(byteMessage);
-                else if (packet.nativeMessage.side == Side.CLIENT)
+                if (packet.getSide() == Side.SERVER)
                     packet.network.sendToServer(byteMessage);
+                else if (packet.getSide() == Side.CLIENT)
+                    packet.network.sendToAll(byteMessage);
             }
         } catch (Exception e) {
             PanguCore.getLogger().error("Error while sending @Remote info", e);
@@ -103,7 +103,7 @@ public class RemoteHandler {
             try {
                 if (cached.isWithEntityPlayer()) {
                     var objects = new Object[cached.getMethodArgs().length];
-                    Object[] deserialize = ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.getActualParameterTypes());
+                    Object[] deserialize = ByteSerialization.deserialize(message.getBytes(), cached.getActualParameterTypes());
                     for (int i = 0; i < deserialize.length; i++) {
                         objects[i + 1] = deserialize[i];
                     }
@@ -124,7 +124,7 @@ public class RemoteHandler {
                 } else {
                     MinecraftThreading.submit(
                             Try.safe(
-                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.INSTANCE.deserialize(message.getBytes(), cached.methodArgs)),
+                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.deserialize(message.getBytes(), cached.methodArgs)),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
                             ),
                             cached.isSync()
