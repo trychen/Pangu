@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
 
-public enum NBTSerializer implements ByteSteamSerializer<NBTTagCompound>, ByteSteamDeserializer<NBTTagCompound> {
+public enum NBTSerializer implements ByteSerializer<NBTTagCompound>, ByteDeserializer<NBTTagCompound> {
     INSTANCE;
 
     @Override

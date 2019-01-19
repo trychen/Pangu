@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
 
-public enum ItemStackSerializer implements ByteSteamSerializer<ItemStack>, ByteSteamDeserializer<ItemStack> {
+public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeserializer<ItemStack> {
     INSTANCE;
 
     @Override

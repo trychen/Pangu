@@ -5,7 +5,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import java.io.IOException;
 
-public enum TextComponentSerializer implements ByteSteamSerializer<ITextComponent>, ByteSteamDeserializer<ITextComponent> {
+public enum TextComponentSerializer implements ByteSerializer<ITextComponent>, ByteDeserializer<ITextComponent> {
     INSTANCE;
 
     @Override
