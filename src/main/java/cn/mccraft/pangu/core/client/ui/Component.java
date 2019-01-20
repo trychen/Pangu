@@ -8,10 +8,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @Accessors(chain = true)
@@ -28,6 +30,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     protected int height = 0, width = 0;
 
     @Getter
+    @Setter
     protected float x = 0, y = 0;
 
     @Getter
@@ -65,6 +68,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
     public void onUpdate(int mouseX, int mouseY) {
         this.hovered = isHovered(mouseX, mouseY);
+
+        if (!isHovered()) return;
+        List<String> toolTip = getToolTip();
+        if (toolTip != null) drawToolTips(toolTip, mouseX, mouseY);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
@@ -84,16 +91,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         return setPosition(x - width / 2, y - height / 2);
     }
 
-    public Component setX(float x) {
-        this.x = x;
-        return this;
-    }
-
-    public Component setY(float y) {
-        this.y = y;
-        return this;
-    }
-
     public Component setSize(int width, int height) {
         this.width = width;
         this.height = height;
@@ -105,12 +102,20 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     @Nullable
-    public NonNullList<String> getToolTip() {
+    public List<String> getToolTip() {
         return null;
     }
 
     public void drawComponentBox() {
         Rect.drawBox(x, y, width, height, 0xFFFFFFFF);
+    }
+
+
+    /**
+     * Draw tooltips
+     */
+    public void drawToolTips(List<String> texts, int mouseX, int mouseY) {
+        GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
     }
 
     @Override

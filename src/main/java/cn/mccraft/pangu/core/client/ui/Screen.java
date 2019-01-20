@@ -1,15 +1,21 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import cn.mccraft.pangu.core.util.NonNullList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Delegate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @Accessors(chain = true)
@@ -57,7 +63,7 @@ public abstract class Screen extends GuiScreen {
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == 1){
+        if (keyCode == 1) {
             this.mc.displayGuiScreen(null);
             if (this.mc.currentScreen == null) this.mc.setIngameFocus();
         } else {
