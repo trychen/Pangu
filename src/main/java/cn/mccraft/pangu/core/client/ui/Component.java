@@ -1,8 +1,6 @@
 package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.util.render.Rect;
-import javax.annotation.Nullable;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,105 +11,110 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+
 @SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public abstract class Component implements Cloneable, Comparable<Component> {
-  @Getter
-  @Setter
-  protected Component parent;
+    @Getter
+    @Setter
+    protected Component parent;
 
-  @Getter
-  @Setter
-  protected int zLevel = 100;
+    @Getter
+    @Setter
+    protected int zLevel = 100;
 
-  @Getter
-  protected int height = 0, width = 0;
+    @Getter
+    protected int height = 0, width = 0;
 
-  @Getter
-  protected float x = 0, y = 0;
+    @Getter
+    protected float x = 0, y = 0;
 
-  @Getter
-  @Setter
-  protected boolean hovered = false, visible = true, disabled = false;
+    @Getter
+    @Setter
+    protected boolean hovered = false, visible = true, disabled = false;
 
-  public Component() {
-  }
+    public Component() {
+    }
 
-  public void onDraw(float partialTicks, int mouseX, int mouseY) {}
+    public static void startDrawingTexture() {
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.enableAlpha();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
 
-  public void onMousePressed(int mouseButton, int mouseX, int mouseY) {}
+    public static void endDrawingTexture() {
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableTexture2D();
+    }
 
-  public void onMouseReleased(int mouseX, int mouseY) {}
+    public void onDraw(float partialTicks, int mouseX, int mouseY) {
+    }
 
-  public void onKeyTyped(char typedChar, int keyCode) {}
+    public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
+    }
 
-  public void onUpdate(int mouseX, int mouseY) {
-    this.hovered = isHovered(mouseX, mouseY);
-  }
+    public void onMouseReleased(int mouseX, int mouseY) {
+    }
 
-  public boolean isHovered(int mouseX, int mouseY) {
-    return mouseX >= this.x
-        && mouseY >= this.y
-        && mouseX < this.x + this.width
-        && mouseY < this.y + this.height;
-  }
+    public void onKeyTyped(char typedChar, int keyCode) {
+    }
 
-  public Component setPosition(float x, float y) {
-    this.x = x;
-    this.y = y;
-    return this;
-  }
+    public void onUpdate(int mouseX, int mouseY) {
+        this.hovered = isHovered(mouseX, mouseY);
+    }
 
-  public Component setCenteredPosition(float x, float y) {
-    return setPosition(x - width / 2, y - height / 2);
-  }
+    public boolean isHovered(int mouseX, int mouseY) {
+        return mouseX >= this.x
+                && mouseY >= this.y
+                && mouseX < this.x + this.width
+                && mouseY < this.y + this.height;
+    }
 
-  public Component setX(float x) {
-    this.x = x;
-    return this;
-  }
+    public Component setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
 
-  public Component setY(float y) {
-    this.y = y;
-    return this;
-  }
+    public Component setCenteredPosition(float x, float y) {
+        return setPosition(x - width / 2, y - height / 2);
+    }
 
-  public Component setSize(int width, int height) {
-    this.width = width;
-    this.height = height;
-    return this;
-  }
+    public Component setX(float x) {
+        this.x = x;
+        return this;
+    }
 
+    public Component setY(float y) {
+        this.y = y;
+        return this;
+    }
 
-  public void bindTexture(ResourceLocation resourceLocation) {
-    Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-  }
+    public Component setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
 
-  @Nullable
-  public NonNullList<String> getToolTip() {
-    return null;
-  }
+    public void bindTexture(ResourceLocation resourceLocation) {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+    }
 
-  public void drawComponentBox() {
-    Rect.drawBox(x, y, width, height, 0xFFFFFFFF);
-  }
+    @Nullable
+    public NonNullList<String> getToolTip() {
+        return null;
+    }
 
-  @Override
-  public int compareTo(Component o) {
-    return Integer.compare(this.getZLevel(), o.getZLevel());
-  }
+    public void drawComponentBox() {
+        Rect.drawBox(x, y, width, height, 0xFFFFFFFF);
+    }
 
-  public static void startDrawingTexture() {
-    GlStateManager.enableTexture2D();
-    GlStateManager.enableBlend();
-    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-    GlStateManager.enableAlpha();
-    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-  }
-
-  public static void endDrawingTexture() {
-    GlStateManager.disableBlend();
-    GlStateManager.disableAlpha();
-    GlStateManager.disableTexture2D();
-  }
+    @Override
+    public int compareTo(Component o) {
+        return Integer.compare(this.getZLevel(), o.getZLevel());
+    }
 }

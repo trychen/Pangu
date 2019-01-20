@@ -42,7 +42,7 @@ public class HorizontalList extends Container {
 
         float nowX = (width - wholeWidth) / 2;
         float nowY = y + wholeHeight / 2;
-        
+
         for (Component component : getComponents()) {
             component.setPosition(nowX, nowY - component.getHeight() / 2);
             nowX += padding + component.getWidth();

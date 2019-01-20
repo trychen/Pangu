@@ -5,6 +5,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public interface Focusable {
-  void onFocused();
-  void onLostFocus();
+    void onFocused();
+
+    void onLostFocus();
 }
