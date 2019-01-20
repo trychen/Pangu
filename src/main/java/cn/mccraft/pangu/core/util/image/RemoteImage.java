@@ -35,15 +35,10 @@ public class RemoteImage implements TextureProvider {
     private File cachedFilePath;
 
     @Getter
-    private Future<BufferedImage> bufferedImage;
-
-    private ResourceLocation resourceLocation;
-
-    @Getter
     private DynamicTexture dynamicTexture;
 
-    @Getter
-    private boolean isTextureUsed;
+    private Future<BufferedImage> bufferedImage;
+    private ResourceLocation resourceLocation;
 
     public RemoteImage(String urlPath, ResourceLocation missingTexture) throws MalformedURLException {
         this.url = new URL(urlPath);
@@ -122,5 +117,14 @@ public class RemoteImage implements TextureProvider {
             PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
             return new BuiltinImage(missingTexture);
         }
+    }
+
+    public BufferedImage getBufferedImage() {
+        if (!bufferedImage.isDone()) return null;
+        try {
+            return bufferedImage.get();
+        } catch (Exception e) {
+        }
+        return null;
     }
 }

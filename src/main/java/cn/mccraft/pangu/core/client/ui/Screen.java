@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 @Accessors(chain = true)
-public class Screen extends GuiScreen {
+public abstract class Screen extends GuiScreen {
     @Getter
     @Setter
     protected boolean drawDefaultBackground = true;
@@ -26,12 +26,18 @@ public class Screen extends GuiScreen {
     protected Container rootContainer;
 
     public Screen() {
+    }
+
+    @Override
+    public void initGui() {
         rootContainer = new Container(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        init();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (drawDefaultBackground) drawDefaultBackground();
+        draw();
         rootContainer.onDraw(partialTicks, mouseX, mouseY);
     }
 
@@ -58,4 +64,14 @@ public class Screen extends GuiScreen {
             rootContainer.onKeyTyped(typedChar, keyCode);
         }
     }
+
+    /**
+     * Add your components in this method
+     */
+    public abstract void init();
+
+    /**
+     * Draw background or else
+     */
+    public abstract void draw();
 }

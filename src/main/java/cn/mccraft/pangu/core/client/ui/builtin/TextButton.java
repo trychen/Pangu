@@ -53,12 +53,7 @@ public class TextButton extends Button {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.enableAlpha();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
+        startDrawingTexture();
         bindTexture(getStyle().getTexture());
         int state = this.getHoverState();
 
@@ -90,9 +85,6 @@ public class TextButton extends Button {
                 this.y + (float) (this.height - style.getTextOffset()) / 2,
                 fontColor,
                 style.hasFontShadow());
-
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableTexture2D();
+        endDrawingTexture();
     }
 }

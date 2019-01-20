@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -61,6 +62,12 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     return this;
   }
 
+  public Component setCenteredPosition(float x, float y) {
+    this.x = x - width / 2;
+    this.y = y - height / 2;
+    return this;
+  }
+
   public Component setSize(int width, int height) {
     this.width = width;
     this.height = height;
@@ -84,5 +91,19 @@ public abstract class Component implements Cloneable, Comparable<Component> {
   @Override
   public int compareTo(Component o) {
     return Integer.compare(this.getZLevel(), o.getZLevel());
+  }
+
+  public static void startDrawingTexture() {
+    GlStateManager.enableTexture2D();
+    GlStateManager.enableBlend();
+    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+    GlStateManager.enableAlpha();
+    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+  }
+
+  public static void endDrawingTexture() {
+    GlStateManager.disableBlend();
+    GlStateManager.disableAlpha();
+    GlStateManager.disableTexture2D();
   }
 }

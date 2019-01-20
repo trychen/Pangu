@@ -9,8 +9,12 @@ import lombok.Setter;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * Container that stored components
+ */
 @SideOnly(Side.CLIENT)
 public class Container extends Component {
+
   @Getter
   @Setter
   protected NonNullList<Component> components = NonNullList.create();
