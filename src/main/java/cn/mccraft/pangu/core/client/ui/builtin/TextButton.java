@@ -32,7 +32,7 @@ public class TextButton extends Button {
 
     @Getter
     @Setter
-    private Style style = NORMAL;
+    private Style style;
 
     public TextButton(String text) {
         this(text, DefaultFontProvider.INSTANCE, NORMAL);
@@ -46,6 +46,7 @@ public class TextButton extends Button {
         super(font.getStringWidth(text) + 20, style.getHeight());
         this.text = text;
         this.font = font;
+        this.style = style;
     }
 
     @Override

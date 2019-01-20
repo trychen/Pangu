@@ -68,10 +68,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
     public void onUpdate(int mouseX, int mouseY) {
         this.hovered = isHovered(mouseX, mouseY);
-
-        if (!isHovered()) return;
-        List<String> toolTip = getToolTip();
-        if (toolTip != null) drawToolTips(toolTip, mouseX, mouseY);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
@@ -102,7 +98,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     @Nullable
-    public List<String> getToolTip() {
+    public List<String> getToolTips() {
         return null;
     }
 

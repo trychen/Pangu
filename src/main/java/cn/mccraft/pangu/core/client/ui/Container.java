@@ -3,11 +3,13 @@ package cn.mccraft.pangu.core.client.ui;
 import cn.mccraft.pangu.core.util.NonNullList;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Container that stored components
@@ -78,6 +80,13 @@ public class Container extends Component {
                 .stream()
                 .filter(Component::isVisible)
                 .forEach(c -> c.onDraw(partialTicks, mouseX, mouseY));
+
+        // draw tooltips
+        components.forEach(c -> {
+            if (!c.isHovered()) return;
+            List<String> toolTip = c.getToolTips();
+            if (toolTip != null) drawToolTips(toolTip, mouseX, mouseY);
+        });
     }
 
     @Override
