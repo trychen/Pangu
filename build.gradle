@@ -33,6 +33,7 @@ minecraft {
     version = minecraft_version + "-" + forge_version
     runDir = "run"
     mappings = mcp_mapping_version
+    makeObfSourceJar = false
 
     replace "@MOD_VERSION@", mod_version
 }
@@ -94,13 +95,23 @@ jar {
 // Adds deobfJar
 // because the normal output has been made to be obfuscated
 task deobfJar(type: Jar, dependsOn: 'jar') {
-    from sourceSets.main.allSource
+    from sourceSets.main.output
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     classifier "dev"
 }
 
+
+// Adds sourceJar
+// because the normal output has been made to be obfuscated
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    
+    classifier = 'sources'
+}
+
 artifacts {
     archives deobfJar
+    archives sourcesJar
 }
 
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
