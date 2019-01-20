@@ -94,7 +94,7 @@ jar {
 // Adds deobfJar
 // because the normal output has been made to be obfuscated
 task deobfJar(type: Jar, dependsOn: 'jar') {
-    from sourceSets.main.output
+    from sourceSets.main.allSource
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     classifier "dev"
 }
