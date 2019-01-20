@@ -50,9 +50,6 @@ public class TextButton extends Button {
     }
 
     @Override
-    public void onClick(int mouseButton, int mouseX, int mouseY) { }
-
-    @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         startDrawingTexture();
         bindTexture(getStyle().getTexture());

@@ -87,7 +87,7 @@ public enum Blur {
             if (event.getGui().getClass().isAnnotationPresent(Gui.class)) {
                 include = true;
                 Gui gui = event.getGui().getClass().getAnnotation(Gui.class);
-                this . blurData = BlurData.fromGui(gui);
+                this.blurData = BlurData.fromGui(gui);
             } else if ((blurData = blurDataMap.get(event.getGui().getClass().getName())) != null) {
                 include = true;
                 this.blurData = blurData;

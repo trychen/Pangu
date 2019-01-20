@@ -1,5 +1,8 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -7,8 +10,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@Accessors(chain = true)
 public abstract class Button extends Component {
     private boolean isPlayPressSound = true;
+
+    @Getter
+    @Setter
     private ClickEvent clickEvent;
 
     public Button(int width, int height) {
@@ -41,7 +48,6 @@ public abstract class Button extends Component {
     public boolean actionOnReleased(int mouseX, int mouseY) {
         return true;
     }
-
 
     public int getHoverState() {
         int i = 1;

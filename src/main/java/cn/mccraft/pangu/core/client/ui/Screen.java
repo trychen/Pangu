@@ -20,6 +20,10 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public abstract class Screen extends GuiScreen {
+    @Setter
+    @Getter
+    protected GuiScreen parentScreen;
+
     @Getter
     @Setter
     protected boolean drawDefaultBackground = true;
@@ -36,7 +40,8 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     public void initGui() {
-        rootContainer = new Container(Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        rootContainer = new Container(width, height);
+        rootContainer.setScreen(this);
         init();
     }
 
@@ -69,6 +74,10 @@ public abstract class Screen extends GuiScreen {
         } else {
             rootContainer.onKeyTyped(typedChar, keyCode);
         }
+    }
+
+    public void closeScreen() {
+        Minecraft.getMinecraft().displayGuiScreen(parentScreen);
     }
 
     /**

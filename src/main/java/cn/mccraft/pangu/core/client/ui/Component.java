@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -21,6 +22,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Getter
     @Setter
     protected Component parent;
+
+    @Getter
+    @Setter
+    protected Screen screen;
 
     @Getter
     @Setter
@@ -112,6 +117,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
      */
     public void drawToolTips(List<String> texts, int mouseX, int mouseY) {
         GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
+        RenderHelper.disableStandardItemLighting();
     }
 
     @Override

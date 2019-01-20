@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.client.ui;
 import cn.mccraft.pangu.core.util.NonNullList;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -15,8 +16,8 @@ import java.util.List;
  * Container that stored components
  */
 @SideOnly(Side.CLIENT)
+@Accessors(chain = true)
 public class Container extends Component {
-
     @Getter
     @Setter
     protected NonNullList<Component> components = NonNullList.create();
@@ -34,7 +35,7 @@ public class Container extends Component {
         if (cs.length == 0) return this;
 
         // Set parents
-        for (Component c : cs) c.setParent(this);
+        for (Component c : cs) c.setParent(this).setScreen(getScreen());
 
         // Add component
         Collections.addAll(components, cs);
@@ -55,7 +56,7 @@ public class Container extends Component {
     }
 
     public Container addComponent(@Nonnull Component c) {
-        components.add(c);
+        components.add(c.setScreen(getScreen()));
         Collections.sort(components);
         c.setParent(this);
 
@@ -82,11 +83,14 @@ public class Container extends Component {
                 .forEach(c -> c.onDraw(partialTicks, mouseX, mouseY));
 
         // draw tooltips
-        components.forEach(c -> {
-            if (!c.isHovered()) return;
+        for (Component c : components) {
+            if (!c.isHovered()) continue;
             List<String> toolTip = c.getToolTips();
-            if (toolTip != null) drawToolTips(toolTip, mouseX, mouseY);
-        });
+            if (toolTip != null) {
+                drawToolTips(toolTip, mouseX, mouseY);
+                return;
+            }
+        }
     }
 
     @Override
