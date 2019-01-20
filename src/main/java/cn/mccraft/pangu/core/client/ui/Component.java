@@ -63,8 +63,16 @@ public abstract class Component implements Cloneable, Comparable<Component> {
   }
 
   public Component setCenteredPosition(float x, float y) {
-    this.x = x - width / 2;
-    this.y = y - height / 2;
+    return setPosition(x - width / 2, y - height / 2);
+  }
+
+  public Component setX(float x) {
+    this.x = x;
+    return this;
+  }
+
+  public Component setY(float y) {
+    this.y = y;
     return this;
   }
 
