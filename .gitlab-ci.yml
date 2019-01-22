@@ -1,6 +1,3 @@
-before_script:
- - ./gradlew setupCIWorkspace
- 
- build:
-  script:
-    - ./gradlew build
+before_script: ["./gradlew setupCIWorkspace"]
+build:
+    script: ["./gradlew build"]
