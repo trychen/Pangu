@@ -11,6 +11,9 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Remote {
+    /**
+     * Message id
+     */
     int value();
 
     /**
@@ -18,6 +21,13 @@ public @interface Remote {
      */
     Side side() default Side.SERVER;
 
-
+    /**
+     * Execute the method in "minecraft thread" instead "netty io thread"
+     */
     boolean sync() default true;
+
+    /**
+     * Execute the method in both side
+     */
+    boolean also() default false;
 }

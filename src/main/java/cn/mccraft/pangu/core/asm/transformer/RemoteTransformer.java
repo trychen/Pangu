@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.asm.transformer;
 import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import cn.mccraft.pangu.core.network.RemoteHandler;
+import cn.mccraft.pangu.core.util.Sides;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -30,7 +31,7 @@ import static org.objectweb.asm.commons.GeneratorAdapter.EQ;
 import static org.objectweb.asm.commons.GeneratorAdapter.NE;
 
 public class RemoteTransformer implements IClassTransformer {
-    public static final Side SIDE = FMLLaunchHandler.side();
+    public static final Side SIDE = Sides.commonSide();
     public static final String REMOTE_ANNOTATION = "Lcn/mccraft/pangu/core/network/Remote;";
     protected static final String
             BYTE_MESSAGE_NAME = ASMHelper.getClassName("cn.mccraft.pangu.core.network.ByteMessage"),
@@ -90,6 +91,7 @@ public class RemoteTransformer implements IClassTransformer {
             }
 
             boolean sync = (boolean) values.getOrDefault("sync", true);
+            boolean also = (boolean) values.getOrDefault("also", false);
 
             Type[] args = Type.getArgumentTypes(method.desc);
 
@@ -102,13 +104,20 @@ public class RemoteTransformer implements IClassTransformer {
             if (SIDE == Side.SERVER && side == Side.CLIENT) {
                 MethodNode newMethod = new MethodNode(method.access, method.name, method.desc, method.signature, method.exceptions.toArray(new String[0]));
                 ASMHelper.MethodGenerator generator = ASMHelper.MethodGenerator.fromMethodNode(newMethod);
+                Label label = generator.newLabel(), end = generator.newLabel();
                 generator.push(transformedNameMessageClassName);
                 generator.loadArgArray();
                 generator.invokeStatic(TYPE_REMOTE_HANDLER, SEND);
-                generator.returnValue();
+                if (!also) {
+                    generator.ifZCmp(EQ, label);
+                    generator.returnValue();
+                    generator.mark(label);
+                } else {
+                    generator.pop();
+                }
                 generator.endMethod();
-                method.instructions.clear();
-                method.instructions.add(newMethod.instructions);
+                method.instructions.insertBefore(method.instructions.getFirst(), newMethod.instructions);
+                method.instructions.insert(new LabelNode(end));
                 PanguPlugin.getLogger().debug("Replaced method " + classNode.name + "#" + method.name + method.signature + " with ");
             } else if (SIDE == Side.CLIENT && side == Side.SERVER) {
                 MethodNode newMethod = new MethodNode(method.access, method.name, method.desc, method.signature, method.exceptions.toArray(new String[0]));
@@ -117,20 +126,25 @@ public class RemoteTransformer implements IClassTransformer {
                 generator.push(transformedNameMessageClassName);
                 generator.loadArgArray();
                 generator.invokeStatic(TYPE_REMOTE_HANDLER, SEND);
-                generator.ifZCmp(EQ, label);
-                generator.returnValue();
-                generator.mark(label);
+                if (!also) {
+                    generator.ifZCmp(EQ, label);
+                    generator.returnValue();
+                    generator.mark(label);
+                } else {
+                    generator.pop();
+                }
                 method.instructions.insertBefore(method.instructions.getFirst(), newMethod.instructions);
                 method.instructions.insert(new LabelNode(end));
                 PanguPlugin.getLogger().debug("Inserted into method " + classNode.name + "#" + method.name + method.signature + " with ");
             }
-            RemoteMessage remoteMessage = new RemoteMessage(id, messageClass, transformedNameMessageClassName, transformedName, method.name, args, side, sync);
+            RemoteMessage remoteMessage = new RemoteMessage(id, messageClass, transformedNameMessageClassName, transformedName, method.name, args, side, sync, also);
+
             if (messages != null)
                 messages.add(remoteMessage);
             else
                 RemoteHandler.registerMessage(remoteMessage);
             edited = true;
-            PanguPlugin.getLogger().info("Hook @Remote method: " + classNode.name + "#" + method.name + method.desc + "");
+            PanguPlugin.getLogger().debug("Hook @Remote method: " + classNode.name + "#" + method.name + method.desc + "");
         }
         if (!edited) return basicClass;
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -160,5 +174,6 @@ public class RemoteTransformer implements IClassTransformer {
         public final Type[] methodArgTypes;
         public final Side side;
         public final boolean sync;
+        public final boolean also;
     }
 }

@@ -12,9 +12,13 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface BindKeyPress {
     /**
+     * If this meta is empty, injector will use method name
+     * (separated by {@link cn.mccraft.pangu.core.util.NameBuilder#apart(String)}
+     * and connected with '.') as description.
+     *
      * @return the key description, generally start with "key."
      */
-    String description();
+    String description() default "";
 
     /**
      * @return the code of the key to bind from {@link org.lwjgl.input.Keyboard}
@@ -37,5 +41,5 @@ public @interface BindKeyPress {
     /**
      * @return whether responding in GUI
      */
-    boolean enableInGUI() default true;
+    boolean enableInGUI() default false;
 }

@@ -1,10 +1,15 @@
 package cn.mccraft.pangu.core.asm;
 
+import cn.mccraft.pangu.core.util.Sides;
 import lombok.extern.log4j.Log4j2;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
@@ -17,12 +22,18 @@ public class PanguPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {
-                "cn.mccraft.pangu.core.asm.transformer.DevTransformer",
-                "cn.mccraft.pangu.core.asm.transformer.LoadSideTransformer",
-                "cn.mccraft.pangu.core.asm.transformer.GuiBackgroundColorTransformer",
-                "cn.mccraft.pangu.core.asm.transformer.RemoteTransformer"
-        };
+        List<String> transformers = new ArrayList<>();
+
+        transformers.add("cn.mccraft.pangu.core.asm.transformer.DevTransformer");
+        transformers.add("cn.mccraft.pangu.core.asm.transformer.RemoteTransformer");
+
+        // Client side only transformer
+        if (Sides.commonSide().isClient()) {
+            transformers.add("cn.mccraft.pangu.core.asm.transformer.GuiBackgroundColorTransformer");
+        } else {
+            transformers.add("cn.mccraft.pangu.core.asm.transformer.ServerSideTransformer");
+        }
+        return transformers.toArray(new String[0]);
     }
 
     @Override

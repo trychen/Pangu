@@ -8,6 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -131,14 +132,9 @@ public enum Proxy {
 
     @AnnotationInjector.StaticInvoke
     public static void injectAnnotation(AnnotationStream<Load> anno) {
-        anno.stream()
-                .map(ASMDataTable.ASMData::getClassName)
-                .distinct()
-                .forEach(it -> {
-                    try {
-                        INSTANCE.addLoader(Class.forName(it));
-                    } catch (ClassNotFoundException e) {
-                    }
-                });
+        anno.fieldAndMethodOwnerClassStream().forEach(INSTANCE::addLoader);
+        anno.typeStream().forEach(clazz -> {
+            PanguCore.getLogger().debug("Loading class " + clazz.toGenericString());
+        });
     }
 }

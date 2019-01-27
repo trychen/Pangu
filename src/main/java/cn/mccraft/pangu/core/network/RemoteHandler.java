@@ -1,13 +1,12 @@
 package cn.mccraft.pangu.core.network;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.transformer.RemoteTransformer;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.util.MinecraftThreading;
 import cn.mccraft.pangu.core.util.PanguClassLoader;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import cn.mccraft.pangu.core.util.Sides;
 import cn.mccraft.pangu.core.util.Try;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
@@ -26,17 +25,19 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Load
 public class RemoteHandler {
     private static Map<String, CachedRemoteMessage> messages = new HashMap<>();
 
     public static boolean send(String messageType, Object[] objects) {
         // 是否在正在运行内置服务器
-        if (MinecraftThreading.isIntegratedServer()) return false;
+        if (Sides.isIntegratedServer()) return false;
 
         // 获取消息
         CachedRemoteMessage packet = messages.get(messageType);
@@ -45,7 +46,7 @@ public class RemoteHandler {
         Objects.requireNonNull(packet, "Couldn't find any cached @Remote message");
 
         // Side 吻合时直接运行
-        if (packet.getSide() == MinecraftThreading.currentThreadSide()) return false;
+        if (packet.getSide() == Sides.currentThreadSide()) return false;
 
         try {
             if (packet.isWithEntityPlayer()) {
@@ -62,7 +63,6 @@ public class RemoteHandler {
             } else {
                 // 不带 EntityPlayer 参数
                 byte[] bytes = ByteSerialization.serialize(objects, packet.getActualParameterTypes());
-                System.out.println(Arrays.toString(bytes));
                 ByteMessage byteMessage = (ByteMessage) packet.messageClass.newInstance();
                 byteMessage.setBytes(bytes);
                 if (packet.getSide() == Side.SERVER)
@@ -86,8 +86,9 @@ public class RemoteHandler {
             CachedRemoteMessage cached = new CachedRemoteMessage(message);
             messages.put(message.getMessageClassName(), cached);
             cached.getNetwork().registerMessage(new MessageHandler(cached), cached.getMessageClass(), cached.getId(), cached.getSide());
+            PanguCore.getLogger().error("Registered @Remote message from method " + cached.getMethod().toGenericString());
         } catch (Exception e) {
-            PanguPlugin.getLogger().error("Couldn't register message", e);
+            PanguCore.getLogger().error("Couldn't register message", e);
         }
     }
 
@@ -101,20 +102,20 @@ public class RemoteHandler {
         @Override
         public IMessage onMessage(ByteMessage message, MessageContext ctx) {
             try {
+                Object[] deserialize = ByteSerialization.deserialize(message.getBytes(), cached.getActualParameterTypes());
                 if (cached.isWithEntityPlayer()) {
                     var objects = new Object[cached.getMethodArgs().length];
-                    Object[] deserialize = ByteSerialization.deserialize(message.getBytes(), cached.getActualParameterTypes());
                     for (int i = 0; i < deserialize.length; i++) {
                         objects[i + 1] = deserialize[i];
                     }
 
-                    if (MinecraftThreading.commonSide().isClient()) {
+                    if (Sides.commonSide().isClient()) {
                         objects[0] = Minecraft.getMinecraft().player;
                     } else {
                         objects[0] = ctx.getServerHandler().player;
                     }
 
-                    MinecraftThreading.submit(
+                    Sides.submit(
                             Try.safe(
                                     () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
@@ -122,9 +123,9 @@ public class RemoteHandler {
                             cached.isSync()
                     );
                 } else {
-                    MinecraftThreading.submit(
+                    Sides.submit(
                             Try.safe(
-                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), ByteSerialization.deserialize(message.getBytes(), cached.methodArgs)),
+                                    () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), deserialize),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
                             ),
                             cached.isSync()
@@ -157,7 +158,7 @@ public class RemoteHandler {
         private MethodAccessor methodAccessor;
         private Method method;
         private Class owner;
-        private Class[] actualParameterTypes;
+        private Type[] actualParameterTypes;
         private boolean isStatic;
 
         public CachedRemoteMessage(RemoteTransformer.RemoteMessage remoteMessage) throws Exception {
@@ -194,10 +195,10 @@ public class RemoteHandler {
             return method;
         }
 
-        public Class[] getActualParameterTypes() throws NoSuchMethodException {
+        public Type[] getActualParameterTypes() throws NoSuchMethodException {
             if (actualParameterTypes == null) {
                 var method = getMethod();
-                var parameterTypes = method.getParameterTypes();
+                var parameterTypes = method.getGenericParameterTypes();
                 if (isWithEntityPlayer()) {
                     this.actualParameterTypes = Arrays.copyOfRange(parameterTypes, 1, parameterTypes.length);
                 } else this.actualParameterTypes = parameterTypes;

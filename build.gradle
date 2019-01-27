@@ -63,8 +63,9 @@ configurations {
 }
 
 dependencies {
-    embed ('com.github.trychen:ByteDataStream:e511ca1f82') {
+    embed ('com.github.trychen:ByteDataStream:2bbcdbd6c5') {
         exclude group: 'org.ow2.asm'
+        exclude group: 'com.github.Mouse0w0'
     }
     
     embed ('com.github.Mouse0w0:FastReflection:1.0.1') {

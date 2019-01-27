@@ -1,18 +1,14 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.loader.AnnotationRegister;
 import cn.mccraft.pangu.core.loader.AutoWired;
-import cn.mccraft.pangu.core.loader.IRegister;
 import cn.mccraft.pangu.core.loader.annotation.RegEntity;
 import cn.mccraft.pangu.core.util.ModFinder;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import java.util.HashMap;
@@ -23,7 +19,7 @@ import java.util.Map;
  * @since 1.0.1
  */
 @AutoWired
-public class EntityRegister implements IRegister<RegEntity, Entity> {
+public class EntityRegister implements AnnotationRegister<RegEntity, Entity> {
     private Map<String, Integer> increaseEntityID = new HashMap<>();
 
     @Override

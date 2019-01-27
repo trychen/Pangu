@@ -2,17 +2,12 @@ package cn.mccraft.pangu.core.util.render;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
-import cn.mccraft.pangu.core.util.Environment;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.FieldAccessor;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderGroup;
@@ -42,20 +37,17 @@ public enum Blur {
     INSTANCE;
 
     public static final ResourceLocation SHADER_LOCATION = PanguResLoc.of("shaders/post/blur.json");
-
+    public static final int DEFAULT_START_COLOR = -1072689136, DEFAULT_END_COLOR = -804253680;
     private Map<String, BlurData> blurDataMap = new HashMap<>();
     private boolean isActived = false;
     private FieldAccessor listShadersAccessor;
-    public static final int DEFAULT_START_COLOR = -1072689136, DEFAULT_END_COLOR = -804253680;
+    private BlurData blurData;
 
     Blur() {
 //        Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
     }
 
-    private BlurData blurData;
-
     /**
-     *
      * @param guiScreen
      * @param second
      * @return

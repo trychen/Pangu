@@ -3,11 +3,11 @@ package cn.mccraft.pangu.core.asm.transformer;
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import cn.mccraft.pangu.core.asm.util.LambdaGatherer;
-import cn.mccraft.pangu.core.util.Environment;
 
 import java.util.Iterator;
 import java.util.List;
 
+import cn.mccraft.pangu.core.util.Sides;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.FMLLog;
 
@@ -18,7 +18,7 @@ import org.objectweb.asm.tree.*;
  * Impl of {@link DevOnly}
  */
 public class DevTransformer implements IClassTransformer {
-    private boolean isDevMode = Environment.isDevEnv;
+    private boolean isDevMode = Sides.isDevEnv;
 
     public DevTransformer() {
         FMLLog.log.info("Environment Status: " + (isDevMode ? "Development" : "Production"));

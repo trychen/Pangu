@@ -60,6 +60,20 @@ public class AnnotationStream<T extends Annotation> {
         // TODO: Unnecessary map
     }
 
+    public Stream<Class<?>> fieldAndMethodOwnerClassStream() {
+        return asmDatas
+                .stream()
+                .filter(it -> !it.getClassName().equals(it.getObjectName()))
+                // get class name
+                .map(ASMDataTable.ASMData::getClassName)
+                .distinct()
+                // map class entity
+                .map(ReflectUtils::forNameSilently)
+                .filter(Objects::nonNull)
+                .map(it -> it);
+        // TODO: Unnecessary map
+    }
+
     /**
      * Returns a sequential {@code Stream} with classes annotated
      */

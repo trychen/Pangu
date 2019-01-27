@@ -3,7 +3,7 @@ package cn.mccraft.pangu.core.asm.transformer;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import cn.mccraft.pangu.core.asm.util.LambdaGatherer;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -16,9 +16,10 @@ import java.util.List;
 /**
  * @see net.minecraftforge.fml.common.asm.transformers.SideTransformer
  */
-public class LoadSideTransformer implements IClassTransformer {
-    private static String SIDE = FMLLaunchHandler.side().name();
+public class ServerSideTransformer implements IClassTransformer {
     private static final String ANNOTATION_LOAD_DESCRIPTOR = "Lcn/mccraft/pangu/core/loader/Load;";
+    private static final String ANNOTATION_BINDKEYPRESS_DESCRIPTOR = "Lcn/mccraft/pangu/core/client/input/BindKeyPress;";
+    private static String SIDE = Side.SERVER.name();
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -26,7 +27,9 @@ public class LoadSideTransformer implements IClassTransformer {
 
         ClassNode classNode = ASMHelper.newClassNode(bytes);
 
-        if (remove(classNode.visibleAnnotations, SIDE)) return null;
+        if (remove(classNode.visibleAnnotations, SIDE)) {
+            return null;
+        }
 
         classNode.fields.removeIf(field -> remove(field.visibleAnnotations, SIDE));
 
@@ -63,17 +66,15 @@ public class LoadSideTransformer implements IClassTransformer {
         if (anns == null) return false;
 
         for (AnnotationNode ann : anns) {
-            if (ann.desc.equals(ANNOTATION_LOAD_DESCRIPTOR)) {
-                if (ann.values != null) {
-                    for (int x = 0; x < ann.values.size() - 1; x += 2) {
-                        Object key = ann.values.get(x);
-                        Object value = ann.values.get(x + 1);
-                        if (key instanceof String && key.equals("side")) {
-                            if (value instanceof String[]) {
-                                if (!((String[]) value)[1].equals(side)) {
-                                    return true;
-                                }
-                            }
+            if (ann.desc.equals(ANNOTATION_BINDKEYPRESS_DESCRIPTOR)) return true;
+
+            if (ann.desc.equals(ANNOTATION_LOAD_DESCRIPTOR) && ann.values != null) {
+                for (int x = 0; x < ann.values.size() - 1; x += 2) {
+                    Object key = ann.values.get(x);
+                    Object value = ann.values.get(x + 1);
+                    if (key instanceof String && key.equals("side")) {
+                        if (!((String[]) value)[1].equals(side)) {
+                            return true;
                         }
                     }
                 }

@@ -2,8 +2,6 @@ package cn.mccraft.pangu.core.item;
 
 import cn.mccraft.pangu.core.capability.food.CapabilityFood;
 import cn.mccraft.pangu.core.capability.food.FoodStats;
-import cn.mccraft.pangu.core.util.Environment;
-import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.item.ItemStack;
 
 import java.util.*;

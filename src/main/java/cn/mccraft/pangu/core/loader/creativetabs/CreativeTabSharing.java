@@ -1,10 +1,7 @@
 package cn.mccraft.pangu.core.loader.creativetabs;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.loader.AnnotationInjector;
-import cn.mccraft.pangu.core.loader.AutoWired;
-import cn.mccraft.pangu.core.loader.IRegister;
-import cn.mccraft.pangu.core.loader.InstanceHolder;
+import cn.mccraft.pangu.core.loader.*;
 import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -25,7 +22,7 @@ import java.util.Map;
  * @author trychen
  */
 @AutoWired
-public class CreativeTabSharing implements IRegister<SharedCreativeTab, Object> {
+public class CreativeTabSharing implements AnnotationRegister<SharedCreativeTab, Object> {
     /**
      * shared creative tabs
      */

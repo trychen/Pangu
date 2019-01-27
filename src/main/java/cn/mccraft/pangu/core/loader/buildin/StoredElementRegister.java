@@ -1,7 +1,6 @@
 package cn.mccraft.pangu.core.loader.buildin;
 
 import cn.mccraft.pangu.core.loader.AnnotationRegister;
-import cn.mccraft.pangu.core.loader.IRegister;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import com.google.common.collect.Sets;
 import net.minecraft.util.ResourceLocation;
