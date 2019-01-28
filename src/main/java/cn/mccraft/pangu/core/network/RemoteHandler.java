@@ -4,10 +4,7 @@ import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.asm.transformer.RemoteTransformer;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.util.PanguClassLoader;
-import cn.mccraft.pangu.core.util.ReflectUtils;
-import cn.mccraft.pangu.core.util.Sides;
-import cn.mccraft.pangu.core.util.Try;
+import cn.mccraft.pangu.core.util.*;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import com.github.mouse0w0.fastreflection.MethodAccessor;
 import com.trychen.bytedatastream.ByteSerialization;
@@ -37,7 +34,7 @@ public class RemoteHandler {
 
     public static boolean send(String messageType, Object[] objects) {
         // 是否在正在运行内置服务器
-        if (Sides.isIntegratedServer()) return false;
+        if (Games.isIntegratedServer()) return false;
 
         // 获取消息
         CachedRemoteMessage packet = messages.get(messageType);
@@ -86,7 +83,7 @@ public class RemoteHandler {
             CachedRemoteMessage cached = new CachedRemoteMessage(message);
             messages.put(message.getMessageClassName(), cached);
             cached.getNetwork().registerMessage(new MessageHandler(cached), cached.getMessageClass(), cached.getId(), cached.getSide());
-            PanguCore.getLogger().error("Registered @Remote message from method " + cached.getMethod().toGenericString());
+            PanguCore.getLogger().info("Registered @Remote message from method " + cached.getMethod().toGenericString());
         } catch (Exception e) {
             PanguCore.getLogger().error("Couldn't register message", e);
         }
@@ -109,13 +106,13 @@ public class RemoteHandler {
                         objects[i + 1] = deserialize[i];
                     }
 
-                    if (Sides.commonSide().isClient()) {
-                        objects[0] = Minecraft.getMinecraft().player;
+                    if (Sides.isClient()) {
+                        objects[0] = Games.player();
                     } else {
                         objects[0] = ctx.getServerHandler().player;
                     }
 
-                    Sides.submit(
+                    Threads.submit(
                             Try.safe(
                                     () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
@@ -123,7 +120,7 @@ public class RemoteHandler {
                             cached.isSync()
                     );
                 } else {
-                    Sides.submit(
+                    Threads.submit(
                             Try.safe(
                                     () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), deserialize),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
