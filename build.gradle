@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    embed ('com.github.trychen:ByteDataStream:2bbcdbd6c5') {
+    embed ('com.github.trychen:ByteDataStream:1.2-SNAPSHOT') {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.github.Mouse0w0'
     }
