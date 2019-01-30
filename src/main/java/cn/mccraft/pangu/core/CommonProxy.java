@@ -1,8 +1,6 @@
 package cn.mccraft.pangu.core;
 
-import cn.mccraft.pangu.core.loader.AnnotationInjector;
-import cn.mccraft.pangu.core.loader.InstanceHolder;
-import cn.mccraft.pangu.core.loader.Proxy;
+import cn.mccraft.pangu.core.loader.*;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
@@ -44,6 +42,9 @@ public class CommonProxy {
 
     public void init(FMLInitializationEvent event) {
         Proxy.INSTANCE.invoke(event, LoaderState.INITIALIZATION, Side.SERVER);
+        new AnnotationStream<>(Load.class.getTypeName()).typeStream().forEach(clazz -> {
+            PanguCore.getLogger().info("Loading class " + clazz.toGenericString());
+        });
     }
 
     public void postInit(FMLPostInitializationEvent event) {

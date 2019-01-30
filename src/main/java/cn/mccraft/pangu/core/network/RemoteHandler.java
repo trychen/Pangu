@@ -161,7 +161,7 @@ public class RemoteHandler {
         public CachedRemoteMessage(RemoteTransformer.RemoteMessage remoteMessage) throws Exception {
             this.messageClass = PanguClassLoader.getInstance().defineClass(remoteMessage.messageClassName, remoteMessage.messageClassBytes);
             this.methodArgs = ReflectUtils.fromTypes(remoteMessage.methodArgTypes);
-            this.network = Network.getNetworkWrapper(messageClass);
+            this.network = Objects.requireNonNull(Network.getNetworkWrapper(messageClass));
             this.withEntityPlayer = methodArgs.length > 0 && EntityPlayer.class.isAssignableFrom(methodArgs[0]);
             this.nativeMessage = remoteMessage;
 

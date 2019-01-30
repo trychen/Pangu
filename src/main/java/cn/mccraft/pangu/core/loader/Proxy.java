@@ -133,8 +133,5 @@ public enum Proxy {
     @AnnotationInjector.StaticInvoke
     public static void injectAnnotation(AnnotationStream<Load> anno) {
         anno.fieldAndMethodOwnerClassStream().forEach(INSTANCE::addLoader);
-        anno.typeStream().forEach(clazz -> {
-            PanguCore.getLogger().debug("Loading class " + clazz.toGenericString());
-        });
     }
 }
