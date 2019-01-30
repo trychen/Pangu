@@ -14,6 +14,7 @@ import lombok.var;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -73,7 +74,7 @@ public class RemoteHandler {
         return true;
     }
 
-    @Load
+    @Load(LoaderState.INITIALIZATION)
     public static void registerMessages() {
         RemoteTransformer.messages.forEach(RemoteHandler::registerMessage);
     }
