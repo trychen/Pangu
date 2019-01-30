@@ -50,9 +50,10 @@ public class TextButton extends Button {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        startDrawingTexture();
-        bindTexture(getStyle().getTexture());
+        Rect.startDrawing();
+        Rect.bind(getStyle().getTexture());
         int state = this.getHoverState();
 
         Rect.drawTextured(
@@ -83,6 +84,6 @@ public class TextButton extends Button {
                 this.y + (float) (this.height - style.getTextOffset()) / 2,
                 fontColor,
                 style.hasFontShadow());
-        endDrawingTexture();
+        Rect.endDrawing();
     }
 }

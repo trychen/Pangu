@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Container that stored components
  */
-@SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public class Container extends Component {
     @Getter
@@ -75,6 +74,7 @@ public class Container extends Component {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         components.forEach(c -> c.onUpdate(mouseX, mouseY));
         components

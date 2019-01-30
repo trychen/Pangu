@@ -9,7 +9,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public abstract class Button extends Component {
     private boolean isPlayPressSound = true;

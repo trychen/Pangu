@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,7 +13,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 @Accessors(chain = true)
 public abstract class Component implements Cloneable, Comparable<Component> {
     @Getter
@@ -45,20 +41,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public Component() {
     }
 
-    public static void startDrawingTexture() {
-        GlStateManager.enableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.enableAlpha();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    public static void endDrawingTexture() {
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableTexture2D();
-    }
-
+    @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
     }
 
@@ -96,10 +79,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         this.width = width;
         this.height = height;
         return this;
-    }
-
-    public void bindTexture(ResourceLocation resourceLocation) {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
     }
 
     @Nullable

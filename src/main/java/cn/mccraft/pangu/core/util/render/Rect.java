@@ -1,9 +1,12 @@
 package cn.mccraft.pangu.core.util.render;
 
+import cn.mccraft.pangu.core.util.image.TextureProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -12,6 +15,29 @@ import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
 public interface Rect {
+    static void startDrawing() {
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.enableAlpha();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    static void endDrawing() {
+        GlStateManager.disableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableTexture2D();
+    }
+
+    static void bind(ResourceLocation resourceLocation) {
+        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
+    }
+
+    static void bind(TextureProvider textureProvider) {
+        ResourceLocation texture = textureProvider.getTexture();
+        if (texture != null) bind(texture);
+    }
+
     /**
      * draw a gradient color rect
      *
@@ -183,19 +209,27 @@ public interface Rect {
         GlStateManager.disableBlend();
     }
 
-    static void drawCustomSizeTextured(float x, float y, int uWidth, int vHeight, int width, int height) {
+    static void drawCustomSizeTextured(float x, float y, float width, float height) {
+        Rect.drawCustomSizeTextured(x, y, 0, 0, width, height, width, height);
+    }
+
+    static void drawCustomSizeTextured(float x, float y, float width, float height, float factor) {
+        Rect.drawCustomSizeTextured(x, y, 0, 0, width, height, width * factor, height * factor);
+    }
+
+    static void drawCustomSizeTextured(float x, float y, float uWidth, float vHeight, int width, int height) {
         Rect.drawCustomSizeTextured(x, y, 0, 0, uWidth, vHeight, width, height);
     }
 
-    static void drawCustomSizeTextured(float x, float y, float u, float v, int uWidth, int vHeight, int width, int height) {
+    static void drawCustomSizeTextured(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height) {
         float f = 1.0F / uWidth;
         float f1 = 1.0F / vHeight;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(x, y + height, 0.0D).tex((double) (u * f), (double) ((v + (float) vHeight) * f1)).endVertex();
-        bufferbuilder.pos(x + width, y + height, 0.0D).tex((double) ((u + (float) uWidth) * f), (double) ((v + (float) vHeight) * f1)).endVertex();
-        bufferbuilder.pos(x + width, y, 0.0D).tex((double) ((u + (float) uWidth) * f), (double) (v * f1)).endVertex();
+        bufferbuilder.pos(x, y + height, 0.0D).tex((double) (u * f), (double) ((v + vHeight) * f1)).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0.0D).tex((double) ((u + uWidth) * f), (double) ((v + vHeight) * f1)).endVertex();
+        bufferbuilder.pos(x + width, y, 0.0D).tex((double) ((u + uWidth) * f), (double) (v * f1)).endVertex();
         bufferbuilder.pos(x, y, 0.0D).tex((double) (u * f), (double) (v * f1)).endVertex();
         tessellator.draw();
     }
