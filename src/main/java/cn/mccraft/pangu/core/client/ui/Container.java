@@ -34,7 +34,9 @@ public class Container extends Component {
         if (cs.length == 0) return this;
 
         // Set parents
-        for (Component c : cs) c.setParent(this).setScreen(getScreen());
+        for (Component c : cs) {
+            c.setParent(this).setScreen(getScreen());
+        }
 
         // Add component
         Collections.addAll(components, cs);
@@ -58,6 +60,7 @@ public class Container extends Component {
         components.add(c.setScreen(getScreen()));
         Collections.sort(components);
         c.setParent(this);
+        c.setScreen(getScreen());
 
         if (focusedComponent == null && c instanceof Focusable) {
             focus((Focusable) c);
