@@ -17,12 +17,11 @@ import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class RemoteImage implements TextureProvider {
-    @Getter
-    @Setter
-    private ResourceLocation missingTexture;
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
@@ -40,10 +39,9 @@ public class RemoteImage implements TextureProvider {
     private Future<BufferedImage> bufferedImage;
     private ResourceLocation resourceLocation;
 
-    public RemoteImage(String urlPath, ResourceLocation missingTexture) throws MalformedURLException {
+    private RemoteImage(String urlPath) throws MalformedURLException {
         this.url = new URL(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
-        this.missingTexture = missingTexture;
         this.cachedFilePath = LocalCache.getCachePath("images", id);
 
         bufferedImage = EXECUTOR.submit(() -> {
@@ -71,7 +69,7 @@ public class RemoteImage implements TextureProvider {
 
     @Override
     public ResourceLocation getTexture() {
-        if (!bufferedImage.isDone()) return missingTexture;
+        if (!bufferedImage.isDone()) return null;
         if (resourceLocation == null) {
             LocalCache.markFileUsed(cachedFilePath.toPath());
             try {
@@ -104,19 +102,23 @@ public class RemoteImage implements TextureProvider {
                         return null;
                     }
                 };
-                return missingTexture;
+                return null;
             }
         }
         return resourceLocation;
     }
 
-    public static TextureProvider of(String url, ResourceLocation missingTexture) {
-        try {
-            return new RemoteImage(url, missingTexture);
-        } catch (Exception e){
-            PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
-            return new BuiltinImage(missingTexture);
-        }
+    @Override
+    public ResourceLocation getTexture(ResourceLocation loading) {
+        ResourceLocation texture = getTexture();
+        if (texture == null) return loading;
+        return texture;
+    }
+
+    @Override
+    public ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error) {
+        if (!bufferedImage.isDone()) return loading;
+        return getTexture(error);
     }
 
     public BufferedImage getBufferedImage() {
@@ -126,5 +128,21 @@ public class RemoteImage implements TextureProvider {
         } catch (Exception e) {
         }
         return null;
+    }
+
+    private static Map<String, TextureProvider> cachedImages = new HashMap();
+
+    public static TextureProvider of(String url, ResourceLocation missingTexture) {
+        TextureProvider remoteImage = cachedImages.get(url);
+        if (remoteImage == null) {
+            try {
+                remoteImage = new RemoteImage(url);
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
+                return new BuiltinImage(missingTexture);
+            }
+            cachedImages.put(url, remoteImage);
+        }
+        return remoteImage;
     }
 }

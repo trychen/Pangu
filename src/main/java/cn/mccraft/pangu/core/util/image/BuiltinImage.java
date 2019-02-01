@@ -13,4 +13,14 @@ public class BuiltinImage implements TextureProvider {
     public ResourceLocation getTexture() {
         return res;
     }
+
+    @Override
+    public ResourceLocation getTexture(ResourceLocation loading) {
+        return getTexture();
+    }
+
+    @Override
+    public ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error) {
+        return getTexture();
+    }
 }
