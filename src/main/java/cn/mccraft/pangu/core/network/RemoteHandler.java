@@ -118,7 +118,7 @@ public class RemoteHandler {
                                     () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), objects),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
                             ),
-                            cached.isSync()
+                            !cached.isSync()
                     );
                 } else {
                     Threads.submit(
@@ -126,7 +126,7 @@ public class RemoteHandler {
                                     () -> cached.getMethodAccessor().invoke(cached.isStatic() ? null : InstanceHolder.getInstance(cached.getOwner()), deserialize),
                                     "Unable to handle @Remote for " + cached.messageClass.toGenericString()
                             ),
-                            cached.isSync()
+                            !cached.isSync()
                     );
                 }
             } catch (Exception e) {
