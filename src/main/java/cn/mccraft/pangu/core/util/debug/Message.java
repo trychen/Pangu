@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * display message in game
  */
-@DevOnly
 @SideOnly(Side.CLIENT)
 public interface Message {
     Minecraft minecraft =Minecraft.getMinecraft();

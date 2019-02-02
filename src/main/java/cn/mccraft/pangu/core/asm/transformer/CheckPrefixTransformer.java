@@ -59,11 +59,6 @@ public class CheckPrefixTransformer implements IClassTransformer {
 
                 ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
                 classNode.accept(cw);
-                try {
-                    Files.write(new File("/Development/test.class").toPath(), cw.toByteArray());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 PanguPlugin.getLogger().info("Hooked net.minecraftforge.registries.GameData#checkPrefix(Ljava/lang/String;)Lnet/minecraft/util/ResourceLocation;");
                 return cw.toByteArray();
             }
