@@ -84,6 +84,5 @@ public class TextButton extends Button {
                 this.y + (float) (this.height - style.getTextOffset()) / 2,
                 fontColor,
                 style.hasFontShadow());
-        Rect.endDrawing();
     }
 }

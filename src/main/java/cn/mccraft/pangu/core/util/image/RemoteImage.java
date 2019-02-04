@@ -2,6 +2,9 @@ package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.LocalCache;
+import com.trychen.bytedatastream.ByteDeserializable;
+import com.trychen.bytedatastream.ByteSerializable;
+import com.trychen.bytedatastream.DataOutput;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
@@ -10,10 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
@@ -21,12 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
-public class RemoteImage implements TextureProvider {
+public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSerializable {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     @Getter
+    private final String urlPath;
+
+    @Getter
     private final URL url;
+
     @Getter
     private String id;
 
@@ -40,6 +44,7 @@ public class RemoteImage implements TextureProvider {
     private ResourceLocation resourceLocation;
 
     private RemoteImage(String urlPath) throws MalformedURLException {
+        this.urlPath = urlPath;
         this.url = new URL(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
         this.cachedFilePath = LocalCache.getCachePath("images", id);
@@ -130,19 +135,34 @@ public class RemoteImage implements TextureProvider {
         return null;
     }
 
-    private static Map<String, TextureProvider> cachedImages = new HashMap();
+    private static Map<String, RemoteImage> cachedImages = new HashMap();
 
     public static TextureProvider of(String url, ResourceLocation missingTexture) {
-        TextureProvider remoteImage = cachedImages.get(url);
+        RemoteImage image = of(url);
+        if (image == null) return new BuiltinImage(missingTexture);
+        return image;
+    }
+
+    public static RemoteImage of(String url) {
+        RemoteImage remoteImage = cachedImages.get(url);
         if (remoteImage == null) {
             try {
                 remoteImage = new RemoteImage(url);
+                cachedImages.put(url, remoteImage);
             } catch (Exception e) {
                 PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
-                return new BuiltinImage(missingTexture);
+                return null;
             }
-            cachedImages.put(url, remoteImage);
         }
         return remoteImage;
+    }
+
+    @Override
+    public void serialize(DataOutput out) throws IOException {
+        out.writeUTF(urlPath);
+    }
+
+    public static RemoteImage deserialize(DataInput out) throws IOException {
+        return of(out.readUTF());
     }
 }

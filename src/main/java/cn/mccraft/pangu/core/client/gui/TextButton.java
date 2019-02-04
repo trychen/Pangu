@@ -92,10 +92,6 @@ public class TextButton extends GuiButton {
                 this.y + (float) (this.height - style.getTextOffset()) / 2,
                 fontColor,
                 style.hasFontShadow());
-
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.disableTexture2D();
     }
 
     public boolean isTextCenterAlign() {

@@ -48,9 +48,6 @@ public class TextLabel extends GuiButton {
                 this.y + fontYOffset,
                 this.hovered ? hoverColor : fontColor,
                 true);
-        GlStateManager.disableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
     }
 
     public TextLabel setEnabled(boolean enabled) {

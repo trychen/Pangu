@@ -10,8 +10,10 @@ public interface TextureProvider {
     static TextureProvider of(String path, ResourceLocation missing) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             return RemoteImage.of(path, missing);
-        } else if (path.startsWith("local:")) {
-            return new BuiltinImage(new ResourceLocation(path));
+        } else if (path.startsWith("location:")) {
+            return new BuiltinImage(new ResourceLocation(path.substring(6)));
+        } else if (path.startsWith("file:")) {
+            return new BuiltinImage(new ResourceLocation(path.substring(2)));
         }
 
         return null;

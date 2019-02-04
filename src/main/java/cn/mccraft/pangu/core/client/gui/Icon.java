@@ -50,10 +50,6 @@ public final class Icon {
                 x + (float) (boxSize - getSize()) / 2, y + (float) (boxSize - getSize()) / 2,
                 getOffsetX(), getOffsetY(),
                 getSize(), getSize());
-
-        GlStateManager.disableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableAlpha();
     }
 
     public static Icon of(ResourceLocation texture) {

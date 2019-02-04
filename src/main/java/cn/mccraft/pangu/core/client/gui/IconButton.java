@@ -63,10 +63,6 @@ public class IconButton extends GuiButton {
                 style.getX(), style.getY() + state * style.getHeight(),
                 this.width, this.height);
 
-        GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.disableTexture2D();
-
         // draw icon
         icon.draw(x, y, style.getWidth());
     }

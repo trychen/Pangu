@@ -61,8 +61,6 @@ public class ClassCard extends Button {
                     width, height);
         }
         DefaultFontProvider.INSTANCE.drawCenteredString(text, x + width / 2, y + 60, isDisabled()?0x888888:(isHovered()?0x2CC0A7:0xDDDDDD), false);
-
-        Rect.endDrawing();
     }
 
     public String getText() {
