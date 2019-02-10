@@ -48,7 +48,7 @@ public class ClassCard extends Button {
         Rect.bind(texture);
 
         Rect.drawTextured(
-                x, y,
+                getX(), getY(),
                 0, 0,
                 width, height);
 
@@ -56,11 +56,11 @@ public class ClassCard extends Button {
             Rect.bind(icon.getTexture());
 
             Rect.drawTextured(
-                    x, y,
+                    getX(), getY(),
                     u, v,
                     width, height);
         }
-        DefaultFontProvider.INSTANCE.drawCenteredString(text, x + width / 2, y + 60, isDisabled()?0x888888:(isHovered()?0x2CC0A7:0xDDDDDD), false);
+        DefaultFontProvider.INSTANCE.drawCenteredString(text, getX() + width / 2, getY() + 60, isDisabled()?0x888888:(isHovered()?0x2CC0A7:0xDDDDDD), false);
     }
 
     public String getText() {

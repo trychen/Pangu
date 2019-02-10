@@ -148,28 +148,19 @@ public interface Rect {
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
-    static void drawBox(double left, double top, double width, double height, int color) {
-        float a = alpha(color);
-        float r = red(color);
-        float g = green(color);
-        float b = blue(color);
+    static void drawBox(double x, double y, double width, double height, int color) {
+        draw(x, y, x + width, y + height, color);
+    }
 
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
+    static void drawFrame(float left, float top, float right, float bottom, float border, int color) {
+        draw(left, top, left + border, bottom, color);
+        draw(right - border, top, right, bottom, color);
+        draw(left + border, top, right - border, top + border, color);
+        draw(left + border, bottom - border, right - border, bottom, color);
+    }
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(r, g, b, a);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(left, top + height, 0.0D).endVertex();
-        bufferbuilder.pos(left + width, top + height, 0.0D).endVertex();
-        bufferbuilder.pos(left + width, top, 0.0D).endVertex();
-        bufferbuilder.pos(left, top, 0.0D).endVertex();
-        tessellator.draw();
-
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+    static void drawFrameBox(float x, float y, float width, float height, float border, int color) {
+        drawFrame(x, y, x + width, y + height, border, color);
     }
 
     /**
@@ -188,25 +179,24 @@ public interface Rect {
             bottom = j;
         }
 
+        float r = red(color);
+        float b = blue(color);
+        float g = green(color);
         float a = alpha(color);
-        float r = RenderUtils.red(color);
-        float g = RenderUtils.green(color);
-        float b = RenderUtils.blue(color);
+
+        GlStateManager.color(r, b, g, a);
+        GlStateManager.disableTexture2D();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color(r, g, b, a);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         bufferbuilder.pos(left, bottom, 0.0D).endVertex();
         bufferbuilder.pos(right, bottom, 0.0D).endVertex();
         bufferbuilder.pos(right, top, 0.0D).endVertex();
         bufferbuilder.pos(left, top, 0.0D).endVertex();
         tessellator.draw();
+
         GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 
     static void drawCustomSizeTextured(float x, float y, float width, float height) {

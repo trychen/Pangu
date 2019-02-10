@@ -6,7 +6,9 @@ import cn.mccraft.pangu.core.util.font.FontProvider;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Accessors(chain = true)
 public class Label extends Component {
     @Getter
     @Setter
@@ -15,6 +17,18 @@ public class Label extends Component {
     @Getter
     @Setter
     private FontProvider fontProvider;
+
+    @Setter
+    @Getter
+    private int color = 0xFFFFFF;
+
+    @Setter
+    @Getter
+    private boolean dropShadow = true;
+
+    @Setter
+    @Getter
+    private boolean centered = false;
 
     public Label(String text) {
         this(text, DefaultFontProvider.INSTANCE);
@@ -27,6 +41,6 @@ public class Label extends Component {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-
+        fontProvider.drawString(text, getX(), getY(), color, dropShadow, centered);
     }
 }

@@ -28,11 +28,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     protected int zLevel = 100;
 
     @Getter
-    protected int height = 0, width = 0;
+    protected float height = 0, width = 0;
 
-    @Getter
     @Setter
-    protected float x = 0, y = 0;
+    private float x = 0, y = 0;
 
     @Getter
     @Setter
@@ -59,10 +58,28 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
-        return mouseX >= this.x
-                && mouseY >= this.y
-                && mouseX < this.x + this.width
-                && mouseY < this.y + this.height;
+        return mouseX >= this.getX()
+                && mouseY >= this.getY()
+                && mouseX < this.getX() + this.width
+                && mouseY < this.getY() + this.height;
+    }
+
+    public float getX() {
+        if (parent instanceof Container) return getNativeX() + ((Container) parent).getOffsetX();
+        return getNativeX();
+    }
+
+    public float getY() {
+        if (parent instanceof Container) return getNativeY() + ((Container) parent).getOffsetY();
+        return getNativeY();
+    }
+
+    public float getNativeX() {
+        return x;
+    }
+
+    public float getNativeY() {
+        return y;
     }
 
     public Component setPosition(float x, float y) {
@@ -75,7 +92,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         return setPosition(x - width / 2, y - height / 2);
     }
 
-    public Component setSize(int width, int height) {
+    public Component setSize(float width, float height) {
         this.width = width;
         this.height = height;
         return this;
@@ -87,9 +104,8 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public void drawComponentBox() {
-        Rect.drawBox(x, y, width, height, 0xFFFFFFFF);
+        Rect.drawFrameBox(x, y, width, height, 1, 0xFFFF0000);
     }
-
 
     /**
      * Draw tooltips

@@ -24,6 +24,10 @@ public class EntityShow extends Component {
     @Setter
     private float scale = 30;
 
+    @Getter
+    @Setter
+    private boolean showBack = false;
+
     public EntityShow(EntityLivingBase entity) {
         super();
         this.entity = entity;
@@ -31,15 +35,17 @@ public class EntityShow extends Component {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        int aimX = (int) (x - mouseX);
-        int aimY = (int) (y - 75 - mouseY);
+        int aimX = (int) (getX() - mouseX);
+        int aimY = (int) (getY() - 150 - mouseY);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
-        GlStateManager.translate(x, y, 300.0F);
+        GlStateManager.translate(getX(), getY(), 300.0F);
         GlStateManager.scale(-scale, scale, scale);
         GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        if (showBack)
+            GlStateManager.rotate(180.0F, 0, 1, 0);
         float f = entity.renderYawOffset;
         float f1 = entity.rotationYaw;
         float f2 = entity.rotationPitch;
@@ -49,8 +55,8 @@ public class EntityShow extends Component {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-((float) Math.atan((double) (aimY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        entity.renderYawOffset = (float) Math.atan((double) (aimX / 40.0F)) * 20.0F;
-        entity.rotationYaw = (float) Math.atan((double) (aimX / 40.0F)) * 40.0F;
+        entity.renderYawOffset = (float) Math.atan((double) (aimX / 40.0F)) * 20.0F * (showBack?-1:0);
+        entity.rotationYaw = (float) Math.atan((double) (aimX / 40.0F)) * 40.0F * (showBack?-1:0);
         entity.rotationPitch = -((float) Math.atan((double) (aimY / 40.0F))) * 20.0F;
         entity.rotationYawHead = entity.rotationYaw;
         entity.prevRotationYawHead = entity.rotationYaw;
@@ -69,8 +75,6 @@ public class EntityShow extends Component {
         RenderHelper.disableStandardItemLighting();
         GlStateManager.disableRescaleNormal();
         GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-        GlStateManager.disableBlend();
     }
 }

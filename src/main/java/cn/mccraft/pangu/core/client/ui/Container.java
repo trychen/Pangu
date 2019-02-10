@@ -25,7 +25,11 @@ public class Container extends Component {
     @Setter
     protected Focusable focusedComponent;
 
-    public Container(int width, int height) {
+    @Getter
+    @Setter
+    protected float offsetX, offsetY;
+
+    public Container(float width, float height) {
         super();
         setSize(width, height);
     }
@@ -53,6 +57,11 @@ public class Container extends Component {
             }
         }
 
+        return this;
+    }
+
+    public Container setOffset(float x, float y) {
+        setOffsetX(x); setOffsetY(y);
         return this;
     }
 

@@ -28,6 +28,7 @@ public class TextButton extends Button {
 
     @Getter
     @Setter
+    @SideOnly(Side.CLIENT)
     private FontProvider font;
 
     @Getter
@@ -57,15 +58,15 @@ public class TextButton extends Button {
         int state = this.getHoverState();
 
         Rect.drawTextured(
-                x,
-                y,
+                getX(),
+                getY(),
                 style.getX(),
                 style.getY() + state * style.getHeight(),
                 width / 2, height);
 
         Rect.drawTextured(
-                x + width / 2,
-                y,
+                getX() + width / 2,
+                getY(),
                 style.getWidth() - this.width / 2,
                 style.getY() + state * style.getHeight(),
                 width / 2, height);
@@ -80,8 +81,8 @@ public class TextButton extends Button {
 
         font.drawString(
                 text,
-                this.x + this.width / 2 - font.getStringWidth(text) / 2,
-                this.y + (float) (this.height - style.getTextOffset()) / 2,
+                getX() + this.width / 2 - font.getStringWidth(text) / 2,
+                getY() + (this.height - style.getTextOffset()) / 2,
                 fontColor,
                 style.hasFontShadow());
     }

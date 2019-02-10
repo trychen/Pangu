@@ -76,6 +76,11 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
+    public void open() {
+        setParentScreen(Minecraft.getMinecraft().currentScreen);
+        Minecraft.getMinecraft().displayGuiScreen(this);
+    }
+
     public void closeScreen() {
         Minecraft.getMinecraft().displayGuiScreen(parentScreen);
     }

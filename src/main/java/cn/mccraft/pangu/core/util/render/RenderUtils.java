@@ -261,7 +261,7 @@ public interface RenderUtils {
     }
 
     static int alphaInt(int color) {
-        return color >>> 24;
+        return color >> 24 & 255;
     }
     static int redInt(int color) {
         return color >> 16 & 255;

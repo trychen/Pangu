@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
+import javax.crypto.CipherOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -52,23 +53,10 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         bufferedImage = EXECUTOR.submit(() -> {
                 if (!cachedFilePath.exists()) {
                     PanguCore.getLogger().info("Start fetching image from " + url.toString());
-                    DataInputStream dataInputStream = new DataInputStream(url.openStream());
-                    FileOutputStream fileOutputStream = new FileOutputStream(cachedFilePath);
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-                    byte[] buffer = new byte[1024];
-                    int length;
-
-                    while ((length = dataInputStream.read(buffer)) > 0) {
-                        output.write(buffer, 0, length);
-                    }
-                    fileOutputStream.write(output.toByteArray());
-                    fileOutputStream.flush();
-                    dataInputStream.close();
-                    fileOutputStream.close();
+                    saveImage();
                     PanguCore.getLogger().info("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
                 } else PanguCore.getLogger().info("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
-                return ImageIO.read(cachedFilePath);
+                return readImage();
             });
     }
 
@@ -164,5 +152,27 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
 
     public static RemoteImage deserialize(DataInput out) throws IOException {
         return of(out.readUTF());
+    }
+
+    protected BufferedImage readImage() throws IOException {
+        return ImageIO.read(cachedFilePath);
+    }
+
+    protected void saveImage() throws IOException {
+        DataInputStream dataInputStream = new DataInputStream(url.openStream());
+
+        FileOutputStream fileOutputStream = new FileOutputStream(cachedFilePath);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int length;
+
+        while ((length = dataInputStream.read(buffer)) > 0) {
+            output.write(buffer, 0, length);
+        }
+        fileOutputStream.write(output.toByteArray());
+        fileOutputStream.flush();
+        dataInputStream.close();
+        fileOutputStream.close();
     }
 }

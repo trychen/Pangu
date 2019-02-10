@@ -2,7 +2,10 @@ package cn.mccraft.pangu.core.util.font;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public enum DefaultFontProvider implements FontProvider {
     INSTANCE;
 
@@ -16,16 +19,5 @@ public enum DefaultFontProvider implements FontProvider {
     @Override
     public int drawString(String text, float x, float y, int color, boolean shadow) {
         return fontRenderer.drawString(text, x, y, color, shadow);
-    }
-
-    @Override
-    public int drawStringWithShadow(String text, float x, float y, int color) {
-        return drawString(text, x, y, color, true);
-    }
-
-    @Override
-    public int drawCenteredString(String text, float x, float y, int color, boolean shadow) {
-        float half = getStringWidth(text) / 2;
-        return drawString(text, x - half, y, color, shadow);
     }
 }

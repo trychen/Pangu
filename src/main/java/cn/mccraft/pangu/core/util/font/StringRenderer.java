@@ -380,15 +380,6 @@ public class StringRenderer implements FontProvider {
         return renderString(str, posX, posY, color, shadow);
     }
 
-    public int drawStringWithShadow(String text, float x, float y, int color) {
-        return drawString(text, x, y, color, true);
-    }
-
-    public int drawCenteredString(String text, float x, float y, int color, boolean shadow) {
-        float half = getStringWidth(text) / 2;
-        return drawString(text, x - half, y, color, shadow);
-    }
-
     public int getSize() {
         return cache.glyphCache.fontSize;
     }
