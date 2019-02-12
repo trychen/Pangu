@@ -82,8 +82,6 @@ public interface Rect {
 
         tessellator.draw();
         GlStateManager.shadeModel(7424);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
     }
 
@@ -186,6 +184,8 @@ public interface Rect {
 
         GlStateManager.color(r, b, g, a);
         GlStateManager.disableTexture2D();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
