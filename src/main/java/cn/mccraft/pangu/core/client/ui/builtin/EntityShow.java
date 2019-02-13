@@ -55,8 +55,8 @@ public class EntityShow extends Component {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(-((float) Math.atan((double) (aimY / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
-        entity.renderYawOffset = (float) Math.atan((double) (aimX / 40.0F)) * 20.0F * (showBack?-1:0);
-        entity.rotationYaw = (float) Math.atan((double) (aimX / 40.0F)) * 40.0F * (showBack?-1:0);
+        entity.renderYawOffset = (float) Math.atan((double) (aimX / 40.0F)) * 20.0F * (showBack?-1:1);
+        entity.rotationYaw = (float) Math.atan((double) (aimX / 40.0F)) * 40.0F * (showBack?-1:1);
         entity.rotationPitch = -((float) Math.atan((double) (aimY / 40.0F))) * 20.0F;
         entity.rotationYawHead = entity.rotationYaw;
         entity.prevRotationYawHead = entity.rotationYaw;
