@@ -53,6 +53,9 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public void onKeyTyped(char typedChar, int keyCode) {
     }
 
+    public void onMouseInput(int mouseX, int mouseY) {
+    }
+
     public void onUpdate(int mouseX, int mouseY) {
         this.hovered = isHovered(mouseX, mouseY);
     }

@@ -28,6 +28,7 @@ public abstract class Button extends Component {
 
     @Override
     public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
+        if (isDisabled()) return;
         if (actionOnReleased(mouseX, mouseY)) return;
         if (isPlayPressSound) playPressSound();
         this.onClick(mouseButton, mouseX, mouseY);
@@ -35,6 +36,7 @@ public abstract class Button extends Component {
 
     @Override
     public void onMouseReleased(int mouseX, int mouseY) {
+        if (isDisabled()) return;
         if (!actionOnReleased(mouseX, mouseY)) return;
         if (isPlayPressSound) playPressSound();
         this.onClick(0, mouseX, mouseY);

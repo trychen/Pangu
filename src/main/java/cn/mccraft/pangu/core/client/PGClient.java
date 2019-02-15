@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client;
 
+import cn.mccraft.pangu.core.client.ui.Screen;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;

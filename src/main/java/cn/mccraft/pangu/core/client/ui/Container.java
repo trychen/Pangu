@@ -127,8 +127,17 @@ public class Container extends Component {
                 .forEach(c -> c.onMouseReleased(mouseX, mouseY));
     }
 
+
     @Override
     public void onKeyTyped(char typedChar, int keyCode) {
         components.stream().filter(c -> !c.isDisabled()).forEach(c -> c.onKeyTyped(typedChar, keyCode));
+    }
+
+    @Override
+    public void onMouseInput(int mouseX, int mouseY) {
+        components
+                .stream()
+                .filter(Component::isHovered)
+                .forEach(c -> c.onMouseInput(mouseX, mouseY));
     }
 }

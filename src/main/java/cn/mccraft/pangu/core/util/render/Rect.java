@@ -50,7 +50,7 @@ public interface Rect {
      * @param colorLeftBottom  the color of (x1, y2)
      * @param colorRightBottom the color of (x2, y2)
      */
-    static void drawGradient(double left, double top, double right, double bottom, int colorLeftTop, int colorRightTop, int colorLeftBottom, int colorRightBottom) {
+    static void drawGradient(float left, float top, float right, float bottom, int colorLeftTop, int colorRightTop, int colorLeftBottom, int colorRightBottom) {
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
@@ -85,10 +85,22 @@ public interface Rect {
         GlStateManager.enableTexture2D();
     }
 
+    static void drawGradientBox(float x, float y, float width, float height, int colorLeftTop, int colorRightTop, int colorLeftBottom, int colorRightBottom) {
+        drawGradient(x, y, x + width, y + height, colorLeftTop, colorRightTop, colorLeftBottom, colorRightBottom);
+    }
+
+    static void drawGradientTop2Bottom(float left, float top, float right, float bottom, int colorTop, int colorBottom) {
+        Rect.drawGradient(left, top, right, bottom, colorTop, colorTop, colorBottom, colorBottom);
+    }
+
+    static void drawGradientLeft2Right(float left, float top, float right, float bottom, int colorLeft, int colorRight) {
+        Rect.drawGradient(left, top, right, bottom, colorLeft, colorRight, colorLeft, colorRight);
+    }
+
     /**
      * Draws a rect with TextureManager#bindTexture(ResourceLocation).
      */
-    static void drawTextured(double x, double y, float u, float v, float width, float height) {
+    static void drawTextured(float x, float y, float u, float v, float width, float height) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -115,7 +127,7 @@ public interface Rect {
     /**
      * Draws a rect with custom size texture.
      */
-    static void drawTextured(double x, double y, float u, float v, float width, float height, float textureWidth, float textureHeight) {
+    static void drawTextured(float x, float y, float u, float v, float width, float height, float textureWidth, float textureHeight) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -146,7 +158,7 @@ public interface Rect {
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
-    static void drawBox(double x, double y, double width, double height, int color) {
+    static void drawBox(float x, float y, float width, float height, int color) {
         draw(x, y, x + width, y + height, color);
     }
 
@@ -164,15 +176,15 @@ public interface Rect {
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
-    static void draw(double left, double top, double right, double bottom, int color) {
+    static void draw(float left, float top, float right, float bottom, int color) {
         if (left < right) {
-            double i = left;
+            float i = left;
             left = right;
             right = i;
         }
 
         if (top < bottom) {
-            double j = top;
+            float j = top;
             top = bottom;
             bottom = j;
         }
@@ -217,10 +229,10 @@ public interface Rect {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(x, y + height, 0.0D).tex((double) (u * f), (double) ((v + vHeight) * f1)).endVertex();
-        bufferbuilder.pos(x + width, y + height, 0.0D).tex((double) ((u + uWidth) * f), (double) ((v + vHeight) * f1)).endVertex();
-        bufferbuilder.pos(x + width, y, 0.0D).tex((double) ((u + uWidth) * f), (double) (v * f1)).endVertex();
-        bufferbuilder.pos(x, y, 0.0D).tex((double) (u * f), (double) (v * f1)).endVertex();
+        bufferbuilder.pos(x, y + height, 0.0D).tex(u * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0.0D).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
+        bufferbuilder.pos(x, y, 0.0D).tex(u * f, (v * f1)).endVertex();
         tessellator.draw();
     }
 }

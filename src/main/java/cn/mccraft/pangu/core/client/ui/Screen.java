@@ -1,18 +1,14 @@
 package cn.mccraft.pangu.core.client.ui;
 
-import cn.mccraft.pangu.core.util.NonNullList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Delegate;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,6 +72,16 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
+    @Override
+    public void handleMouseInput() throws IOException {
+        int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+
+        super.handleMouseInput();
+
+        rootContainer.onMouseInput(mouseX, mouseY);
+    }
+
     public void open() {
         setParentScreen(Minecraft.getMinecraft().currentScreen);
         Minecraft.getMinecraft().displayGuiScreen(this);
@@ -93,5 +99,6 @@ public abstract class Screen extends GuiScreen {
     /**
      * Draw background or else
      */
-    public abstract void draw();
+    public void draw() {
+    }
 }

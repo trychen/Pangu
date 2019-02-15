@@ -40,8 +40,6 @@ public class SelectionBox extends Button {
         if (isSelected()) Rect.draw(boxStartX + 1.2F, getY() + 1.5F + 1.2F, boxStartX - 1.5F - 1.2F + height, getY() - 1.2F + height, 0xFFcea119);
 
         Rect.drawFrame(boxStartX, getY() + 1.5F, boxStartX - 1.5F + height, getY() + height, 0.6F, color);
-
-        drawComponentBox();
     }
 
     @Override
