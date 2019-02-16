@@ -35,11 +35,11 @@ public final class Icon {
         return size;
     }
 
-    public void draw(int x, int y) {
+    public void draw(float x, float y) {
         draw(x, y, size);
     }
 
-    public void draw(int x, int y, int boxSize) {
+    public void draw(float x, float y, int boxSize) {
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();

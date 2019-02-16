@@ -57,7 +57,10 @@ public abstract class Scrolling extends Component {
                     float mouseListY = mouseY - getY() + this.scrollDistance;
 
                     // on element click
-                    if (mouseX - getX() <= getContentWidth()) onContentClick(mouseX - getX(), mouseListY);
+                    if (mouseX - getX() <= getContentWidth()) {
+                        onContentClick(mouseX - getX(), mouseListY);
+                        playPressSound();
+                    }
 
                     // on scroll bar clicked
                     if (isShowScrollBar() && mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {

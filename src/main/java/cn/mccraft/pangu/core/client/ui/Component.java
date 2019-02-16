@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -116,6 +118,11 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public void drawToolTips(List<String> texts, int mouseX, int mouseY) {
         GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
         RenderHelper.disableStandardItemLighting();
+    }
+
+
+    public void playPressSound() {
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     @Override

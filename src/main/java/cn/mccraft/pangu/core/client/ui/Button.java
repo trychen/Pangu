@@ -42,10 +42,6 @@ public abstract class Button extends Component {
         this.onClick(0, mouseX, mouseY);
     }
 
-    public void playPressSound() {
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-    }
-
     public boolean actionOnReleased(int mouseX, int mouseY) {
         return true;
     }
