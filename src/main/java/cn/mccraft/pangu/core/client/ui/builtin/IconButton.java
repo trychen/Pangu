@@ -19,7 +19,7 @@ public class IconButton extends Button {
      */
     @Getter
     @Setter
-    protected final Style style;
+    protected Style style;
 
     /**
      * The texture of the icon
