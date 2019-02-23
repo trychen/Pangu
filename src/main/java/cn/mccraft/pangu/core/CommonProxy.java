@@ -44,6 +44,7 @@ public class CommonProxy {
         Proxy.INSTANCE.invoke(event, LoaderState.INITIALIZATION, Side.SERVER);
         new AnnotationStream<>(Load.class.getTypeName()).typeStream().forEach(clazz -> {
             PanguCore.getLogger().info("Loading class " + clazz.toGenericString());
+            clazz.getDeclaredMethods();
         });
     }
 

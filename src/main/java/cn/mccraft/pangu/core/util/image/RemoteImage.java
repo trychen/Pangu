@@ -6,12 +6,10 @@ import com.trychen.bytedatastream.ByteDeserializable;
 import com.trychen.bytedatastream.ByteSerializable;
 import com.trychen.bytedatastream.DataOutput;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
-import javax.crypto.CipherOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -24,7 +22,14 @@ import java.util.concurrent.*;
 
 public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSerializable {
 
-    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactory() {
+        private ThreadGroup group = new ThreadGroup("Pangu Remote Image Fetcher Threads");
+        private int index = 1;
+
+        public Thread newThread(Runnable r) {
+            return new Thread(this.group, r, "Thread #" + this.index++);
+        }
+    });
 
     @Getter
     private final String urlPath;
