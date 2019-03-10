@@ -1,10 +1,12 @@
-package cn.mccraft.pangu.core.client.ui.example;
+package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Button;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.image.TextureProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,25 +16,26 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassCard extends Button {
-    public ResourceLocation texture = PanguResLoc.ofGui("class_choose.png");
+public class Card extends Button {
+    public ResourceLocation texture = PanguResLoc.ofGui("card.png");
 
     private String text;
     private TextureProvider icon;
     private int u, v;
-    private List<String> toolTips = new ArrayList<String>() {{
-        add("Hello");
-    }};
 
-    public ClassCard() {
+    @Getter
+    @Setter
+    private List<String> toolTips;
+
+    public Card() {
         this("");
     }
 
-    public ClassCard(String text) {
+    public Card(String text) {
         this(text, 65, 80,  null, 0, 0);
     }
 
-    public ClassCard(String name, int width, int height, TextureProvider textureProvider, int u, int v) {
+    public Card(String name, int width, int height, TextureProvider textureProvider, int u, int v) {
         super(width, height);
         this.text = name;
         this.icon = textureProvider;
@@ -67,7 +70,7 @@ public class ClassCard extends Button {
         return text;
     }
 
-    public ClassCard setText(String text) {
+    public Card setText(String text) {
         this.text = text;
         return this;
     }

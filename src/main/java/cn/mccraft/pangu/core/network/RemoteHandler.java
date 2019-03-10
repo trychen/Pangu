@@ -2,6 +2,8 @@ package cn.mccraft.pangu.core.network;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.asm.transformer.RemoteTransformer;
+import cn.mccraft.pangu.core.loader.AnnotationInjector;
+import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.util.*;
@@ -72,6 +74,11 @@ public class RemoteHandler {
             PanguCore.getLogger().error("Error while sending @Remote info", e);
         }
         return true;
+    }
+
+    @AnnotationInjector.StaticInvoke
+    public static void initClass(AnnotationStream<Remote> stream) {
+        stream.classStream();
     }
 
     @Load(LoaderState.INITIALIZATION)
