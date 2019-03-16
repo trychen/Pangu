@@ -19,13 +19,17 @@ import java.util.List;
 public class Card extends Button {
     public ResourceLocation texture = PanguResLoc.ofGui("card.png");
 
+    @Getter
+    @Setter
     private String text;
-    private TextureProvider icon;
-    private int u, v;
 
     @Getter
     @Setter
-    private List<String> toolTips;
+    private TextureProvider icon;
+
+    @Getter
+    @Setter
+    private int u, v;
 
     public Card() {
         this("");
@@ -64,32 +68,5 @@ public class Card extends Button {
                     width, height);
         }
         DefaultFontProvider.INSTANCE.drawCenteredString(text, getX() + width / 2, getY() + 60, isDisabled()?0x888888:(isHovered()?0x2CC0A7:0xDDDDDD), false);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public Card setText(String text) {
-        this.text = text;
-        return this;
-    }
-
-    public TextureProvider getIcon() {
-        return icon;
-    }
-
-    public int getU() {
-        return u;
-    }
-
-    public int getV() {
-        return v;
-    }
-
-    @Nullable
-    @Override
-    public List<String> getToolTips() {
-        return toolTips;
     }
 }

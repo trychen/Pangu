@@ -88,6 +88,7 @@ public class Container extends Component {
     @Override
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
+        drawBackground();
         components.forEach(c -> c.onUpdate(mouseX, mouseY));
         components
                 .stream()
@@ -139,5 +140,8 @@ public class Container extends Component {
                 .stream()
                 .filter(Component::isHovered)
                 .forEach(c -> c.onMouseInput(mouseX, mouseY));
+    }
+
+    public void drawBackground() {
     }
 }

@@ -31,6 +31,10 @@ public abstract class Screen extends GuiScreen {
     @Delegate(excludes = Component.class)
     protected Container rootContainer;
 
+    @Getter
+    @Setter
+    protected Modal modal;
+
     public Screen() {
     }
 
@@ -46,11 +50,12 @@ public abstract class Screen extends GuiScreen {
         if (drawDefaultBackground) drawDefaultBackground();
         draw();
         rootContainer.onDraw(partialTicks, mouseX, mouseY);
+        if (getModal() != null) getModal().onDraw(partialTicks, mouseX, mouseY);
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        rootContainer.onMousePressed(mouseButton, mouseX, mouseY);
+        (getModal() == null ? rootContainer : getModal()).onMousePressed(mouseButton, mouseX, mouseY);
     }
 
     @Override
@@ -60,7 +65,7 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        rootContainer.onMouseReleased(mouseX, mouseY);
+        (getModal() == null ? rootContainer : getModal()).onMouseReleased(mouseX, mouseY);
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
@@ -68,7 +73,7 @@ public abstract class Screen extends GuiScreen {
             this.mc.displayGuiScreen(null);
             if (this.mc.currentScreen == null) this.mc.setIngameFocus();
         } else {
-            rootContainer.onKeyTyped(typedChar, keyCode);
+            (getModal() == null ? rootContainer : getModal()).onKeyTyped(typedChar, keyCode);
         }
     }
 
@@ -79,7 +84,7 @@ public abstract class Screen extends GuiScreen {
 
         super.handleMouseInput();
 
-        rootContainer.onMouseInput(mouseX, mouseY);
+        (getModal() == null ? rootContainer : getModal()).onMouseInput(mouseX, mouseY);
     }
 
     public void open() {

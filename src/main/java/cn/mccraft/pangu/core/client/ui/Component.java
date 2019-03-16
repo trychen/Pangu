@@ -39,6 +39,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Setter
     protected boolean hovered = false, visible = true, disabled = false;
 
+    @Setter
+    @Getter
+    protected List<String> toolTips;
+
     public Component() {
     }
 
@@ -101,11 +105,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         this.width = width;
         this.height = height;
         return this;
-    }
-
-    @Nullable
-    public List<String> getToolTips() {
-        return null;
     }
 
     public void drawComponentBox() {
