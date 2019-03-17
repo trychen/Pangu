@@ -5,6 +5,10 @@ public interface FontProvider {
 
     int drawString(String text, float x, float y, int color, boolean shadow);
 
+    String trimStringToWidth(String text, int width, boolean reverse);
+
+    int getFontHeight();
+
     default int drawString(String text, float x, float y, int color, boolean shadow, boolean centered) {
         float half = centered ? getStringWidth(text) / 2 : 0;
         return drawString(text, x - half, y, color, shadow);

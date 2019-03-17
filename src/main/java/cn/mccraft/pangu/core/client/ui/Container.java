@@ -23,7 +23,7 @@ public class Container extends Component {
 
     @Getter
     @Setter
-    protected Focusable focusedComponent;
+    protected Component focusedComponent;
 
     @Getter
     @Setter
@@ -48,15 +48,6 @@ public class Container extends Component {
         // Sort with Z Index
         Collections.sort(components);
 
-        // Check focus
-        if (focusedComponent == null) {
-            for (Component c : cs) {
-                if (c instanceof Focusable) {
-                    focus((Focusable) c);
-                }
-            }
-        }
-
         return this;
     }
 
@@ -70,19 +61,14 @@ public class Container extends Component {
         Collections.sort(components);
         c.setParent(this);
         c.setScreen(getScreen());
-
-        if (focusedComponent == null && c instanceof Focusable) {
-            focus((Focusable) c);
-        }
-
         return this;
     }
 
-    public Container focus(@Nonnull Focusable c) {
-        if (focusedComponent != null) focusedComponent.onLostFocus();
+    public Component focus(@Nonnull Component c) {
+        if (focusedComponent != null) focusedComponent.setFocused(false);
+        c.setFocused(true);
         focusedComponent = c;
-        focusedComponent.onFocused();
-        return this;
+        return c;
     }
 
     @Override
@@ -115,7 +101,7 @@ public class Container extends Component {
                 .forEach(
                         c -> {
                             if (c != focusedComponent && c instanceof Focusable) {
-                                focus((Focusable) c);
+                                focus(c);
                             }
                             c.onMousePressed(mouseButton, mouseX, mouseY);
                         });

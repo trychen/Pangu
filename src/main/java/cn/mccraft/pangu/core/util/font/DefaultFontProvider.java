@@ -20,4 +20,14 @@ public enum DefaultFontProvider implements FontProvider {
     public int drawString(String text, float x, float y, int color, boolean shadow) {
         return fontRenderer.drawString(text, x, y, color, shadow);
     }
+
+    @Override
+    public String trimStringToWidth(String text, int width, boolean reverse) {
+        return fontRenderer.trimStringToWidth(text, width, reverse);
+    }
+
+    @Override
+    public int getFontHeight() {
+        return fontRenderer.FONT_HEIGHT;
+    }
 }

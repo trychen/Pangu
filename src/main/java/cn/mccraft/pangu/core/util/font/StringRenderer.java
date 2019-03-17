@@ -383,4 +383,9 @@ public class StringRenderer implements FontProvider {
     public int getSize() {
         return cache.glyphCache.fontSize;
     }
+
+    @Override
+    public int getFontHeight() {
+        return 9;
+    }
 }

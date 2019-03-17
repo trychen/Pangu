@@ -13,7 +13,6 @@ import com.trychen.bytedatastream.ByteSerialization;
 import lombok.Getter;
 import lombok.experimental.Delegate;
 import lombok.var;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.LoaderState;
@@ -216,4 +215,5 @@ public class RemoteHandler {
             return isStatic;
         }
     }
+
 }

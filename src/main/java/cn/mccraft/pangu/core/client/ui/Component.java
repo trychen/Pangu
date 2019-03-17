@@ -37,6 +37,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
     @Getter
     @Setter
+    protected boolean focused = false;
+
+    @Getter
+    @Setter
     protected boolean hovered = false, visible = true, disabled = false;
 
     @Setter

@@ -2,14 +2,14 @@ package cn.mccraft.pangu.core.client.ui.example;
 
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
-import cn.mccraft.pangu.core.client.ui.Container;
-import cn.mccraft.pangu.core.client.ui.Modal;
-import cn.mccraft.pangu.core.client.ui.Screen;
-import cn.mccraft.pangu.core.client.ui.TabContainer;
+import cn.mccraft.pangu.core.client.ui.*;
 import cn.mccraft.pangu.core.client.ui.builtin.Label;
 import cn.mccraft.pangu.core.client.ui.builtin.SelectionBox;
 import cn.mccraft.pangu.core.client.ui.builtin.TextButton;
+import cn.mccraft.pangu.core.network.Remote;
 import cn.mccraft.pangu.core.util.render.Rect;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -50,6 +50,9 @@ public class ScreenExample extends Screen {
             setModal(modal);
         }).setCenteredPosition(150 / 2, 10));
         addComponent(tabContainer.addTabs(container1, container2));
+
+        addComponent(focus(new TextField(70, 20).setCenteredPosition( 200, 120)));
+        addComponent(focus(new TextField(70, 20).setCenteredPosition( 200, 160)));
     }
 
     @Override
@@ -57,8 +60,14 @@ public class ScreenExample extends Screen {
 //        Rect.drawGradient(0, 0, width * 1.7F, height * 1.7F, 0xCB000000, 0, 0xCB000000, 0);
     }
 
+    @DevOnly
     @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
     public static void test() {
         new ScreenExample().open();
+    }
+
+    @Remote(0)
+    public void test(EntityPlayer player, NBTTagCompound tag) {
+        // do something
     }
 }
