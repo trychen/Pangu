@@ -5,20 +5,21 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
 public abstract class Button extends Component {
+    /**
+     * Enable press sound (UI_BUTTON_CLICK)
+     */
     @Setter
     @Getter
     private boolean isPlayPressSound = true;
 
+    /**
+     * Close screen when button clicked
+     */
     @Setter
     @Getter
     private boolean clickToClose = false;
@@ -26,7 +27,10 @@ public abstract class Button extends Component {
     @Getter
     @Setter
     @Deprecated
-    private ClickEvent clickEvent;
+    protected ClickEvent clickEvent;
+
+    @Getter
+    protected Consumer<ButtonClickEvent> buttonClickEvent;
 
     public Button(int width, int height) {
         super();
@@ -53,6 +57,9 @@ public abstract class Button extends Component {
         this.onClick(0, mouseX, mouseY);
     }
 
+    /**
+     * @return if action click event while mouse released
+     */
     public boolean actionOnReleased(int mouseX, int mouseY) {
         return true;
     }
@@ -71,12 +78,9 @@ public abstract class Button extends Component {
     public interface ClickEvent {
         void onClick(int mouseButton, int mouseX, int mouseY);
     }
-
-    @Getter
-    protected Consumer<ButtonClickEvent> buttonClickEvent;
-
-    public void onButtonClick(Consumer<ButtonClickEvent> consumer) {
+    public Button onButtonClick(Consumer<ButtonClickEvent> consumer) {
         buttonClickEvent = consumer;
+        return this;
     }
 
     @Data

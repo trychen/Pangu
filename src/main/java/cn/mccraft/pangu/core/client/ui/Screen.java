@@ -32,16 +32,25 @@ public abstract class Screen extends GuiScreen {
     protected Container rootContainer;
 
     @Getter
-    @Setter
     protected Modal modal;
+
+    @Getter
+    protected float halfWidth, halfHeight;
 
     public Screen() {
     }
 
     @Override
     public void initGui() {
+        halfWidth = width / 2F;
+        halfHeight = width / 2F;
         rootContainer = new Container(width, height);
         rootContainer.setScreen(this);
+        if (getModal() != null) {
+            getModal().clear();
+            getModal().setSize(width, height);
+            getModal().init();
+        }
         init();
     }
 
@@ -70,8 +79,12 @@ public abstract class Screen extends GuiScreen {
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1) {
-            this.mc.displayGuiScreen(null);
-            if (this.mc.currentScreen == null) this.mc.setIngameFocus();
+            if (getModal() != null) {
+                getModal().close();
+            } else {
+                this.mc.displayGuiScreen(null);
+                if (this.mc.currentScreen == null) this.mc.setIngameFocus();
+            }
         } else {
             (getModal() == null ? rootContainer : getModal()).onKeyTyped(typedChar, keyCode);
         }
@@ -85,6 +98,11 @@ public abstract class Screen extends GuiScreen {
         super.handleMouseInput();
 
         (getModal() == null ? rootContainer : getModal()).onMouseInput(mouseX, mouseY);
+    }
+
+    public void setModal(Modal modal) {
+        this.modal = modal;
+        this.modal.init();
     }
 
     public void open() {

@@ -56,9 +56,15 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public void onMouseReleased(int mouseX, int mouseY) {
     }
 
+    /**
+     * Only if this component is focused ({@link Container#focus(Focusable)})
+     */
     public void onKeyTyped(char typedChar, int keyCode) {
     }
 
+    /**
+     * Mouse scrolling.
+     */
     public void onMouseInput(int mouseX, int mouseY) {
     }
 
@@ -107,6 +113,9 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         return this;
     }
 
+    /**
+     * Draw a red frame that contains this component
+     */
     public void drawComponentBox() {
         Rect.drawFrameBox(x, y, width, height, 1, 0xFFFF0000);
     }
@@ -118,7 +127,6 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
         RenderHelper.disableStandardItemLighting();
     }
-
 
     public void playPressSound() {
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));

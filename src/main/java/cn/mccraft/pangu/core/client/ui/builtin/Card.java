@@ -7,6 +7,7 @@ import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,8 +17,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Accessors(chain = true)
 public class Card extends Button {
-    public ResourceLocation texture = PanguResLoc.ofGui("card.png");
+    public static final ResourceLocation texture = PanguResLoc.ofGui("card.png");
 
     @Getter
     @Setter

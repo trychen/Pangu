@@ -104,6 +104,7 @@ public class Container extends Component {
                 return;
             }
         }
+        drawForeground();
     }
 
     @Override
@@ -142,6 +143,14 @@ public class Container extends Component {
                 .forEach(c -> c.onMouseInput(mouseX, mouseY));
     }
 
+    public void clear() {
+        components.clear();
+        focusedComponent = null;
+    }
+
     public void drawBackground() {
+    }
+
+    public void drawForeground() {
     }
 }

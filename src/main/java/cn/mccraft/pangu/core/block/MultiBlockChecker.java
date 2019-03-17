@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author trychen
+ * @author mouse
  * @since 1.0.0.5
  */
 public class MultiBlockChecker {

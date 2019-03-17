@@ -3,17 +3,20 @@ package cn.mccraft.pangu.core.client.ui.example;
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.client.ui.Container;
+import cn.mccraft.pangu.core.client.ui.Modal;
 import cn.mccraft.pangu.core.client.ui.Screen;
 import cn.mccraft.pangu.core.client.ui.TabContainer;
 import cn.mccraft.pangu.core.client.ui.builtin.Label;
 import cn.mccraft.pangu.core.client.ui.builtin.SelectionBox;
 import cn.mccraft.pangu.core.client.ui.builtin.TextButton;
+import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 @DevOnly
 @SideOnly(Side.CLIENT)
-public class ScreenClothes extends Screen {
+public class ScreenExample extends Screen {
     @Override
     public void init() {
         drawDefaultBackground = false;
@@ -32,7 +35,20 @@ public class ScreenClothes extends Screen {
         container2.addComponent(new Label("Hello Container 2").setCentered(true).setCenteredPosition(150 / 2, 150 / 2));
         container2.addComponent(new TextButton("Hello", TextButton.PRIMARY).setCenteredPosition(150 / 2, 10));
 
-        addComponent(new TextButton("Hello", TextButton.PRIMARY).setCenteredPosition(150 / 2, 10));
+        addComponent(new TextButton("Hello", TextButton.PRIMARY).onButtonClick(buttonClickEvent -> {
+            Modal modal = new Modal(this) {
+                @Override
+                public void init() {
+                    addComponent(new TextButton("OK").setCenteredPosition(halfWidth, halfHeight));
+                }
+
+                @Override
+                public void drawBackground() {
+                    Rect.draw(0, 0, width, height, 0x9050c2e3);
+                }
+            };
+            setModal(modal);
+        }).setCenteredPosition(150 / 2, 10));
         addComponent(tabContainer.addTabs(container1, container2));
     }
 
@@ -41,8 +57,8 @@ public class ScreenClothes extends Screen {
 //        Rect.drawGradient(0, 0, width * 1.7F, height * 1.7F, 0xCB000000, 0, 0xCB000000, 0);
     }
 
-//    @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
-//    public static void test() {
-//        new ScreenClothes().open();
-//    }
+    @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
+    public static void test() {
+        new ScreenExample().open();
+    }
 }
