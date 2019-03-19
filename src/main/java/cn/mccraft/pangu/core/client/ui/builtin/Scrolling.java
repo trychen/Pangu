@@ -1,7 +1,6 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
-import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -47,6 +46,7 @@ public abstract class Scrolling extends Component {
     @Override
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
+        drawBackground();
 
         float scrollBarLeft = getX() + getContentWidth();
         float scrollBarRight = scrollBarLeft + SCROLL_BAR_WIDTH;
@@ -170,4 +170,7 @@ public abstract class Scrolling extends Component {
     public abstract void onContentClick(float mouseListX, float mouseListY);
 
     public abstract void onContentDraw(float baseY);
+
+    public void drawBackground() {
+    }
 }

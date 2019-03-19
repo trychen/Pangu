@@ -66,8 +66,8 @@ public class ScrollingList extends Scrolling {
 
     public void select(int index) {
         if (isSelected(index)) return;
-        if (index < 0 || index >= getEntryCounts()) throw new IndexOutOfBoundsException();
-        if (!getEntry(index).onEntryStateChanged(this, index,true)) return;
+        if (index < -1 || index >= getEntryCounts()) throw new IndexOutOfBoundsException();
+        if (index != -1 && !getEntry(index).onEntryStateChanged(this, index,true)) return;
         for (int i = 0; i < getEntryCounts(); i++) {
             if (i != index && !getEntry(i).onEntryStateChanged(this, i, i == index))
                 return;

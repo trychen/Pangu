@@ -16,6 +16,6 @@ public interface TextureProvider {
             return new BuiltinImage(new ResourceLocation(path.substring(2)));
         }
 
-        return null;
+        return new BuiltinImage(missing);
     }
 }
