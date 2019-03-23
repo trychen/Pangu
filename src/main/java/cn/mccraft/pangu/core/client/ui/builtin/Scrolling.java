@@ -31,7 +31,7 @@ public abstract class Scrolling extends Component {
     @Setter
     protected boolean showScrollBar = true;
 
-    public Scrolling(int height, int width) {
+    public Scrolling(int width, int height) {
         setSize(width, height);
     }
 

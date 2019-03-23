@@ -102,7 +102,7 @@ public abstract class Screen extends GuiScreen {
 
     public void setModal(Modal modal) {
         this.modal = modal;
-        this.modal.init();
+        if (this.modal != null) this.modal.init();
     }
 
     public void open() {
@@ -111,6 +111,7 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void closeScreen() {
+        if (getModal() != null) setModal(null);
         Minecraft.getMinecraft().displayGuiScreen(parentScreen);
     }
 

@@ -24,8 +24,8 @@ public class ScrollingList extends Scrolling {
     @Getter
     protected int selectedIndex = -1;
 
-    public ScrollingList(int height, int width) {
-        super(height, width);
+    public ScrollingList(int width, int height) {
+        super(width, height);
     }
 
     @Override

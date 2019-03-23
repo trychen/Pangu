@@ -3,9 +3,11 @@ package cn.mccraft.pangu.core.client.ui.example;
 import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.client.ui.*;
+import cn.mccraft.pangu.core.client.ui.builtin.DialogModal;
 import cn.mccraft.pangu.core.client.ui.builtin.Label;
 import cn.mccraft.pangu.core.client.ui.builtin.SelectionBox;
 import cn.mccraft.pangu.core.client.ui.builtin.TextButton;
+import cn.mccraft.pangu.core.client.ui.meta.Line;
 import cn.mccraft.pangu.core.network.Remote;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,23 +36,10 @@ public class ScreenExample extends Screen {
         Container container2 = new Container(150, 150);
         container2.addComponent(new Label("Hello Container 2").setCentered(true).setCenteredPosition(150 / 2, 150 / 2));
         container2.addComponent(new TextButton("Hello", TextButton.PRIMARY).setCenteredPosition(150 / 2, 10));
-
         addComponent(new TextButton("Hello", TextButton.PRIMARY).onButtonClick(buttonClickEvent -> {
-            Modal modal = new Modal(this) {
-                @Override
-                public void init() {
-                    addComponent(new TextButton("OK").setCenteredPosition(halfWidth, halfHeight));
-                }
-
-                @Override
-                public void drawBackground() {
-                    Rect.draw(0, 0, width, height, 0x9050c2e3);
-                }
-            };
-            setModal(modal);
+            setModal(new DialogModal(this));
         }).setCenteredPosition(150 / 2, 10));
         addComponent(tabContainer.addTabs(container1, container2));
-
         addComponent(focus(new TextField(70, 20).setCenteredPosition( 200, 120)));
         addComponent(focus(new TextField(70, 20).setCenteredPosition( 200, 160)));
     }

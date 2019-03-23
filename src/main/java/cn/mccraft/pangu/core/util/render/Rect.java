@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.render;
 
 import cn.mccraft.pangu.core.util.image.TextureProvider;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -234,5 +235,22 @@ public interface Rect {
         bufferbuilder.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
         bufferbuilder.pos(x, y, 0.0D).tex(u * f, (v * f1)).endVertex();
         tessellator.draw();
+    }
+
+    static void drawCorner(float x, float y, float width, float height, float u, float v, float uSize, float vSize) {
+        float halfWidth = width / 2, halfHeight = height / 2;
+
+        drawTextured(x, y, u, v, halfWidth, halfHeight);
+        drawTextured(x + halfWidth, y, u + uSize - halfWidth, v, halfWidth, halfHeight);
+        drawTextured(x, y + halfHeight, u, v + vSize - halfHeight, halfWidth, halfHeight);
+        drawTextured(x + halfWidth, y + halfHeight, u + uSize - halfWidth, v + vSize - halfHeight, halfWidth, halfHeight);
+    }
+
+    ResourceLocation CLASSICAL_BACKGROUND = PanguResLoc.ofGui("classical_background.png");
+
+    static void drawClassicalBackground(float x, float y, float width, float height) {
+        startDrawing();
+        bind(CLASSICAL_BACKGROUND);
+        drawCorner(x, y, width, height, 0, 0, 256, 256);
     }
 }
