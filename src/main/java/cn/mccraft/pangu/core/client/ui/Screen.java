@@ -111,8 +111,9 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void closeScreen() {
-        if (getModal() != null) setModal(null);
-        Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+        if (getModal() != null)
+            setModal(null);
+        else Minecraft.getMinecraft().displayGuiScreen(parentScreen);
     }
 
     /**
