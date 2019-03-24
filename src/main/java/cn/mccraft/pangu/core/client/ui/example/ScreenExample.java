@@ -37,7 +37,7 @@ public class ScreenExample extends Screen {
         container2.addComponent(new Label("Hello Container 2").setCentered(true).setCenteredPosition(150 / 2, 150 / 2));
         container2.addComponent(new TextButton("Hello", TextButton.PRIMARY).setCenteredPosition(150 / 2, 10));
         addComponent(new TextButton("Hello", TextButton.PRIMARY).onButtonClick(buttonClickEvent -> {
-            setModal(new DialogModal(this));
+            setModal(new DialogModal(this).addText("Hello", "World").addButton(UI.ofNoButton()).addButton(UI.ofYesButton()));
         }).setCenteredPosition(150 / 2, 10));
         addComponent(tabContainer.addTabs(container1, container2));
         addComponent(focus(new TextField(70, 20).setCenteredPosition( 200, 120)));

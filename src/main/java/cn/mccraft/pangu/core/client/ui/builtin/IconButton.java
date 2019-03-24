@@ -1,8 +1,8 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
-import cn.mccraft.pangu.core.client.gui.Icon;
-import cn.mccraft.pangu.core.client.gui.Style;
 import cn.mccraft.pangu.core.client.ui.Button;
+import cn.mccraft.pangu.core.client.ui.meta.Icon;
+import cn.mccraft.pangu.core.client.ui.meta.Style;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +10,9 @@ import lombok.Setter;
 import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
 public class IconButton extends Button {
-    public static final Style NORMAL = Style.of(PG_BUTTONS_TEXTURE, 200, 0, 20);
-    public static final Style CONTAINER = Style.of(PG_BUTTONS_TEXTURE, 220, 0, 22);
-    public static final Style GREEN = Style.of(PG_BUTTONS_TEXTURE, 220, 66, 22);
+    public static final Style NORMAL = Style.builder().texture(PG_BUTTONS_TEXTURE).x(200).width(20).height(20).build();
+    public static final Style CONTAINER = Style.builder().texture(PG_BUTTONS_TEXTURE).x(220).width(22).height(22).build();
+    public static final Style GREEN = Style.builder().texture(PG_BUTTONS_TEXTURE).x(220).y(22).width(22).height(22).build();
 
     /**
      * The style of button
@@ -36,15 +36,15 @@ public class IconButton extends Button {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        Rect.bind(style.getTexture());
+        Rect.bind(style.texture());
         int state = this.getHoverState();
 
         Rect.drawTextured(
                 getX(), getY(),
-                style.getX(), style.getY() + state * style.getHeight(),
-                this.width, this.height);
+                style.x(), style.y() + state * style.height(),
+                width, height);
 
         // draw icon
-        icon.draw(getX(), getY(), style.getWidth());
+        icon.drawCentered(getX() + width / 2, getY() + height / 2);
     }
 }

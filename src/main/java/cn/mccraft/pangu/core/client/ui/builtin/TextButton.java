@@ -1,14 +1,13 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
-import cn.mccraft.pangu.core.client.gui.Style;
 import cn.mccraft.pangu.core.client.ui.Button;
+import cn.mccraft.pangu.core.client.ui.meta.Style;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.font.FontProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -44,7 +43,7 @@ public class TextButton extends Button {
     }
 
     public TextButton(String text, FontProvider font, Style style) {
-        super(font.getStringWidth(text) + 20, style.getHeight());
+        super(font.getStringWidth(text) + 20, style.height());
         this.text = text;
         this.font = font;
         this.style = style;
@@ -54,36 +53,36 @@ public class TextButton extends Button {
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         Rect.startDrawing();
-        Rect.bind(getStyle().getTexture());
+        Rect.bind(getStyle().texture());
         int state = this.getHoverState();
 
         Rect.drawTextured(
                 getX(),
                 getY(),
-                style.getX(),
-                style.getY() + state * style.getHeight(),
+                style.x(),
+                style.y() + state * style.height(),
                 width / 2, height);
 
         Rect.drawTextured(
                 getX() + width / 2,
                 getY(),
-                style.getWidth() - this.width / 2,
-                style.getY() + state * style.getHeight(),
+                style.width() - this.width / 2,
+                style.y() + state * style.height(),
                 width / 2, height);
 
-        int fontColor = style.getFontColor();
+        int fontColor = style.fontColor();
 
         if (this.isDisabled()) {
-            fontColor = style.getDisabledFontColor();
+            fontColor = style.disabledFontColor();
         } else if (this.isHovered()) {
-            fontColor = style.getHoverFontColor();
+            fontColor = style.hoverFontColor();
         }
 
         font.drawString(
                 text,
                 getX() + this.width / 2 - font.getStringWidth(text) / 2,
-                getY() + (this.height - style.getTextOffset()) / 2,
+                getY() + (this.height - style.textOffset()) / 2,
                 fontColor,
-                style.hasFontShadow());
+                style.fontShadow());
     }
 }

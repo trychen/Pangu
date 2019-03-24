@@ -117,9 +117,15 @@ public abstract class Component implements Cloneable, Comparable<Component> {
         return this;
     }
 
+    public Component getRoot() {
+        if (parent == null) return this;
+        else return parent.getParent();
+    }
+
     /**
      * Draw a red frame that contains this component
      */
+    @SideOnly(Side.CLIENT)
     public void drawComponentBox() {
         Rect.drawFrameBox(x, y, width, height, 1, 0xFFFF0000);
     }

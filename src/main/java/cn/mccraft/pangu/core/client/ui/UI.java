@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
  */
 public interface UI {
     static Button ofYesButton() {
-        return new TextButton(I18n.format("gui.yes"));
+        return new TextButton(I18n.format("gui.yes")).setStyle(TextButton.PRIMARY);
     }
 
     static Button ofNoButton() {
-        return new TextButton(I18n.format("gui.no"));
+        return new TextButton(I18n.format("gui.no")).setStyle(TextButton.WHITE);
     }
 
     static ScrollingList ofStringList(int width, int height, List<Object> datas) {
