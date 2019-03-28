@@ -1,21 +1,20 @@
 package cn.mccraft.pangu.core.network;
 
+import cn.mccraft.pangu.core.util.data.ByteStreamPersistence;
+import cn.mccraft.pangu.core.util.data.Persistence;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.lang.annotation.*;
 
-/**
- * @since 1.4
- */
 @Documented
-@Deprecated
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Remote {
+public @interface Bridge {
     /**
-     * Message id
+     * The key to identity different packet. <br/>
+     * If value is empty, will use the owner's name & method's name as the value.
      */
-    int value();
+    String value() default "";
 
     /**
      * The side to exec the method
@@ -31,4 +30,6 @@ public @interface Remote {
      * Execute the method in both side
      */
     boolean also() default false;
+
+    Class<? extends Persistence> persistence() default ByteStreamPersistence.class;
 }

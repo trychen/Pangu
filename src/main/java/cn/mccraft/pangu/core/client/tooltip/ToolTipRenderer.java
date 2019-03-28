@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.client.tooltip;
 
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.loader.AutoWired;
+import cn.mccraft.pangu.core.network.Bridge;
 import cn.mccraft.pangu.core.network.Remote;
 import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
@@ -22,7 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
-import static cn.mccraft.pangu.core.network.Network.TOOLTIP_MESSAGE_ID;
 
 /**
  * Renderer of ToolTip
@@ -122,7 +122,7 @@ public enum ToolTipRenderer {
      * cannot be longer than 387. If text width is longer than 387, the beyond part
      * will be cut.
      */
-    @Remote(value = TOOLTIP_MESSAGE_ID, side = Side.CLIENT)
+    @Bridge(value = "ToolTips", side = Side.CLIENT)
     public void set(@Nullable EntityPlayer entityPlayer, @Nonnull ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();

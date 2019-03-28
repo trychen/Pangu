@@ -46,8 +46,12 @@ public class KeyBindingInjector {
                         description = "key." + String.join(".", NameBuilder.apart(method.getName()));
                     }
 
+                    // TODO: Support Older Version
+                    int keyCode = bindKeyPress.value() >= 0 ? bindKeyPress.value() : bindKeyPress.keyCode();
+                    if (keyCode < 0) return;
+
                     // register key binding
-                    final KeyBinding key = KeyBindingHelper.of(description, bindKeyPress.keyCode(), bindKeyPress.category(), bindKeyPress.modifier());
+                    final KeyBinding key = KeyBindingHelper.of(description, keyCode, bindKeyPress.category(), bindKeyPress.modifier());
                     // put into cache
                     try {
                         keyBindedList.add(new CachedKeyBinder(key , FastReflection.create(method), instance, bindKeyPress));

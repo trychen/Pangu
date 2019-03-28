@@ -45,7 +45,7 @@ public class RemoteHandler {
         Objects.requireNonNull(packet, "Couldn't find any cached @Remote message");
 
         // Side 吻合时直接运行
-        if (packet.getSide() == Sides.currentThreadSide()) return false;
+        if (packet.getSide() == Sides.safeCurrentThreadSide()) return false;
 
         try {
             if (packet.isWithEntityPlayer()) {

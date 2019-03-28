@@ -11,6 +11,15 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface BindKeyPress {
+
+    /**
+     * @return the code of the key to bind from {@link org.lwjgl.input.Keyboard}
+     */
+    int value() default -1;
+
+    @Deprecated
+    int keyCode() default -1;
+
     /**
      * If this meta is empty, injector will use method name
      * (separated by {@link cn.mccraft.pangu.core.util.NameBuilder#apart(String)}
@@ -19,11 +28,6 @@ public @interface BindKeyPress {
      * @return the key description, generally start with "key."
      */
     String description() default "";
-
-    /**
-     * @return the code of the key to bind from {@link org.lwjgl.input.Keyboard}
-     */
-    int keyCode();
 
     KeyModifier modifier() default KeyModifier.NONE;
 

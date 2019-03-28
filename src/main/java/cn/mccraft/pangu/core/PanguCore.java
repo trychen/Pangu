@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core;
 
+import lombok.Getter;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -18,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(
         modid = PanguCore.ID,
         name = "Pangu Core",
-        version = "1.7.0",
+        version = "1.8.0",
         useMetadata = true,
         acceptedMinecraftVersions = "[1.12.2,1.13)"
 )
@@ -80,17 +81,8 @@ public class PanguCore {
      *
      * @since 1.0.0.2
      */
-    @Mod.Instance(PanguCore.ID) private static PanguCore instance;
-
-    /**
-     * Get the instance of Pangu Core
-     *
-     * @return the instance of PanguCore
-     * @since 1.0.0.2
-     */
-    public static PanguCore getInstance() {
-        return instance;
-    }
+    @Mod.Instance(PanguCore.ID) @Getter
+    private static PanguCore instance;
 
     /**
      *  ==============================
@@ -128,12 +120,8 @@ public class PanguCore {
             clientSide = "cn.mccraft.pangu.core.client.ClientProxy",
             serverSide = "cn.mccraft.pangu.core.CommonProxy"
     )
+    @Getter
     private static CommonProxy proxy;
-
-    public static CommonProxy getProxy() {
-        return proxy;
-    }
-
     /*
        ==============================
                    Network
@@ -147,15 +135,8 @@ public class PanguCore {
      *
      * @since 1.0.0.2
      */
+    @Getter
     private static SimpleNetworkWrapper network;
-
-    /**
-     * *
-     * @return shared network wrapper named "pangu"
-     */
-    public static SimpleNetworkWrapper getNetwork() {
-        return network;
-    }
 
     /**
      *  ==============================

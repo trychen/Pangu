@@ -35,12 +35,12 @@ public class RemoteTransformer implements IClassTransformer {
     public static final String REMOTE_ANNOTATION = "Lcn/mccraft/pangu/core/network/Remote;";
     protected static final String
             BYTE_MESSAGE_NAME = ASMHelper.getClassName("cn.mccraft.pangu.core.network.ByteMessage"),
-            REMOTE_HANDLER_NAME = ASMHelper.getClassName("cn.mccraft.pangu.core.network.RemoteHandler"),
-            MINECRAFT_THREADING_NAME = ASMHelper.getClassName("cn.mccraft.pangu.core.util.MinecraftThreading");
+            REMOTE_HANDLER_NAME = ASMHelper.getClassName("cn.mccraft.pangu.core.network.RemoteHandler");
+
     protected static final Type
             TYPE_BYTE_MESSAGE = Type.getObjectType(BYTE_MESSAGE_NAME),
-            TYPE_REMOTE_HANDLER = Type.getObjectType(REMOTE_HANDLER_NAME),
-            TYPE_MINECRAFT_THREADING = Type.getObjectType(MINECRAFT_THREADING_NAME);
+            TYPE_REMOTE_HANDLER = Type.getObjectType(REMOTE_HANDLER_NAME);
+
     protected static final Method
             SEND = new Method("send", Type.BOOLEAN_TYPE, new Type[]{ASMHelper.TYPE_STRING, ASMHelper.getArrayType(ASMHelper.TYPE_OBJECT)});
 
