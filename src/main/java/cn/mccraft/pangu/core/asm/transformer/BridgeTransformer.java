@@ -66,7 +66,6 @@ public class BridgeTransformer implements IClassTransformer {
             }
 
             if (side != SIDE) {
-
                 MethodNode newMethod = new MethodNode(method.access, method.name, method.desc, method.signature, method.exceptions.toArray(new String[0]));
                 ASMHelper.MethodGenerator generator = ASMHelper.MethodGenerator.fromMethodNode(newMethod);
                 Label label = generator.newLabel(), end = generator.newLabel();

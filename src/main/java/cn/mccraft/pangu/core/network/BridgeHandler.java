@@ -25,6 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,6 +104,8 @@ public interface BridgeHandler {
         private boolean isStatic;
         @Getter
         private MethodAccessor methodAccessor;
+        @Getter(lazy = true)
+        private final String[] actualParameterNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
 
         private BaseSolution(@NonNull Bridge bridge, @NonNull Method method) throws Exception {
             this.bridge = bridge;
@@ -115,7 +118,7 @@ public interface BridgeHandler {
 
         @Override
         public void solve(EntityPlayer player, byte[] data) throws Exception {
-            Object[] objects = getPersistence().deserialize(data, actualParameterTypes);
+            Object[] objects = getPersistence().deserialize(getActualParameterNames(), data, actualParameterTypes);
             if (isWithEntityPlayerParameter()) objects = ArrayUtils.add(objects, 0, Games.player());
             getMethodAccessor().invoke(getOwnerInstance(), objects);
         }
@@ -131,7 +134,7 @@ public interface BridgeHandler {
                 actualParameters = objects;
 
             // 序列化
-            byte[] bytes = getPersistence().serialize(actualParameters, actualParameterTypes);
+            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes);
             Packet packet = new Packet(bridge.value(), bytes);
             // 发包
             if (bridge.side().isClient()){

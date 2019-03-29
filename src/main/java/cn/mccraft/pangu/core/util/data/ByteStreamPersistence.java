@@ -11,12 +11,12 @@ public enum ByteStreamPersistence implements Persistence {
     INSTANCE;
 
     @Override
-    public byte[] serialize(Object[] object, Type[] types) throws IOException {
-        return ByteSerialization.serialize(object, types);
+    public byte[] serialize(String[] parameterNames, Object[] objects, Type[] types) throws IOException {
+        return ByteSerialization.serialize(objects, types);
     }
 
     @Override
-    public Object[] deserialize(byte[] bytes, Type[] types) throws IOException {
+    public Object[] deserialize(String[] parameterNames, byte[] bytes, Type[] types) throws IOException {
         return ByteSerialization.deserialize(bytes, types);
     }
 }
