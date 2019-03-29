@@ -48,15 +48,15 @@ public class ScreenExample extends Screen {
     public void draw() {
 //        Rect.drawGradient(0, 0, width * 1.7F, height * 1.7F, 0xCB000000, 0, 0xCB000000, 0);
     }
-
-    @DevOnly
-    @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
-    public static void test() {
-        new ScreenExample().open();
-    }
-
-    @Remote(0)
-    public void test(EntityPlayer player, NBTTagCompound tag) {
-        // do something
-    }
+//
+//    @DevOnly
+//    @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
+//    public static void test() {
+//        new ScreenExample().open();
+//    }
+//
+//    @Remote(0)
+//    public void test(EntityPlayer player, NBTTagCompound tag) {
+//        // do something
+//    }
 }
