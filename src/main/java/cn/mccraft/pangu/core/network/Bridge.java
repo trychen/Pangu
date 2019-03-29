@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.network;
 
 import cn.mccraft.pangu.core.util.data.ByteStreamPersistence;
+import cn.mccraft.pangu.core.util.data.JsonPersistence;
 import cn.mccraft.pangu.core.util.data.Persistence;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -31,5 +32,7 @@ public @interface Bridge {
      */
     boolean also() default false;
 
-    Class<? extends Persistence> persistence() default ByteStreamPersistence.class;
+    Class<? extends Persistence> persistence() default JsonPersistence.class;
+
+    boolean persistenceByParameterOrder() default false;
 }

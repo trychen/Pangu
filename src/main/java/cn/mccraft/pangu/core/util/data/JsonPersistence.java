@@ -29,13 +29,13 @@ public enum JsonPersistence implements Persistence {
     }
 
     @Override
-    public byte[] serialize(String[] parameterNames, Object[] objects, Type[] types) throws IOException {
+    public byte[] serialize(String[] parameterNames, Object[] objects, Type[] types, boolean persistenceByParameterOrder) throws IOException {
         assert parameterNames.length == objects.length && objects.length == types.length : "Argument's length must be the same";
 
         JsonObject jsonObject = new JsonObject();
         for (int i = 0; i < objects.length; i++) {
             Object object = objects[i]; if (object == null) continue;
-            String name = parameterNames[i];
+            String name = persistenceByParameterOrder? "arg" + i : parameterNames[i];
             Type type = types[i];
 
             JsonElement json = gson.toJsonTree(object, type);
@@ -49,12 +49,21 @@ public enum JsonPersistence implements Persistence {
     public Object[] deserialize(String[] parameterNames, byte[] bytes, Type[] types) throws IOException {
         String json = new String(bytes, charset);
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+        JsonElement jsonParameterOrder = jsonObject.get("__persistence_by_parameter_order__");
+        boolean byOrder = jsonParameterOrder != null && !jsonParameterOrder.isJsonNull()?jsonParameterOrder.getAsBoolean():false;
 
-        Object[] objects = new Object[parameterNames.length];
+        Object[] objects = new Object[types.length];
         for (int i = 0; i < parameterNames.length; i++) {
-            String name = parameterNames[i];
-            JsonElement element = jsonObject.get(name);
-            if (element != null) {
+            JsonElement element;
+
+            if (byOrder) {
+                String name = parameterNames[i];
+                element = jsonObject.get(name);
+            } else {
+                element = jsonObject.get("arg" + i);
+            }
+
+            if (element != null && !element.isJsonNull()) {
                 objects[i] = gson.fromJson(element, types[i]);
             }
         }

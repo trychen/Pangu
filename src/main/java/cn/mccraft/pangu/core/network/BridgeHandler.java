@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,7 +113,7 @@ public interface BridgeHandler {
             this.method = method;
             this.isStatic = Modifier.isStatic(method.getModifiers());
             this.withEntityPlayerParameter = method.getParameterTypes().length > 0 && method.getParameterTypes()[0] == EntityPlayer.class;
-            this.actualParameterTypes = this.withEntityPlayerParameter ? Arrays.copyOfRange(method.getParameterTypes(), 1, method.getParameterTypes().length) : method.getParameterTypes();
+            this.actualParameterTypes = this.withEntityPlayerParameter ? Arrays.copyOfRange(method.getGenericParameterTypes(), 1, method.getGenericParameterTypes().length) : method.getGenericParameterTypes();
             this.methodAccessor = FastReflection.create(method);
         }
 
@@ -134,7 +135,7 @@ public interface BridgeHandler {
                 actualParameters = objects;
 
             // 序列化
-            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes);
+            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, bridge.persistenceByParameterOrder());
             Packet packet = new Packet(bridge.value(), bytes);
             // 发包
             if (bridge.side().isClient()){
@@ -167,22 +168,27 @@ public interface BridgeHandler {
 
         @Override
         public void fromBytes(ByteBuf buf) {
-            key = ByteBufUtils.readUTF8String(buf);
-            int length = buf.readInt();
-            bytes = new byte[length];
-            for (int i = 0; i < length; i++) {
-                bytes[i] = buf.readByte();
+
+            byte[] utf8Bytes = new byte[ByteBufUtils.readVarInt(buf, 2)];
+            for (int i = 0; i < utf8Bytes.length; i++) {
+                utf8Bytes[i] = buf.readByte();
+            }
+            key = new String(utf8Bytes, StandardCharsets.UTF_8);
+
+            this.bytes = new byte[ByteBufUtils.readVarInt(buf, 2)];
+            for (int i = 0; i < bytes.length; i++) {
+                this.bytes[i] = buf.readByte();
             }
         }
 
         @Override
         public void toBytes(ByteBuf buf) {
-            ByteBufUtils.writeUTF8String(buf, key);
+            byte[] utf8Bytes = key.getBytes(StandardCharsets.UTF_8);
+            ByteBufUtils.writeVarInt(buf, utf8Bytes.length, 2);
+            buf.writeBytes(utf8Bytes);
 
-            buf.writeInt(bytes.length);
-            for (byte aByte : bytes) {
-                buf.writeByte(aByte);
-            }
+            ByteBufUtils.writeVarInt(buf, bytes.length, 2);
+            buf.writeBytes(bytes);
         }
     }
 

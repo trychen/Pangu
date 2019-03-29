@@ -11,7 +11,7 @@ public enum ByteStreamPersistence implements Persistence {
     INSTANCE;
 
     @Override
-    public byte[] serialize(String[] parameterNames, Object[] objects, Type[] types) throws IOException {
+    public byte[] serialize(String[] parameterNames, Object[] objects, Type[] types, boolean persistenceByParameterOrder) throws IOException {
         return ByteSerialization.serialize(objects, types);
     }
 
