@@ -14,6 +14,7 @@ public interface PGClient {
     ResourceLocation PG_BUTTONS_2_TEXTURE = PanguResLoc.ofGui("buttons2.png");
     ResourceLocation PG_ICONS_TEXTURE = PanguResLoc.ofGui("icons.png");
     ResourceLocation PG_TOOLTIPS_TEXTURE = PanguResLoc.ofGui("tooltips.png");
+    ResourceLocation PG_TOAST_ICON_TEXTURE = PanguResLoc.ofGui("toast_icon.png");
 
     static IThreadListener getThread() {
         return Minecraft.getMinecraft();

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
 import cn.mccraft.pangu.core.client.input.BindKeyPress;
+import cn.mccraft.pangu.core.client.ui.UI;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.network.Bridge;
 import cn.mccraft.pangu.core.network.Remote;
@@ -17,10 +18,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.Arrays;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;
 
@@ -139,21 +141,6 @@ public enum ToolTipRenderer {
      */
     @Nonnull
     public String fixStringWidth(@Nonnull String text) {
-        return fixStringWidth(text, 1);
-    }
-
-    /**
-     * Cut string into a displayable size
-     */
-    @Nonnull
-    public String fixStringWidth(@Nonnull String text, int level) {
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        if (fontRenderer.getStringWidth(text) > 387) {
-            if (text.length() > 129)
-                return fixStringWidth(text.substring(0, 129));
-            else
-                return fixStringWidth(text.substring(0, text.length() - level), level + 1);
-        }
-        return text;
+        return UI.resizeStringList(Arrays.asList(text), 387).get(0);
     }
 }
