@@ -202,6 +202,7 @@ public interface BridgeHandler {
         INSTANCE;
         @Override
         public IMessage onMessage(Packet message, MessageContext ctx) {
+            System.out.println(new String(message.getBytes(), StandardCharsets.UTF_8));
             Solution solution = SOLUTIONS.get(message.getKey());
 
             // 空检测
