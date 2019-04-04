@@ -15,6 +15,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -66,6 +67,9 @@ public interface BridgeHandler {
         stream.methodStream().forEach(method -> {
             try {
                 Bridge bridge = method.getAnnotation(Bridge.class);
+
+                if (bridge.value().isEmpty()) throw new IllegalAccessException("method with @Bridge haven't been hook by asm: " + method.toGenericString());
+
                 Solution solution = new BaseSolution(bridge, method);
 
                 SOLUTIONS.put(bridge.value(), solution);
@@ -75,6 +79,7 @@ public interface BridgeHandler {
             }
         });
     }
+
     interface Solution {
         void solve(EntityPlayer player, byte[] data) throws Exception;
 
@@ -107,6 +112,8 @@ public interface BridgeHandler {
         private MethodAccessor methodAccessor;
         @Getter(lazy = true)
         private final String[] actualParameterNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
+        @Getter
+        private boolean persistenceByParameterOrder;
 
         private BaseSolution(@NonNull Bridge bridge, @NonNull Method method) throws Exception {
             this.bridge = bridge;
@@ -115,6 +122,10 @@ public interface BridgeHandler {
             this.withEntityPlayerParameter = method.getParameterTypes().length > 0 && method.getParameterTypes()[0] == EntityPlayer.class;
             this.actualParameterTypes = this.withEntityPlayerParameter ? Arrays.copyOfRange(method.getGenericParameterTypes(), 1, method.getGenericParameterTypes().length) : method.getGenericParameterTypes();
             this.methodAccessor = FastReflection.create(method);
+            this.persistenceByParameterOrder = bridge.persistenceByParameterOrder();
+            if (method.getParameterCount() > 0 && method.getParameters()[0].isNamePresent()) {
+                this.persistenceByParameterOrder = false;
+            }
         }
 
         @Override
@@ -135,7 +146,7 @@ public interface BridgeHandler {
                 actualParameters = objects;
 
             // 序列化
-            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, bridge.persistenceByParameterOrder());
+            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, persistenceByParameterOrder);
             Packet packet = new Packet(bridge.value(), bytes);
             // 发包
             if (bridge.side().isClient()){
@@ -202,7 +213,6 @@ public interface BridgeHandler {
         INSTANCE;
         @Override
         public IMessage onMessage(Packet message, MessageContext ctx) {
-            System.out.println(new String(message.getBytes(), StandardCharsets.UTF_8));
             Solution solution = SOLUTIONS.get(message.getKey());
 
             // 空检测
@@ -217,7 +227,7 @@ public interface BridgeHandler {
                 } catch (Exception e) {
                     PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
                 }
-            }, solution.isSync());
+            }, !solution.isSync());
 
             return null;
         }

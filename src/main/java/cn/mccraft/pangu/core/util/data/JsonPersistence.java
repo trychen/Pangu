@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.util.data;
 
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
+import cn.mccraft.pangu.core.util.image.RemoteImage;
 import com.google.gson.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

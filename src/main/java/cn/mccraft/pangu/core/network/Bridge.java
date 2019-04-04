@@ -34,5 +34,5 @@ public @interface Bridge {
 
     Class<? extends Persistence> persistence() default JsonPersistence.class;
 
-    boolean persistenceByParameterOrder() default false;
+    boolean persistenceByParameterOrder() default true;
 }

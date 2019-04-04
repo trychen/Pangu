@@ -56,6 +56,7 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (mc == null) return; // 避免提前打开
         if (drawDefaultBackground) drawDefaultBackground();
         draw();
         rootContainer.onDraw(partialTicks, mouseX, mouseY);
@@ -106,7 +107,7 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void open() {
-        setParentScreen(Minecraft.getMinecraft().currentScreen);
+        if (Minecraft.getMinecraft() != null) setParentScreen(Minecraft.getMinecraft().currentScreen);
         Minecraft.getMinecraft().displayGuiScreen(this);
     }
 

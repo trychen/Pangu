@@ -23,16 +23,16 @@ public class TextButton extends Button {
 
     @Getter
     @Setter
-    private String text;
+    protected String text;
 
     @Getter
     @Setter
     @SideOnly(Side.CLIENT)
-    private FontProvider font;
+    protected FontProvider font;
 
     @Getter
     @Setter
-    private Style style;
+    protected Style style;
 
     public TextButton(String text) {
         this(text, DefaultFontProvider.INSTANCE, NORMAL);
@@ -59,30 +59,30 @@ public class TextButton extends Button {
         Rect.drawTextured(
                 getX(),
                 getY(),
-                style.x(),
-                style.y() + state * style.height(),
-                width / 2, height);
+                getStyle().x(),
+                getStyle().y() + state * getStyle().height(),
+                getWidth() / 2, getHeight());
 
         Rect.drawTextured(
-                getX() + width / 2,
+                getX() + getWidth() / 2,
                 getY(),
-                style.width() - this.width / 2,
-                style.y() + state * style.height(),
-                width / 2, height);
+                getStyle().width() - getWidth() / 2,
+                getStyle().y() + state * getStyle().height(),
+                getWidth() / 2, getHeight());
 
-        int fontColor = style.fontColor();
+        int fontColor = getStyle().fontColor();
 
         if (this.isDisabled()) {
-            fontColor = style.disabledFontColor();
+            fontColor = getStyle().disabledFontColor();
         } else if (this.isHovered()) {
-            fontColor = style.hoverFontColor();
+            fontColor = getStyle().hoverFontColor();
         }
 
-        font.drawString(
-                text,
-                getX() + this.width / 2 - font.getStringWidth(text) / 2,
-                getY() + (this.height - style.textOffset()) / 2,
+        getFont().drawString(
+                getText(),
+                getX() + this.getWidth() / 2 - getFont().getStringWidth(getText()) / 2,
+                getY() + (this.getHeight() - getStyle().textOffset()) / 2,
                 fontColor,
-                style.fontShadow());
+                getStyle().fontShadow());
     }
 }
