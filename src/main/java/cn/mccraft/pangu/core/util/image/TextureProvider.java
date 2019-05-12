@@ -12,7 +12,9 @@ public interface TextureProvider {
     ResourceLocation getTexture();
     ResourceLocation getTexture(ResourceLocation loading);
     ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error);
+
     int[] ID = new int[] {0};
+
     static TextureProvider of(String path, ResourceLocation missing) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             return RemoteImage.of(path, missing);

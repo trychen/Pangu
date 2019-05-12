@@ -22,34 +22,34 @@ import java.util.concurrent.*;
 
 public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSerializable {
 
-    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactory() {
+    protected static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactory() {
         private ThreadGroup group = new ThreadGroup("Pangu Remote Image Fetcher Threads");
         private int index = 1;
 
         public Thread newThread(Runnable r) {
-            return new Thread(this.group, r, "Thread #" + this.index++);
+            return new Thread(this.group, r, "Remote Image Thread #" + this.index++);
         }
     });
 
     @Getter
-    private final String urlPath;
+    protected final String urlPath;
 
     @Getter
-    private final URL url;
+    protected final URL url;
 
     @Getter
-    private String id;
+    protected String id;
 
     @Getter
-    private File cachedFilePath;
+    protected File cachedFilePath;
 
     @Getter
-    private DynamicTexture dynamicTexture;
+    protected DynamicTexture dynamicTexture;
 
-    private Future<BufferedImage> bufferedImage;
-    private ResourceLocation resourceLocation;
+    protected Future<BufferedImage> bufferedImage;
+    protected ResourceLocation resourceLocation;
 
-    private RemoteImage(String urlPath) throws MalformedURLException {
+    protected RemoteImage(String urlPath) throws MalformedURLException {
         this.urlPath = urlPath;
         this.url = new URL(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
@@ -128,28 +128,6 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         return null;
     }
 
-    private static Map<String, RemoteImage> cachedImages = new HashMap();
-
-    public static TextureProvider of(String url, ResourceLocation missingTexture) {
-        RemoteImage image = of(url);
-        if (image == null) return new BuiltinImage(missingTexture);
-        return image;
-    }
-
-    public static RemoteImage of(String url) {
-        RemoteImage remoteImage = cachedImages.get(url);
-        if (remoteImage == null) {
-            try {
-                remoteImage = new RemoteImage(url);
-                cachedImages.put(url, remoteImage);
-            } catch (Exception e) {
-                PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
-                return null;
-            }
-        }
-        return remoteImage;
-    }
-
     @Override
     public void serialize(DataOutput out) throws IOException {
         out.writeUTF(urlPath);
@@ -179,5 +157,28 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         fileOutputStream.flush();
         dataInputStream.close();
         fileOutputStream.close();
+    }
+
+
+    private static Map<String, RemoteImage> cachedImages = new HashMap();
+
+    public static TextureProvider of(String url, ResourceLocation missingTexture) {
+        RemoteImage image = of(url);
+        if (image == null) return new BuiltinImage(missingTexture);
+        return image;
+    }
+
+    public static RemoteImage of(String url) {
+        RemoteImage remoteImage = cachedImages.get(url);
+        if (remoteImage == null) {
+            try {
+                remoteImage = new RemoteImage(url);
+                cachedImages.put(url, remoteImage);
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
+                return null;
+            }
+        }
+        return remoteImage;
     }
 }

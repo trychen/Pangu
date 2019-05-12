@@ -2,10 +2,7 @@ package cn.mccraft.pangu.core.util.render;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -14,6 +11,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -24,6 +22,7 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 @SideOnly(Side.CLIENT)
 public interface RenderUtils {
     Minecraft minecraft = Minecraft.getMinecraft();
+    boolean[] LIGHT_TEXTURE2D_ENABLE = {false};
 
     /**
      * Render Item with {@link net.minecraft.client.renderer.RenderItem} as its on the ground
@@ -250,12 +249,15 @@ public interface RenderUtils {
     static float alpha(int color) {
         return (color >> 24 & 255) / 255.0F;
     }
+
     static float red(int color) {
         return (color >> 16 & 255) / 255.0F;
     }
+
     static float blue(int color) {
         return (color >> 8 & 255) / 255.0F;
     }
+
     static float green(int color) {
         return (color & 255) / 255.0F;
     }
@@ -263,13 +265,37 @@ public interface RenderUtils {
     static int alphaInt(int color) {
         return color >> 24 & 255;
     }
+
     static int redInt(int color) {
         return color >> 16 & 255;
     }
+
     static int blueInt(int color) {
         return color >> 8 & 255;
     }
+
     static int greenInt(int color) {
         return color & 255;
+    }
+
+    /**
+     * Disable light
+     */
+    static void disableLight() {
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        if (LIGHT_TEXTURE2D_ENABLE[0] = GL11.glGetBoolean(GL11.GL_TEXTURE_2D))
+            GlStateManager.disableTexture2D();
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.disableLighting();
+    }
+
+    /**
+     * Enable light
+     */
+    static void enableLight() {
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        if (LIGHT_TEXTURE2D_ENABLE[0]) GlStateManager.enableTexture2D();
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.enableLighting();
     }
 }

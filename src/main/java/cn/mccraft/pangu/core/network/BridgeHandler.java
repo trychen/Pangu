@@ -73,7 +73,7 @@ public interface BridgeHandler {
                 Solution solution = new BaseSolution(bridge, method);
 
                 SOLUTIONS.put(bridge.value(), solution);
-                PanguCore.getLogger().info("Registered @Bridge message with key " + bridge.value() + " from method " + method.toGenericString());
+                PanguCore.getLogger().debug("Registered @Bridge message with key " + bridge.value() + " from method " + method.toGenericString());
             } catch (Exception e) {
                 PanguCore.getLogger().error("Couldn't register message for " + method.toGenericString(), e);
             }

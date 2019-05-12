@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.util.image;
 
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.util.ResourceLocation;
 
 public class BuiltinImage implements TextureProvider {
@@ -22,5 +23,9 @@ public class BuiltinImage implements TextureProvider {
     @Override
     public ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error) {
         return getTexture();
+    }
+
+    public static BuiltinImage of(String domain, String path) {
+        return new BuiltinImage(PanguResLoc.of(domain, path));
     }
 }

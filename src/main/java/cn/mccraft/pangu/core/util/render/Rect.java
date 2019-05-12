@@ -225,8 +225,12 @@ public interface Rect {
     }
 
     static void drawCustomSizeTextured(float x, float y, float u, float v, float uWidth, float vHeight, float width, float height) {
-        float f = 1.0F / uWidth;
-        float f1 = 1.0F / vHeight;
+        drawCustomSizeTextured(x, y, u, v, uWidth, vHeight, uWidth, vHeight, width, height);
+    }
+
+    static void drawCustomSizeTextured(float x, float y, float u, float v, float uWidth, float vHeight, float textureWidth, float textureHeight, float width, float height) {
+        float f = 1.0F / textureWidth;
+        float f1 = 1.0F / textureHeight;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
