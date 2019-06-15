@@ -23,7 +23,7 @@ public class Line {
 
     protected int color = 0xFFFFFF;
 
-    protected Alignment alignment = Alignment.LEFT;
+    protected Alignment alignment = Alignment.LEADING;
 
     @SideOnly(Side.CLIENT)
     public void draw(float x, float y, float parentWidth) {

@@ -57,10 +57,8 @@ public class Container extends Component {
     }
 
     public Container addComponent(@Nonnull Component c) {
-        components.add(c.setScreen(getScreen()));
+        components.add(c.setParent(this).setScreen(getScreen()));
         Collections.sort(components);
-        c.setParent(this);
-        c.setScreen(getScreen());
         return this;
     }
 
@@ -79,7 +77,10 @@ public class Container extends Component {
         components
                 .stream()
                 .filter(Component::isVisible)
-                .forEach(c -> c.onDraw(partialTicks, mouseX, mouseY));
+                .forEach(c -> {
+                    c.onDraw(partialTicks, mouseX, mouseY);
+                    if (screen != null && screen.isDebug()) c.drawComponentBox();
+                });
 
         // draw tooltips
         for (Component c : components) {
@@ -91,6 +92,7 @@ public class Container extends Component {
             }
         }
         drawForeground();
+        if (screen != null && screen.isDebug()) drawComponentBox();
     }
 
     @Override

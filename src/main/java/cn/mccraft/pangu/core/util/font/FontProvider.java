@@ -26,11 +26,11 @@ public interface FontProvider {
     }
 
     default int drawString(String text, float x, float y, float parentWidth, int color, boolean shadow, Alignment alignment) {
-        if (alignment == Alignment.LEFT) {
+        if (alignment == Alignment.LEADING) {
             return drawString(text, x, y, color, shadow);
         } else if (alignment == Alignment.CENTER) {
             return drawCenteredString(text, x + parentWidth / 2, y, color, shadow);
-        } else if (alignment == Alignment.RIGHT) {
+        } else if (alignment == Alignment.ENDING) {
             return drawString(text, x + parentWidth - getStringWidth(text), y, color, shadow);
         }
         return -1;

@@ -4,6 +4,8 @@ import cn.mccraft.pangu.core.client.ui.builtin.ScrollingList;
 import cn.mccraft.pangu.core.client.ui.builtin.StringScrollingList;
 import cn.mccraft.pangu.core.client.ui.builtin.TextButton;
 import cn.mccraft.pangu.core.client.ui.meta.Line;
+import cn.mccraft.pangu.core.client.ui.stack.HStack;
+import cn.mccraft.pangu.core.client.ui.stack.VStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.resources.I18n;
@@ -18,12 +20,16 @@ import java.util.stream.Collectors;
  * UI Helper
  */
 public interface UI {
+    static TextButton button(String text) {
+        return new TextButton(text);
+    }
+
     static Button ofYesButton() {
-        return new TextButton(I18n.format("gui.yes")).setStyle(TextButton.PRIMARY);
+        return button(I18n.format("gui.yes")).setStyle(TextButton.PRIMARY);
     }
 
     static Button ofNoButton() {
-        return new TextButton(I18n.format("gui.no")).setStyle(TextButton.WHITE);
+        return button(I18n.format("gui.no")).setStyle(TextButton.WHITE);
     }
 
     static ScrollingList ofStringList(int width, int height, List<Object> datas) {
@@ -44,5 +50,13 @@ public interface UI {
             }
         }
         return ret.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
+    }
+
+    static Stack horizontal(Screen screen, Component... components) {
+        return new HStack(screen).addComponents(components);
+    }
+
+    static Stack vertical(Screen screen, Component... components) {
+        return new VStack(screen).addComponents(components);
     }
 }

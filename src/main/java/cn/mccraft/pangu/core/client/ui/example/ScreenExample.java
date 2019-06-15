@@ -22,6 +22,7 @@ public class ScreenExample extends Screen {
     @Override
     public void init() {
         drawDefaultBackground = false;
+
         TabContainer tabContainer = new TabContainer(150, 150);
         tabContainer.setCenteredPosition(width/2, height/2);
 //        addComponent(new EntityShow(Minecraft.getMinecraft().player).setShowBack(true).setScale(100).setPosition(width / 2 - 120, height / 2 + 100));
@@ -46,17 +47,6 @@ public class ScreenExample extends Screen {
 
     @Override
     public void draw() {
-//        Rect.drawGradient(0, 0, width * 1.7F, height * 1.7F, 0xCB000000, 0, 0xCB000000, 0);
+        Rect.drawClassicalBackground(0, 0, 128, 60);
     }
-//
-//    @DevOnly
-//    @BindKeyPress(description = "key.test.ScrenClothes", keyCode = Keyboard.KEY_K)
-//    public static void test() {
-//        new ScreenExample().open();
-//    }
-//
-//    @Remote(0)
-//    public void test(EntityPlayer player, NBTTagCompound tag) {
-//        // do something
-//    }
 }

@@ -35,6 +35,6 @@ public interface TextureProvider {
             }
         }
 
-        return new BuiltinImage(missing);
+        return new BuiltinImage(path);
     }
 }

@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.client.ui;
 
 import javax.annotation.Nonnull;
 
+@Deprecated
 public class HorizontalList extends Container {
     private float padding = 10;
     private boolean centerPosition = true;

@@ -17,4 +17,8 @@ public interface Games {
     static EntityPlayer player() {
         return Minecraft.getMinecraft().player;
     }
+
+    static Minecraft minecraft() {
+        return Minecraft.getMinecraft();
+    }
 }

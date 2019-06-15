@@ -1,5 +1,7 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import cn.mccraft.pangu.core.client.ui.stack.Spacer;
+import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -37,21 +39,50 @@ public abstract class Screen extends GuiScreen {
     @Getter
     protected float halfWidth, halfHeight;
 
+    @Getter
+    @Setter
+    protected boolean debug;
+
+    /**
+     * A screen with center origin means that
+     * origin (0, 0) will be treated as screen center (halfWidth, halfHeight)
+     */
+    @Getter
+    @Setter
+    protected boolean centerOrigin = false;
+
+    /**
+     * False that the {@link Screen#init()} method will be called while resizing screen
+     */
+    @Getter
+    @Setter
+    protected boolean noRefreshWithResize = false;
+
     public Screen() {
     }
 
     @Override
     public void initGui() {
         halfWidth = width / 2F;
-        halfHeight = width / 2F;
-        rootContainer = new Container(width, height);
-        rootContainer.setScreen(this);
-        if (getModal() != null) {
-            getModal().clear();
-            getModal().setSize(width, height);
-            getModal().init();
+        halfHeight = height / 2F;
+
+        if (noRefreshWithResize){
+            if (rootContainer == null) {
+                rootContainer = new Container(width, height);
+                rootContainer.setScreen(this);
+                init();
+            }
+            return;
+        } else {
+            rootContainer = new Container(width, height);
+            rootContainer.setScreen(this);
+            if (getModal() != null) {
+                getModal().clear();
+                getModal().setSize(width, height);
+                getModal().init();
+            }
+            init();
         }
-        init();
     }
 
     @Override
@@ -61,6 +92,10 @@ public abstract class Screen extends GuiScreen {
         draw();
         rootContainer.onDraw(partialTicks, mouseX, mouseY);
         if (getModal() != null) getModal().onDraw(partialTicks, mouseX, mouseY);
+        if (isDebug()) {
+            Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
+            Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
+        }
     }
 
     @Override
@@ -80,12 +115,7 @@ public abstract class Screen extends GuiScreen {
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == 1) {
-            if (getModal() != null) {
-                getModal().close();
-            } else {
-                this.mc.displayGuiScreen(null);
-                if (this.mc.currentScreen == null) this.mc.setIngameFocus();
-            }
+            closeScreen();
         } else {
             (getModal() == null ? rootContainer : getModal()).onKeyTyped(typedChar, keyCode);
         }
@@ -114,7 +144,10 @@ public abstract class Screen extends GuiScreen {
     public void closeScreen() {
         if (getModal() != null)
             setModal(null);
-        else Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+        else {
+            Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+            if (parentScreen == null) this.mc.setIngameFocus();
+        }
     }
 
     /**
@@ -126,5 +159,22 @@ public abstract class Screen extends GuiScreen {
      * Draw background or else
      */
     public void draw() {
+    }
+
+
+    public Stack HStack(Component... components) {
+        return UI.horizontal(this, components);
+    }
+
+    public Stack VStack(Component... components) {
+        return UI.vertical(this, components);
+    }
+
+    public Spacer Spacer(float width, float height) {
+        return Spacer.of(width, height);
+    }
+
+    public Spacer Spacer(float size) {
+        return Spacer.of(size, size);
     }
 }

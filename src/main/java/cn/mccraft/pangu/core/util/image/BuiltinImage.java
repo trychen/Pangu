@@ -6,6 +6,10 @@ import net.minecraft.util.ResourceLocation;
 public class BuiltinImage implements TextureProvider {
     private final ResourceLocation res;
 
+    public BuiltinImage(String res) {
+        this(PanguResLoc.of(res));
+    }
+
     public BuiltinImage(ResourceLocation res) {
         this.res = res;
     }

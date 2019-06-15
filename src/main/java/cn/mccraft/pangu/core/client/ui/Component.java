@@ -61,7 +61,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     /**
-     * Only if this component is focused ({@link Container#focus(Focusable)})
+     * Only if this component is focused ({@link Container#focus(Component)})
      */
     public void onKeyTyped(char typedChar, int keyCode) {
     }
@@ -94,10 +94,12 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public float getNativeX() {
+        if (screen != null && screen.centerOrigin) return screen.halfWidth + x;
         return x;
     }
 
     public float getNativeY() {
+        if (screen != null && screen.centerOrigin) return screen.halfHeight + y;
         return y;
     }
 
@@ -127,7 +129,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
      */
     @SideOnly(Side.CLIENT)
     public void drawComponentBox() {
-        Rect.drawFrameBox(x, y, width, height, 1, 0xFFFF0000);
+        Rect.drawFrameBox(getX(), getY(), getWidth(), getHeight(), 1, 0xFFFF0000);
     }
 
     /**
