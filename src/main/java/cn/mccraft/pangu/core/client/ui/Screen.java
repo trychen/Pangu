@@ -177,4 +177,11 @@ public abstract class Screen extends GuiScreen {
     public Spacer Spacer(float size) {
         return Spacer.of(size, size);
     }
+
+    public Spacer HSpacer(float size) {
+        return Spacer.of(size, 0);
+    }
+    public Spacer VSpacer(float size) {
+        return Spacer.of(0, size);
+    }
 }

@@ -15,7 +15,7 @@ public abstract class Stack extends Container {
     protected float padding = 0;
 
     @Getter @Setter
-    protected Alignment alignment;
+    protected Alignment alignment = Alignment.CENTER;
 
     private boolean firstComponent = true;
 
@@ -39,7 +39,7 @@ public abstract class Stack extends Container {
 
         for (Component c : cs) {
             fixSize(c, firstComponent);
-            firstComponent = true;
+            firstComponent = false;
         }
 
         resolve();
@@ -73,6 +73,7 @@ public abstract class Stack extends Container {
     }
 
     public Stack padding(float padding) {
+        this.padding = padding;
         firstComponent = true;
         wholeHeight = 0;
         wholeWidth = 0;

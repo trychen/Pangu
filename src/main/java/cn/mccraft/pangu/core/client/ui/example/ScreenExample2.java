@@ -13,7 +13,7 @@ import org.lwjgl.input.Keyboard;
 @SideOnly(Side.CLIENT)
 public class ScreenExample2 extends Screen {
     public ScreenExample2() {
-        setDebug(true);
+//        setDebug(true);
     }
 
     @BindKeyPress(Keyboard.KEY_K)
@@ -25,12 +25,24 @@ public class ScreenExample2 extends Screen {
     public void init() {
         addComponent(
                 VStack(
-                        HStack(
-                                UI.ofYesButton(), Spacer(50), VStack(UI.ofYesButton(), UI.ofNoButton())
-                        ).alignment(Alignment.LEADING),
-
-                        UI.ofNoButton()
-                ).padding(5).setCenteredPosition(halfWidth, halfHeight)
+                        HStack(UI.text("设置"), HSpacer(30), UI.button("X")),
+                        HSpacer(20),
+                        HStack(UI.text("爆炸"), HSpacer(30), UI.button("允许")),
+                        HStack(UI.text("生成"), HSpacer(30), UI.button("允许")),
+                        HStack(UI.text("燃烧"), HSpacer(30), UI.button("允许")),
+                        HSpacer(20),
+                        HStack(UI.button("完成"))
+                ).padding(4).setCenteredPosition(halfWidth, halfHeight)
         );
+        addComponent(UI.selection("Hello"));
+//        addComponent(
+//                VStack(
+//                        HStack(
+//                                UI.ofYesButton(), Spacer(50), VStack(UI.ofYesButton(), UI.ofNoButton())
+//                        ).alignment(Alignment.LEADING),
+//
+//                        UI.ofNoButton()
+//                ).padding(5).setCenteredPosition(halfWidth, halfHeight)
+//        );
     }
 }

@@ -1,8 +1,6 @@
 package cn.mccraft.pangu.core.client.ui;
 
-import cn.mccraft.pangu.core.client.ui.builtin.ScrollingList;
-import cn.mccraft.pangu.core.client.ui.builtin.StringScrollingList;
-import cn.mccraft.pangu.core.client.ui.builtin.TextButton;
+import cn.mccraft.pangu.core.client.ui.builtin.*;
 import cn.mccraft.pangu.core.client.ui.meta.Line;
 import cn.mccraft.pangu.core.client.ui.stack.HStack;
 import cn.mccraft.pangu.core.client.ui.stack.VStack;
@@ -22,6 +20,17 @@ import java.util.stream.Collectors;
 public interface UI {
     static TextButton button(String text) {
         return new TextButton(text);
+    }
+
+    static Label text(String text) {
+        return new Label(text);
+    }
+    static SelectionBox selection(String text) {
+        return new SelectionBox(text);
+    }
+
+    static TextField input(float width, float height) {
+        return new TextField(width, height);
     }
 
     static Button ofYesButton() {

@@ -17,7 +17,7 @@ public class SelectionBox extends Button {
 
     @Getter
     @Setter
-    protected int color;
+    protected int color = 0xFFFFFF;
 
     @Getter
     @Setter

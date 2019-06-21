@@ -59,7 +59,7 @@ public class TextField extends Component implements Focusable {
     protected boolean enableBackgroundDrawing = true;
 
 
-    public TextField(int width, int height) {
+    public TextField(float width, float height) {
         super();
         setSize(width, height);
     }
