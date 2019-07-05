@@ -137,7 +137,11 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void open() {
-        if (Minecraft.getMinecraft() != null) setParentScreen(Minecraft.getMinecraft().currentScreen);
+        open(Minecraft.getMinecraft().currentScreen);
+    }
+
+    public void open(GuiScreen parent) {
+        setParentScreen(parent);
         Minecraft.getMinecraft().displayGuiScreen(this);
     }
 
@@ -159,6 +163,12 @@ public abstract class Screen extends GuiScreen {
      * Draw background or else
      */
     public void draw() {
+    }
+
+    /**
+     * On key typed
+     */
+    public void keyDown(char typedChar, int keyCode) {
     }
 
 

@@ -38,7 +38,7 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
             int j = in.readByte();
             int k = in.readShort();
             ItemStack itemstack = new ItemStack(Item.getItemById(i), j, k);
-            itemstack.getItem().readNBTShareTag(itemstack, NBTSerializer.INSTANCE.deserialize(in));
+            itemstack.setTagCompound(NBTSerializer.INSTANCE.deserialize(in));
             return itemstack;
         }
     }
