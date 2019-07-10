@@ -6,6 +6,7 @@ import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.util.NameBuilder;
+import cn.mccraft.pangu.core.util.Sides;
 import com.github.mouse0w0.fastreflection.FastReflection;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.settings.KeyBinding;
@@ -40,6 +41,10 @@ public class KeyBindingInjector {
                     }
                     // get annotation info
                     final BindKeyPress bindKeyPress = method.getAnnotation(BindKeyPress.class);
+
+                    if (Sides.isDeobfuscatedEnvironment() && bindKeyPress.devOnly()) {
+                        return;
+                    }
 
                     String description = bindKeyPress.description();
                     if (description.isEmpty()) {

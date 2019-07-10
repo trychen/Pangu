@@ -12,6 +12,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
 
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
@@ -37,6 +39,13 @@ public interface Rect {
     static void bind(TextureProvider textureProvider) {
         ResourceLocation texture = textureProvider.getTexture();
         if (texture != null) bind(texture);
+    }
+
+    static void textureFiltering() {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     /**
@@ -220,7 +229,7 @@ public interface Rect {
         Rect.drawCustomSizeTextured(x, y, 0, 0, width, height, width * factor, height * factor);
     }
 
-    static void drawCustomSizeTextured(float x, float y, float uWidth, float vHeight, int width, int height) {
+    static void drawCustomSizeTextured(float x, float y, float uWidth, float vHeight, float width, float height) {
         Rect.drawCustomSizeTextured(x, y, 0, 0, uWidth, vHeight, width, height);
     }
 

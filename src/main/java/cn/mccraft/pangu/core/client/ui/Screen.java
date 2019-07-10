@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.client.ui.stack.Spacer;
+import cn.mccraft.pangu.core.util.Sides;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -114,10 +116,12 @@ public abstract class Screen extends GuiScreen {
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (Sides.isDeobfuscatedEnvironment()) debugShortcut(keyCode);
         if (keyCode == 1) {
             closeScreen();
         } else {
             (getModal() == null ? rootContainer : getModal()).onKeyTyped(typedChar, keyCode);
+            typed(typedChar, keyCode);
         }
     }
 
@@ -154,6 +158,12 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
+    public void debugShortcut(int key) {
+        if (key == Keyboard.KEY_D && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            setDebug(!isDebug());
+        }
+    }
+
     /**
      * Add your components in this method
      */
@@ -168,7 +178,7 @@ public abstract class Screen extends GuiScreen {
     /**
      * On key typed
      */
-    public void keyDown(char typedChar, int keyCode) {
+    public void typed(char typedChar, int keyCode) {
     }
 
 

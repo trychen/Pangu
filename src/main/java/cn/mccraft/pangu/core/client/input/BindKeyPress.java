@@ -46,4 +46,9 @@ public @interface BindKeyPress {
      * @return whether responding in GUI
      */
     boolean enableInGUI() default false;
+
+    /**
+     * @return true that only active in development env
+     */
+    boolean devOnly() default false;
 }

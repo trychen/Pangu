@@ -128,8 +128,17 @@ public abstract class Component implements Cloneable, Comparable<Component> {
      * Draw a red frame that contains this component
      */
     @SideOnly(Side.CLIENT)
+    @Deprecated
     public void drawComponentBox() {
-        Rect.drawFrameBox(getX(), getY(), getWidth(), getHeight(), 1, 0xFFFF0000);
+        drawComponentBox(0xFFFF0000);
+    }
+
+    /**
+     * Draw a frame that contains this component
+     */
+    @SideOnly(Side.CLIENT)
+    public void drawComponentBox(int color) {
+        Rect.drawFrameBox(getX(), getY(), getWidth(), getHeight(), 1, color);
     }
 
     /**

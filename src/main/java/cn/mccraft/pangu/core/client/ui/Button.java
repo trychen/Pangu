@@ -32,7 +32,13 @@ public abstract class Button extends Component {
     @Getter
     protected Consumer<ButtonClickEvent> buttonClickEvent;
 
+    @Deprecated
     public Button(int width, int height) {
+        super();
+        setSize(width, height);
+    }
+
+    public Button(float width, float height) {
         super();
         setSize(width, height);
     }
