@@ -87,7 +87,7 @@ public class Container extends Component {
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         drawBackground();
-        if (getScreen().isDebug() && getDebugMovingComponent() != null) {
+        if (getScreen() != null && getScreen().isDebug() && getDebugMovingComponent() != null) {
             getDebugMovingComponent().setPosition(mouseX + getDebugMovingComponentOffsetX(), mouseY + getDebugMovingComponentOffsetY());
         }
         // update information
@@ -100,7 +100,7 @@ public class Container extends Component {
                 .filter(Component::isVisible)
                 .forEach(c -> {
                     c.onDraw(partialTicks, mouseX, mouseY);
-                    if (getScreen().isDebug() && getDebugMovingComponent() != c)
+                    if (getScreen() != null && getScreen().isDebug() && getDebugMovingComponent() != c)
                         c.drawComponentBox(debugComponent == c ? 0xFF00FF00 : 0xFFFF0000);
                 });
 
@@ -117,7 +117,7 @@ public class Container extends Component {
         drawForeground();
 
         // debug info
-        if (getScreen().isDebug()) {
+        if (getScreen() != null && getScreen().isDebug()) {
             if (getScreen().rootContainer != this) drawComponentBox(0xFFAA0000);
             if (getDebugSelectedComponent() != null) {
                 drawComponentDebugInfo(mouseX, mouseY, debugComponent);
@@ -144,7 +144,7 @@ public class Container extends Component {
                             componentClicked.set(true);
 
                             // debug
-                            if (getScreen().isDebug()) {
+                            if (getScreen() != null && getScreen().isDebug()) {
                                 if (getDebugSelectedComponent() == c) {
                                     if (c instanceof Container) {
                                         c.onMousePressed(mouseButton, mouseX, mouseY);
@@ -173,7 +173,7 @@ public class Container extends Component {
     @Override
     public void onMouseReleased(int mouseX, int mouseY) {
         setDebugMovingComponent(null);
-        if (getScreen().isDebug()) return;
+        if (getScreen() != null && getScreen().isDebug()) return;
         getComponents()
                 .stream()
                 .filter(Component::isHovered)
@@ -183,7 +183,7 @@ public class Container extends Component {
 
     @Override
     public void onKeyTyped(char typedChar, int keyCode) {
-        if (getScreen().isDebug()) {
+        if (getScreen() != null && getScreen().isDebug()) {
             if (getDebugSelectedComponent() != null) {
                 float x = getDebugSelectedComponent().getX(), y = getDebugSelectedComponent().getY();
                 switch (keyCode) {

@@ -16,6 +16,14 @@ public interface FontProvider {
         return drawString(text, x - half, y, color, shadow);
     }
 
+    default int drawString(String text, float x, float y) {
+        return drawString(text, x, y, 0xFF000000, false);
+    }
+
+    default int drawString(String text, float x, float y, int color) {
+        return drawString(text, x, y, color, false);
+    }
+
     default int drawStringWithShadow(String text, float x, float y, int color) {
         return drawString(text, x, y, color, true);
     }
