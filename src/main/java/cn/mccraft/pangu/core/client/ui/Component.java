@@ -85,12 +85,14 @@ public abstract class Component implements Cloneable, Comparable<Component> {
 
     public float getX() {
         if (parent instanceof Container) return getNativeX() + ((Container) parent).getOffsetX();
+        else if (parent instanceof TabContainer) return getNativeX() + parent.getX();
         return getNativeX();
     }
 
     public float getY() {
         if (parent instanceof Container) return getNativeY() + ((Container) parent).getOffsetY();
-        return getNativeY();
+        else if (parent instanceof TabContainer) return getNativeY() + parent.getY();
+        else return getNativeY();
     }
 
     public float getNativeX() {

@@ -133,7 +133,7 @@ idea.workspace.iws.withXml {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
+            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-snapshot/") {
                 authentication(userName: "$clayUsername", password: "$clayPassword")
             }
             pom.version = "$project.version"

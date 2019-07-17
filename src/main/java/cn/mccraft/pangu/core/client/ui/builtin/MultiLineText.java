@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.client.ui.builtin;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.client.ui.UI;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
+import cn.mccraft.pangu.core.util.font.FontProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -24,16 +25,26 @@ public class MultiLineText extends Component {
     @Setter
     protected boolean dropShadow = false;
 
-    public MultiLineText(int width, List<String> content) {
-        setSize(width, content.size() * 12);
+
+    @Getter
+    @Setter
+    protected int padding = 3;
+
+    @Getter
+    @Setter
+    protected FontProvider font;
+
+    public MultiLineText(int width, List<String> content, FontProvider font) {
+        setSize(width, content.size() * (font.getFontHeight() + getPadding()));
+        setFont(font);
         setContent(content);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        for (int i = 0; i < content.size(); i++) {
-            DefaultFontProvider.INSTANCE.drawString(content.get(i), getX(), getY() + i * 12, color, false);
+        for (int i = 0; i < getContent().size(); i++) {
+            getFont().drawString(getContent().get(i), getX(), getY() + i * (getFont().getFontHeight() + getPadding()), getColor(), false);
         }
     }
 
