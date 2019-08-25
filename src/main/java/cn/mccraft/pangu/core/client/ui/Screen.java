@@ -92,8 +92,12 @@ public abstract class Screen extends GuiScreen {
         if (mc == null) return; // 避免提前打开
         if (drawDefaultBackground) drawDefaultBackground();
         draw();
-        rootContainer.onDraw(partialTicks, mouseX, mouseY);
-        if (getModal() != null) getModal().onDraw(partialTicks, mouseX, mouseY);
+        if (getModal() != null){
+            rootContainer.onDraw(partialTicks, 0, 0);
+            getModal().onDraw(partialTicks, mouseX, mouseY);
+        } else {
+            rootContainer.onDraw(partialTicks, mouseX, mouseY);
+        }
         if (isDebug()) {
             Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);

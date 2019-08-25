@@ -4,6 +4,7 @@ import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.annotation.RegPotion;
 import cn.mccraft.pangu.core.util.NameBuilder;
+import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.event.RegistryEvent;
@@ -24,7 +25,7 @@ public class PotionRegister extends StoredElementRegister<Potion, RegPotion> {
             name = NameBuilder.apart(field.getName());
         }
 
-        potion.setRegistryName(NameBuilder.buildRegistryName(name));
+        potion.setRegistryName(PanguResLoc.of(domain, NameBuilder.buildRegistryName(name)));
 
         if (StringUtils.isNullOrEmpty(potion.getName()))
             potion.setPotionName("effect." + NameBuilder.buildTranslationKey(name));

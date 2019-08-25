@@ -13,7 +13,6 @@ buildscript {
 
 plugins {
     id 'net.ltgt.apt' version '0.10'
-    id 'maven'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -129,16 +128,3 @@ idea.workspace.iws.withXml {
     }
 }
 
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-snapshot/") {
-                authentication(userName: "$clayUsername", password: "$clayPassword")
-            }
-            pom.version = "$project.version"
-            pom.artifactId = "$project.name"
-            pom.groupId = "$project.group"
-        }
-    }
-}
