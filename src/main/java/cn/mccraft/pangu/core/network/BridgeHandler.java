@@ -38,7 +38,7 @@ public interface BridgeHandler {
 
     static boolean send(String key, Object[] objects) {        // 是否在正在运行内置服务器
         // 是否在正在运行内置服务器
-        if (Games.isIntegratedServer()) return false;
+        if (Sides.isClient() && Games.isIntegratedServer()) return false;
 
         Solution solution = SOLUTIONS.get(key);
 
@@ -64,6 +64,7 @@ public interface BridgeHandler {
 
     @AnnotationInjector.StaticInvoke
     static void registerMessages(AnnotationStream<Bridge> stream) {
+        PanguCore.getLogger().info("Start register @Bridge message");
         stream.methodStream().forEach(method -> {
             try {
                 Bridge bridge = method.getAnnotation(Bridge.class);
@@ -131,7 +132,7 @@ public interface BridgeHandler {
         @Override
         public void solve(EntityPlayer player, byte[] data) throws Exception {
             Object[] objects = getPersistence().deserialize(getActualParameterNames(), data, actualParameterTypes);
-            if (isWithEntityPlayerParameter()) objects = ArrayUtils.add(objects, 0, Games.player());
+            if (isWithEntityPlayerParameter()) objects = ArrayUtils.add(objects, 0, player);
             getMethodAccessor().invoke(getOwnerInstance(), objects);
         }
 

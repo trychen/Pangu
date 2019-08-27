@@ -6,10 +6,7 @@ import cn.mccraft.pangu.core.asm.util.ASMHelper;
 import cn.mccraft.pangu.core.util.Sides;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.Side;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
 import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -68,20 +65,30 @@ public class BridgeTransformer implements IClassTransformer {
             if (side != SIDE) {
                 MethodNode newMethod = new MethodNode(method.access, method.name, method.desc, method.signature, method.exceptions.toArray(new String[0]));
                 ASMHelper.MethodGenerator generator = ASMHelper.MethodGenerator.fromMethodNode(newMethod);
-                Label label = generator.newLabel(), end = generator.newLabel();
+                Label label = generator.newLabel();
                 generator.push(key);
                 generator.loadArgArray();
                 generator.invokeStatic(TYPE_HANDLER, METHOD_SEND);
-                if (!also) {
-                    generator.ifZCmp(EQ, label);
+
+                if (side.isClient() && SIDE.isServer()) {
                     generator.returnValue();
-                    generator.mark(label);
                 } else {
-                    generator.pop();
+                    if (also) {
+                        generator.pop();
+                    } else {
+                        generator.ifZCmp(EQ, label);
+                        generator.returnValue();
+                        generator.mark(label);
+                    }
                 }
+
                 generator.endMethod();
-                method.instructions.insertBefore(method.instructions.getFirst(), newMethod.instructions);
-                method.instructions.insert(new LabelNode(end));
+
+                if (SIDE == Side.SERVER) {
+                    method.instructions = newMethod.instructions;
+                } else {
+                    method.instructions.insertBefore(method.instructions.getFirst(), newMethod.instructions);
+                }
             }
 
             PanguPlugin.getLogger().debug("Hook @Bridge method: " + classNode.name + "#" + method.name + method.desc + "");
