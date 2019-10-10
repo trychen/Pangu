@@ -67,7 +67,7 @@ public enum AnnotationInjector {
                         if (it.getAnnotation(AutoWired.class).registerCommonEventBus()) {
                             MinecraftForge.EVENT_BUS.register(instance);
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         PanguCore.getLogger().error("Unable to inject type " + it.toGenericString(), e);
                     }
                 });
@@ -94,7 +94,7 @@ public enum AnnotationInjector {
                         try {
                             field.setAccessible(true);
                             field.set(InstanceHolder.getInstance(field.getDeclaringClass()), object);
-                        } catch (IllegalAccessException e) {
+                        } catch (Throwable e) {
                             PanguCore.getLogger().error("Couldn't wire field " + field.toGenericString(), e);
                         }
                     }
@@ -134,7 +134,7 @@ public enum AnnotationInjector {
                 return null;
             }).toArray();
             method.invoke(instance, paraObjects);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             PanguCore.getLogger().error("Unable to solve method " + method.toGenericString(), e);
         }
     }

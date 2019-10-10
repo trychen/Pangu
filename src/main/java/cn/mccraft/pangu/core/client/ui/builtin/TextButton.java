@@ -11,6 +11,8 @@ import lombok.experimental.Accessors;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 import static cn.mccraft.pangu.core.client.PGClient.PG_BUTTONS_TEXTURE;
 
 @SideOnly(Side.CLIENT)
@@ -42,8 +44,8 @@ public class TextButton extends Button {
         this(text, DefaultFontProvider.INSTANCE, style);
     }
 
-    public TextButton(String text, FontProvider font, Style style) {
-        super(font.getStringWidth(text) + 20, style.height());
+    public TextButton(@Nonnull String text, @Nonnull FontProvider font, @Nonnull Style style) {
+        super(font.getStringWidth(text) + 20F, style.height());
         this.text = text;
         this.font = font;
         this.style = style;

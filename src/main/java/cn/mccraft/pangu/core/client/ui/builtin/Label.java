@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Nonnull;
+
 @Accessors(chain = true)
 public class Label extends Component {
     @Getter
@@ -20,7 +22,7 @@ public class Label extends Component {
 
     @Setter
     @Getter
-    private int color = 0xFFFFFF;
+    private int color = 0xFFFFFFFF;
 
     @Setter
     @Getter
@@ -34,7 +36,7 @@ public class Label extends Component {
         this(text, DefaultFontProvider.INSTANCE);
     }
 
-    public Label(String text, FontProvider fontProvider) {
+    public Label(@Nonnull String text, @Nonnull FontProvider fontProvider) {
         this.text = text;
         this.fontProvider = fontProvider;
     }

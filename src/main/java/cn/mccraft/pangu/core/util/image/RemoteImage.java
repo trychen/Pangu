@@ -53,14 +53,14 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         this.urlPath = urlPath;
         this.url = new URL(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
-        this.cachedFilePath = LocalCache.getCachePath("images", id);
+        this.cachedFilePath = createCachedFilePath();
 
         bufferedImage = EXECUTOR.submit(() -> {
                 if (!cachedFilePath.exists()) {
-                    PanguCore.getLogger().info("Start fetching image from " + url.toString());
+                    PanguCore.getLogger().debug("Start fetching image from " + url.toString());
                     saveImage();
-                    PanguCore.getLogger().info("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
-                } else PanguCore.getLogger().info("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
+                    PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
+                } else PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
                 return readImage();
             });
     }
@@ -159,6 +159,9 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         fileOutputStream.close();
     }
 
+    public File createCachedFilePath() {
+        return LocalCache.getCachePath("images", id);
+    }
 
     private static Map<String, RemoteImage> cachedImages = new HashMap();
 

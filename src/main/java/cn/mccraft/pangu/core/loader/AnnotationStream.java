@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * A simple way to operate ASMDataTable.ASMData
+ *
  * @since 1.0.2
  */
 public class AnnotationStream<T extends Annotation> {
@@ -113,6 +114,7 @@ public class AnnotationStream<T extends Annotation> {
                 // clean class could get instance
                 .filter(Objects::nonNull);
     }
+
     /**
      * Returns a sequential {@code Stream} with method annotated
      */

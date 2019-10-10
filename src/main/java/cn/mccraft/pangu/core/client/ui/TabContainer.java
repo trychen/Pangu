@@ -20,7 +20,7 @@ public class TabContainer extends Component {
 
     @Getter
     @Setter
-    private TabSelectvent tabSelectEvent;
+    private TabSelectEvent tabSelectEvent;
 
     public TabContainer(int width, int height) {
         this(width, height, new Container[0]);
@@ -94,7 +94,13 @@ public class TabContainer extends Component {
         currentContainer.onKeyTyped(typedChar, keyCode);
     }
 
-    interface TabSelectvent {
+    @Override
+    public void onMouseInput(int mouseX, int mouseY) {
+        if (currentContainer == null) return;
+        currentContainer.onMouseInput(mouseX, mouseY);
+    }
+
+    interface TabSelectEvent {
         void onTabSelect(int newIndex, int oldIndex);
     }
 }

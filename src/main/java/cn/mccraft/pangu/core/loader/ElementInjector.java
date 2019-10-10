@@ -2,8 +2,8 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ModFinder;
+import cn.mccraft.pangu.core.util.Try;
 import com.google.common.collect.Maps;
-import lombok.experimental.Delegate;
 import lombok.val;
 
 import java.lang.annotation.Annotation;
@@ -27,8 +27,14 @@ public enum ElementInjector {
         anno.typeStream()
                 // clean non-annotation class
                 .filter(Annotation.class::isAssignableFrom)
-                .forEach(it -> ElementInjector.INSTANCE.annotations
-                        .put((Class<? extends Annotation>) it, (AnnotationRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())));
+                .forEach(Try.safe(it -> {
+                            ElementInjector.INSTANCE.annotations
+                                    .put(
+                                            (Class<? extends Annotation>) it,
+                                            (AnnotationRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())
+                                    );
+                        }, "unexpect error while injecting annotation")
+                );
     }
 
     @Load

@@ -12,7 +12,6 @@ import java.util.List;
  * @author trychen
  * @since 1.0.0.5
  */
-@Deprecated
 public interface LoreHelper {
     /**
      * 添加可以Shift显示的Lore

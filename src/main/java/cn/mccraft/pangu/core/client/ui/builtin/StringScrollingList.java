@@ -14,7 +14,7 @@ public class StringScrollingList extends ScrollingList implements ScrollingList.
     }
 
     @Override
-    public int getEntryHeight(ScrollingList list, int index) {
+    public float getEntryHeight(ScrollingList list, int index) {
         return 13;
     }
 

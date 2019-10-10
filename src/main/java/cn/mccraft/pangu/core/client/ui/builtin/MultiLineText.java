@@ -34,7 +34,7 @@ public class MultiLineText extends Component {
     @Setter
     protected FontProvider font;
 
-    public MultiLineText(int width, List<String> content, FontProvider font) {
+    public MultiLineText(float width, List<String> content, FontProvider font) {
         setSize(width, content.size() * (font.getFontHeight() + getPadding()));
         setFont(font);
         setContent(content);

@@ -24,7 +24,7 @@ public class ScrollingList extends Scrolling {
     @Getter
     protected int selectedIndex = -1;
 
-    public ScrollingList(int width, int height) {
+    public ScrollingList(float width, float height) {
         super(width, height);
     }
 
@@ -95,7 +95,7 @@ public class ScrollingList extends Scrolling {
         /**
          * The height of entry
          */
-        int getEntryHeight(ScrollingList list, int index);
+        float getEntryHeight(ScrollingList list, int index);
 
         /**
          * @param list scrolling list
