@@ -230,7 +230,7 @@ public interface Rect {
     }
     
     static void drawCustomSizeTextured(float x, float y, float u, float v, float width, float height, float factor) {
-        Rect.drawCustomSizeTextured(x, y, u, v, width, height, width * factor, height * factor);
+        Rect.drawCustomSizeTextured(x, y, u, v, width, height, width * factor, height * factor); 
     }
 
     static void drawCustomSizeTextured(float x, float y, float uWidth, float vHeight, float width, float height) {
