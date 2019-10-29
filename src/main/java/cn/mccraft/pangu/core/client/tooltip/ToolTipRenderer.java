@@ -71,7 +71,7 @@ public enum ToolTipRenderer {
 
             if (style != null && style != ToolTipStyle.NONE) {
                 textureManager.bindTexture(PG_TOOLTIPS_TEXTURE);
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                Rect.color();
 
                 Rect.drawTextured(
                         x - extendWidth / 2F, 0,

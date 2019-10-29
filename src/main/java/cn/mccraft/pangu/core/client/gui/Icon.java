@@ -43,7 +43,7 @@ public final class Icon {
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Rect.color();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(getTexture());
         Rect.drawTextured(

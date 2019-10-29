@@ -18,7 +18,6 @@ import org.lwjgl.opengl.GL11;
 @Accessors(chain = true)
 public abstract class Scrolling extends Component {
     public static final int SCROLL_BAR_WIDTH = 6;
-
     protected float scrollFactor;
     protected float initialMouseClickY = -2.0F;
     @Getter
@@ -52,15 +51,14 @@ public abstract class Scrolling extends Component {
         float scrollBarLeft = getX() + getContentWidth();
         float scrollBarRight = scrollBarLeft + SCROLL_BAR_WIDTH;
 
-        if ((getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
+        float mouseListY = mouseY - getY() + this.scrollDistance;
+
+        if (Mouse.isButtonDown(0)) {
             if (this.initialMouseClickY == -1.0F) {
                 if (isHovered()) {
-                    float mouseListY = mouseY - getY() + this.scrollDistance;
-
                     // on element click
                     if (mouseX - getX() <= getContentWidth()) {
                         onContentClick(mouseX - getX(), mouseListY);
-                        playPressSound();
                     }
 
                     // on scroll bar clicked
@@ -103,14 +101,10 @@ public abstract class Scrolling extends Component {
         double scaleH = client.displayHeight / res.getScaledHeight_double();
 
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor(
-                (int) (getX() * scaleW), (int) (client.displayHeight - ((getY() + getHeight()) * scaleH)),
-                (int) (getWidth() * scaleW), (int) (getHeight() * scaleH)
-        );
+        GL11.glScissor((int) (getX() * scaleW), (int) (client.displayHeight - ((getY() + getHeight()) * scaleH)),
+                (int) (getWidth() * scaleW), (int) (getHeight() * scaleH));
 
         float baseY = this.getY() - this.scrollDistance;
-
-        float mouseListY = mouseY - getY() + this.scrollDistance;
 
         this.onContentDraw(baseY, mouseX - getX(), mouseListY);
 
@@ -174,13 +168,7 @@ public abstract class Scrolling extends Component {
 
     public abstract void onContentClick(float mouseListX, float mouseListY);
 
-    @Deprecated
-    public void onContentDraw(float baseY){
-    }
-
-    public void onContentDraw(float baseY, float mouseListX, float mouseListY) {
-        onContentDraw(baseY);
-    }
+    public abstract void onContentDraw(float baseY, float mouseListX, float mouseListY);
 
     public void drawBackground() {
     }

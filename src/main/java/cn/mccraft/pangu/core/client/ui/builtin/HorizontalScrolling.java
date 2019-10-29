@@ -58,7 +58,6 @@ public abstract class HorizontalScrolling extends Component {
                     // on element click
                     if (mouseX - getX() <= getContentWidth()) {
                         onContentClick(mouseX - getX(), mouseListY);
-                        playPressSound();
                     }
 
                     // on scroll bar clicked
@@ -107,7 +106,7 @@ public abstract class HorizontalScrolling extends Component {
 
         float mouseListX = mouseX - getX() + this.scrollDistance;
 
-        this.onContentDraw(baseX, mouseListX, mouseY - getY());
+        this.onContentDraw(partialTicks, baseX, mouseListX, mouseY - getY());
 
         // Scrolling bar
         float extraWidth = this.getContentWidth() - getWidth();
@@ -154,7 +153,7 @@ public abstract class HorizontalScrolling extends Component {
 
     public abstract void onContentClick(float mouseListX, float mouseListY);
 
-    public abstract void onContentDraw(float baseX, float mouseListX, float mouseListY);
+    public abstract void onContentDraw(float partialTicks, float baseX, float mouseListX, float mouseListY);
 
     public void drawBackground() {
     }

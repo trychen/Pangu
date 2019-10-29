@@ -23,7 +23,7 @@ public interface Rect {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.enableAlpha();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Rect.color();
     }
 
     static void endDrawing() {
@@ -39,6 +39,20 @@ public interface Rect {
     static void bind(TextureProvider textureProvider) {
         ResourceLocation texture = textureProvider.getTexture();
         if (texture != null) bind(texture);
+    }
+
+    static void bindWithFiltering(ResourceLocation resourceLocation) {
+        bind(resourceLocation);
+        textureFiltering();
+    }
+
+
+    static void color(int color) {
+        GlStateManager.color(RenderUtils.red(color), RenderUtils.green(color), RenderUtils.blue(color), RenderUtils.alpha(color));
+    }
+
+    static void color() {
+        GlStateManager.color(1, 1, 1, 1);
     }
 
     static void textureFiltering() {
@@ -199,12 +213,7 @@ public interface Rect {
             bottom = j;
         }
 
-        float r = red(color);
-        float b = blue(color);
-        float g = green(color);
-        float a = alpha(color);
-
-        GlStateManager.color(r, b, g, a);
+        color(color);
         GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();

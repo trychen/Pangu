@@ -36,6 +36,7 @@ public class IconButton extends Button {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
+        Rect.startDrawing();
         Rect.bind(style.texture());
         int state = this.getHoverState();
 

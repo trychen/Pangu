@@ -34,7 +34,7 @@ public class Article extends Scrolling {
     }
 
     @Override
-    public void onContentDraw(float baseY) {
+    public void onContentDraw(float baseY, float mouseListX, float mouseListY) {
         for (int i = 0; i < lines.size(); i++) {
             Line line = lines.get(i);
             line.draw(getX(), getY() + i * 12, getContentWidth());

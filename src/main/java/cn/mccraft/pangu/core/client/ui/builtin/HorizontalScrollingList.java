@@ -39,7 +39,7 @@ public class HorizontalScrollingList<T extends HorizontalScrollingList.Entry> ex
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void onContentDraw(float baseX, float mouseListX, float mouseListY) {
+    public void onContentDraw(float ticks, float baseX, float mouseListX, float mouseListY) {
         float slotLeft = baseX;
         float currentX = 0;
         for (int index = 0; index < getEntryCounts(); index++) {

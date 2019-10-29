@@ -37,6 +37,7 @@ public class Animation {
 
     public void tick() {
         if (ended) return;
+        if (startTime <= 0) return;
         this.delta = (int) (Minecraft.getSystemTime() - startTime);
         if (this.delta > duration) end();
         this.progress = MathHelper.clamp(delta / (float)duration, 0F, 1F);
@@ -59,5 +60,11 @@ public class Animation {
 
     public boolean started() {
         return this.startTime >= 0;
+    }
+
+    public void reset() {
+        startTime = -1;
+        progress = 0;
+        ended = true;
     }
 }

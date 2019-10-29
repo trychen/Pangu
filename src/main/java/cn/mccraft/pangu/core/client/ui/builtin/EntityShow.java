@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -37,7 +38,7 @@ public class EntityShow extends Component {
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         int aimX = (int) (getX() - mouseX);
         int aimY = (int) (getY() - 150 - mouseY);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Rect.color();
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
@@ -74,7 +75,7 @@ public class EntityShow extends Component {
         GlStateManager.popMatrix();
         RenderHelper.enableGUIStandardItemLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        Rect.color();
         GlStateManager.enableRescaleNormal();
     }
 }

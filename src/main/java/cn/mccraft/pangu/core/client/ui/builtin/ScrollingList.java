@@ -43,7 +43,7 @@ public class ScrollingList extends Scrolling {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void onContentDraw(float baseY) {
+    public void onContentDraw(float baseY, float mouseListX, float mouseListY) {
         float slotTop = baseY;
         for (int index = 0; index < getEntryCounts(); index++) {
             Entry entry = getEntry(index);
