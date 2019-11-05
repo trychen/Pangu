@@ -1,22 +1,23 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Container;
+import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import lombok.Getter;
 import lombok.Setter;
 
-public class HorizontalScrollingContainer extends HorizontalScrolling {
+public class ScrollingContainer extends Scrolling {
     @Getter
     @Setter
     protected Container container;
 
-    public HorizontalScrollingContainer(Container container, float width) {
+    public ScrollingContainer(Container container, float width) {
         super(width, container.getHeight());
         this.container = container;
     }
 
     @Override
-    public float getContentWidth() {
-        return container.getWidth();
+    public float getContentHeight() {
+        return container.getHeight();
     }
 
     @Override
@@ -26,8 +27,8 @@ public class HorizontalScrollingContainer extends HorizontalScrolling {
     }
 
     @Override
-    public void onContentDraw(float ticks, float baseX, float mouseListX, float mouseListY) {
-        container.setOffset(baseX, getY());
-        container.onDraw(ticks, (int) (mouseListX + baseX), (int) (getY() + mouseListY));
+    public void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY) {
+        container.setOffset(getX(), baseY);
+        container.onDraw(ticks, (int) (mouseListX + getX()), (int) (baseY + mouseListY));
     }
 }

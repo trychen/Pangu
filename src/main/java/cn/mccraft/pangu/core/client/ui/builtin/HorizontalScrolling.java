@@ -15,10 +15,13 @@ import org.lwjgl.opengl.GL11;
 
 @Accessors(chain = true)
 public abstract class HorizontalScrolling extends Component {
-    public static final int SCROLL_BAR_HEIGHT = 6;
+    @Getter
+    @Setter
+    protected int scrollBarHeight = 6;
 
     protected float scrollFactor;
     protected float initialMouseClickX = -2.0F;
+
     @Getter
     protected float scrollDistance;
 
@@ -38,7 +41,7 @@ public abstract class HorizontalScrolling extends Component {
 
     public float getContentHeight() {
         if (isShowScrollBar())
-            return getHeight() - SCROLL_BAR_HEIGHT;
+            return getHeight() - scrollBarHeight;
         return getHeight();
     }
 
@@ -48,7 +51,7 @@ public abstract class HorizontalScrolling extends Component {
         drawBackground();
 
         float scrollBarTop = getY() + getContentHeight();
-        float scrollBarBottom = scrollBarTop + SCROLL_BAR_HEIGHT;
+        float scrollBarBottom = scrollBarTop + scrollBarHeight;
 
         if ((getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
             if (this.initialMouseClickX == -1.0F) {
@@ -121,15 +124,19 @@ public abstract class HorizontalScrolling extends Component {
             float barLeft = this.scrollDistance * (getWidth() - width) / extraWidth + getX();
             if (barLeft < getY()) barLeft = getX();
 
-            GlStateManager.disableTexture2D();
-            Rect.draw(getX(), scrollBarTop, getX() + getWidth(), scrollBarBottom, 0xFF000000);
-            Rect.draw(barLeft, scrollBarTop, barLeft + width, scrollBarBottom, 0xFF808080);
-            Rect.draw(barLeft, scrollBarTop, barLeft + width - 1, scrollBarBottom - 1, 0xFFC0C0C0);
-            GlStateManager.enableTexture2D();
+            drawScrollBar(scrollBarTop, scrollBarBottom, width, barLeft);
         }
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
+
+    public void drawScrollBar(float top, float bottom, float barWidth, float barLeft) {
+        GlStateManager.disableTexture2D();
+        Rect.draw(getX(), top, getX() + getWidth(), bottom, 0xFF000000);
+        Rect.draw(barLeft, top, barLeft + barWidth, bottom, 0xFF808080);
+        Rect.draw(barLeft, top, barLeft + barWidth - 1, bottom - 1, 0xFFC0C0C0);
+        GlStateManager.enableTexture2D();
     }
 
     private void applyScrollLimits() {

@@ -27,7 +27,6 @@ public class Container extends Component {
     @Setter
     protected Component focusedComponent;
 
-    @Getter
     @Setter
     protected float offsetX, offsetY;
 
@@ -168,6 +167,16 @@ public class Container extends Component {
             setDebugSelectedComponent(null);
             setDebugMovingComponent(null);
         }
+    }
+
+    public float getOffsetX() {
+        if (parent instanceof Container) return ((Container) parent).getOffsetX() + offsetX;
+        return offsetX;
+    }
+
+    public float getOffsetY() {
+        if (parent instanceof Container) return ((Container) parent).getOffsetY() + offsetY;
+        return offsetY;
     }
 
     @Override

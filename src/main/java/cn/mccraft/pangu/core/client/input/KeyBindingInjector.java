@@ -18,12 +18,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 @AutoWired(registerCommonEventBus = true)
-public class KeyBindingInjector {
+public enum  KeyBindingInjector {
+    INSTANCE;
+
     private List<CachedKeyBinder> keyBindedList = new ArrayList<>();
+    private Map<String, CachedKeyBinder> desc2KeyBinder = new HashMap<>();
 
     /**
      * Cache all key binding method for
@@ -59,7 +64,10 @@ public class KeyBindingInjector {
                     final KeyBinding key = KeyBindingHelper.of(description, keyCode, bindKeyPress.category(), bindKeyPress.modifier());
                     // put into cache
                     try {
-                        keyBindedList.add(new CachedKeyBinder(key , FastReflection.create(method), instance, bindKeyPress));
+                        CachedKeyBinder binder = new CachedKeyBinder(key, FastReflection.create(method), instance, bindKeyPress);
+                        keyBindedList.add(binder);
+                        desc2KeyBinder.put(binder.getKeyBinding().getKeyDescription(), binder);
+
                     } catch (Exception e) {
                         PanguCore.getLogger().error("Unexpected error while creating method reflection", e);
                     }
@@ -80,5 +88,9 @@ public class KeyBindingInjector {
     @SubscribeEvent
     public void handleKey(InputEvent.KeyInputEvent e) {
         keyBindedList.stream().filter(CachedKeyBinder::enableInGame).forEach(CachedKeyBinder::solve);
+    }
+
+    public CachedKeyBinder getKeyBinder(String desc) {
+        return desc2KeyBinder.get(desc);
     }
 }

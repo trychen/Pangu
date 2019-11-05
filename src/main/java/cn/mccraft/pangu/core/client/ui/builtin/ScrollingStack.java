@@ -14,8 +14,8 @@ public class ScrollingStack extends Scrolling {
     }
 
     @Override
-    public int getContentHeight() {
-        return (int) stack.getHeight();
+    public float getContentHeight() {
+        return stack.getHeight();
     }
 
     @Override
@@ -24,11 +24,11 @@ public class ScrollingStack extends Scrolling {
     }
 
     @Override
-    public void onContentDraw(float baseY, float mouseListX, float mouseListY) {
+    public void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY) {
         stack.setOffsetX(getX());
         stack.setOffsetY(baseY);
         stack.onUpdate((int) mouseListX, (int) mouseListY);
-        stack.onDraw(0,  (int) mouseListX,  (int) mouseListY);
+        stack.onDraw(ticks,  (int) mouseListX,  (int) mouseListY);
     }
 
     @Override

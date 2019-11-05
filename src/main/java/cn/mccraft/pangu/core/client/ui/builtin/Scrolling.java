@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -9,7 +10,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
@@ -17,7 +17,10 @@ import org.lwjgl.opengl.GL11;
 
 @Accessors(chain = true)
 public abstract class Scrolling extends Component {
-    public static final int SCROLL_BAR_WIDTH = 6;
+    @Getter
+    @Setter
+    protected int scrollBarWidth = 6;
+
     protected float scrollFactor;
     protected float initialMouseClickY = -2.0F;
     @Getter
@@ -35,11 +38,11 @@ public abstract class Scrolling extends Component {
         setSize(width, height);
     }
 
-    public abstract int getContentHeight();
+    public abstract float getContentHeight();
 
     public float getContentWidth() {
         if (isShowScrollBar())
-            return getWidth() - SCROLL_BAR_WIDTH;
+            return getWidth() - scrollBarWidth;
         return getWidth();
     }
 
@@ -49,7 +52,7 @@ public abstract class Scrolling extends Component {
         drawBackground();
 
         float scrollBarLeft = getX() + getContentWidth();
-        float scrollBarRight = scrollBarLeft + SCROLL_BAR_WIDTH;
+        float scrollBarRight = scrollBarLeft + scrollBarWidth;
 
         float mouseListY = mouseY - getY() + this.scrollDistance;
 
@@ -106,7 +109,7 @@ public abstract class Scrolling extends Component {
 
         float baseY = this.getY() - this.scrollDistance;
 
-        this.onContentDraw(baseY, mouseX - getX(), mouseListY);
+        this.onContentDraw(partialTicks, baseY, mouseX - getX(), mouseListY);
 
         // Scrolling bar
         float extraHeight = this.getContentHeight() - getHeight();
@@ -121,30 +124,19 @@ public abstract class Scrolling extends Component {
             float barTop = this.scrollDistance * (getHeight() - height) / extraHeight + getY();
             if (barTop < getY()) barTop = getY();
 
-            GlStateManager.disableTexture2D();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(scrollBarLeft, getY() + getHeight(), 0.0D).tex(0.0D, 1.0D).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-            buffer.pos(scrollBarRight, getY() + getHeight(), 0.0D).tex(1.0D, 1.0D).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-            buffer.pos(scrollBarRight, getY(), 0.0D).tex(1.0D, 0.0D).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-            buffer.pos(scrollBarLeft, getY(), 0.0D).tex(0.0D, 0.0D).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-            tess.draw();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(scrollBarLeft, barTop + height, 0.0D).tex(0.0D, 1.0D).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-            buffer.pos(scrollBarRight, barTop + height, 0.0D).tex(1.0D, 1.0D).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-            buffer.pos(scrollBarRight, barTop, 0.0D).tex(1.0D, 0.0D).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-            buffer.pos(scrollBarLeft, barTop, 0.0D).tex(0.0D, 0.0D).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-            tess.draw();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(scrollBarLeft, barTop + height - 1, 0.0D).tex(0.0D, 1.0D).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-            buffer.pos(scrollBarRight - 1, barTop + height - 1, 0.0D).tex(1.0D, 1.0D).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-            buffer.pos(scrollBarRight - 1, barTop, 0.0D).tex(1.0D, 0.0D).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-            buffer.pos(scrollBarLeft, barTop, 0.0D).tex(0.0D, 0.0D).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-            tess.draw();
-            GlStateManager.enableTexture2D();
+            drawScrollBar(scrollBarLeft, scrollBarRight, height, barTop);
         }
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
+
+    public void drawScrollBar(float left, float right, float barHeight, float barTop) {
+        GlStateManager.disableTexture2D();
+        Rect.draw(left, getY(), right, getY() + getHeight(), 0xFF000000);
+        Rect.draw(left, barTop, right, barTop + barHeight, 0xFF808080);
+        Rect.draw(left, barTop, right - 1, barTop + barHeight - 1, 0xFFC0C0C0);
+        GlStateManager.enableTexture2D();
     }
 
     private void applyScrollLimits() {
@@ -168,7 +160,7 @@ public abstract class Scrolling extends Component {
 
     public abstract void onContentClick(float mouseListX, float mouseListY);
 
-    public abstract void onContentDraw(float baseY, float mouseListX, float mouseListY);
+    public abstract void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY);
 
     public void drawBackground() {
     }

@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Accessors(chain = true)
-public class ScrollingList extends Scrolling {
+public class ScrollingList<T extends ScrollingList.Entry> extends Scrolling {
     @Delegate
     @Getter
-    protected List<Entry> entries = new ArrayList<>();
+    protected List<T> entries = new ArrayList<>();
 
     @Getter
     @Setter
@@ -43,7 +43,7 @@ public class ScrollingList extends Scrolling {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void onContentDraw(float baseY, float mouseListX, float mouseListY) {
+    public void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY) {
         float slotTop = baseY;
         for (int index = 0; index < getEntryCounts(); index++) {
             Entry entry = getEntry(index);
@@ -69,14 +69,14 @@ public class ScrollingList extends Scrolling {
         if (index < -1 || index >= getEntryCounts()) throw new IndexOutOfBoundsException();
         if (index != -1 && !getEntry(index).onEntryStateChanged(this, index,true)) return;
         for (int i = 0; i < getEntryCounts(); i++) {
-            if (i != index && !getEntry(i).onEntryStateChanged(this, i, i == index))
+            if (i != index && !getEntry(i).onEntryStateChanged(this, i, false))
                 return;
         }
         this.selectedIndex = index;
     }
 
-    public int getContentHeight() {
-        int total = 0;
+    public float getContentHeight() {
+        float total = 0;
         for (int i = 0; i < getEntryCounts(); i++) {
             total += getEntry(i).getEntryHeight(this, i);
         }
@@ -87,7 +87,7 @@ public class ScrollingList extends Scrolling {
         return getEntries().size();
     }
 
-    public Entry getEntry(int index) {
+    public T getEntry(int index) {
         return getEntries().get(index);
     }
 
