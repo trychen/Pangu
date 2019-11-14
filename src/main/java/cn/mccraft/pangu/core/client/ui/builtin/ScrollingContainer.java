@@ -10,8 +10,8 @@ public class ScrollingContainer extends Scrolling {
     @Setter
     protected Container container;
 
-    public ScrollingContainer(Container container, float width) {
-        super(width, container.getHeight());
+    public ScrollingContainer(Container container, float height) {
+        super(container.getWidth(), height);
         this.container = container;
     }
 

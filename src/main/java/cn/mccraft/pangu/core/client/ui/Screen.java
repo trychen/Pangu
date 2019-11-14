@@ -141,7 +141,10 @@ public abstract class Screen extends GuiScreen {
 
     public void setModal(Modal modal) {
         this.modal = modal;
-        if (this.modal != null) this.modal.init();
+        if (this.modal != null) {
+            this.modal.setScreen(this);
+            this.modal.init();
+        }
     }
 
     public void open() {
