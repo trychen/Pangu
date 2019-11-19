@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.input;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.asm.dev.DevOnly;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
 import cn.mccraft.pangu.core.loader.AutoWired;
@@ -44,6 +45,9 @@ public enum  KeyBindingInjector {
                         PanguCore.getLogger().error("Unable to find any instance to bind key for method " + method.toString(), new NullPointerException());
                         return;
                     }
+
+                    if (method.isAnnotationPresent(DevOnly.class)) return;
+
                     // get annotation info
                     final BindKeyPress bindKeyPress = method.getAnnotation(BindKeyPress.class);
 

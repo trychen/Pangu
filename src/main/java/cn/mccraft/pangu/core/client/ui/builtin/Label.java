@@ -37,6 +37,7 @@ public class Label extends Component {
     }
 
     public Label(@Nonnull String text, @Nonnull FontProvider fontProvider) {
+        setSize(fontProvider.getStringWidth(text), fontProvider.getFontHeight());
         this.text = text;
         this.fontProvider = fontProvider;
     }

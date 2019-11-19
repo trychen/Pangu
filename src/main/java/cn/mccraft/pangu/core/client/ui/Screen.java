@@ -9,6 +9,8 @@ import lombok.experimental.Accessors;
 import lombok.experimental.Delegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -171,6 +173,11 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
+    public void drawHovering(List<String> texts, int mouseX, int mouseY) {
+        GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
+        RenderHelper.disableStandardItemLighting();
+    }
+
     /**
      * Add your components in this method
      */
@@ -211,4 +218,5 @@ public abstract class Screen extends GuiScreen {
     public Spacer VSpacer(float size) {
         return Spacer.of(0, size);
     }
+
 }

@@ -148,8 +148,12 @@ public abstract class Component implements Cloneable, Comparable<Component> {
      */
     @SideOnly(Side.CLIENT)
     public void drawToolTips(List<String> texts, int mouseX, int mouseY) {
-        GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
-        RenderHelper.disableStandardItemLighting();
+        if (getScreen() != null) {
+            getScreen().drawHovering(texts, mouseX, mouseY);
+        } else {
+            GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
+            RenderHelper.disableStandardItemLighting();
+        }
     }
 
     @SideOnly(Side.CLIENT)
