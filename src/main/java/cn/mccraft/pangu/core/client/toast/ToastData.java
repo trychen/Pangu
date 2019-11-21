@@ -36,10 +36,15 @@ public class ToastData implements ByteSerializable, ByteDeserializable {
 
     @Override
     public void serialize(DataOutput dataOutput) throws IOException {
-        dataOutput.write(title, subtitle, key, duration, style, icon);
+        dataOutput.writeUTF(title);
+        dataOutput.writeUTF(subtitle);
+        dataOutput.writeUTF(key);
+        dataOutput.writeInt(duration);
         dataOutput.writeList(itemStacks, ItemStack.class);
-        dataOutput.write(progress);
-        dataOutput.write(isCustomProgress);
+        dataOutput.writeBoolean(progress);
+        dataOutput.writeBoolean(isCustomProgress);
+        dataOutput.writeEnum(style);
+        dataOutput.writeEnum(icon);
     }
 
     public static ToastData deserialize(DataInput in) throws IOException {
@@ -47,11 +52,11 @@ public class ToastData implements ByteSerializable, ByteDeserializable {
                 .setSubtitle(in.readUTF())
                 .setKey(in.readUTF())
                 .setDuration(in.readInt())
-                .setStyle(in.readEnum(Style.class))
-                .setIcon(in.readEnum(Icon.class))
                 .setItemStacks(in.readList(ItemStack.class))
                 .setProgress(in.readBoolean())
-                .setCustomProgress(in.readBoolean());
+                .setCustomProgress(in.readBoolean())
+                .setStyle(in.readEnum(Style.class))
+                .setIcon(in.readEnum(Icon.class));
     }
 
     public enum Style {

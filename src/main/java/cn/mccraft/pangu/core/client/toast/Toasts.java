@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.toast;
 
+import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.network.Bridge;
 import cn.mccraft.pangu.core.util.data.ByteStreamPersistence;
 import net.minecraft.client.Minecraft;
@@ -23,12 +24,20 @@ public interface Toasts {
     }
 
     @Bridge(value = "PanguToast.Add", side = Side.CLIENT, persistence = ByteStreamPersistence.class)
-    static void add(@Nullable EntityPlayer player, @Nonnull ToastData info) {
+    static void add(@Nullable EntityPlayer player, ToastData info) {
+        if (info == null) {
+            PanguCore.getLogger().error("Toast info cannot be null");
+            return;
+        }
         add(new PanguToast(info));
     }
 
     @Bridge(value = "PanguToast.Update", side = Side.CLIENT, persistence = ByteStreamPersistence.class)
     static void update(@Nullable EntityPlayer player, ToastData info, boolean addIfNotExist) {
+        if (info == null) {
+            PanguCore.getLogger().error("Toast info cannot be null");
+            return;
+        }
         PanguToast toast = Minecraft.getMinecraft().getToastGui().getToast(PanguToast.class, info.getKey());
         if (toast != null) {
             toast.setInfo(info);
