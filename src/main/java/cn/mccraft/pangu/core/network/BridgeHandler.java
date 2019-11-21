@@ -180,17 +180,12 @@ public interface BridgeHandler {
 
         @Override
         public void fromBytes(ByteBuf buf) {
-
             byte[] utf8Bytes = new byte[ByteBufUtils.readVarInt(buf, 2)];
-            for (int i = 0; i < utf8Bytes.length; i++) {
-                utf8Bytes[i] = buf.readByte();
-            }
-            key = new String(utf8Bytes, StandardCharsets.UTF_8);
+            buf.readBytes(utf8Bytes);
+            this.key = new String(utf8Bytes, StandardCharsets.UTF_8);
 
             this.bytes = new byte[ByteBufUtils.readVarInt(buf, 2)];
-            for (int i = 0; i < bytes.length; i++) {
-                this.bytes[i] = buf.readByte();
-            }
+            buf.readBytes(bytes);
         }
 
         @Override
