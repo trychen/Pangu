@@ -62,6 +62,17 @@ public abstract class Screen extends GuiScreen {
     @Setter
     protected boolean noRefreshWithResize = false;
 
+    @Getter
+    @Setter
+    protected Component tooltips2Render;
+
+    @Getter
+    protected long lastClick;
+
+    @Getter
+    @Setter
+    protected int clickTimer;
+
     public Screen() {
     }
 
@@ -104,10 +115,23 @@ public abstract class Screen extends GuiScreen {
             Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
         }
+
+        if (getTooltips2Render() != null) {
+            List<String> toolTips = getTooltips2Render().getToolTips();
+            if (toolTips != null) getTooltips2Render().drawToolTips(toolTips, mouseX, mouseY);
+            setTooltips2Render(null);
+        }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (clickTimer > 0) {
+            long systemTime = Minecraft.getSystemTime();
+            if (systemTime - lastClick < clickTimer) {
+                return;
+            }
+            lastClick = systemTime;
+        }
         (getModal() == null ? rootContainer : getModal()).onMousePressed(mouseButton, mouseX, mouseY);
     }
 
@@ -173,7 +197,7 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
-    public void drawHovering(List<String> texts, int mouseX, int mouseY) {
+    public void drawHovering(Component component, List<String> texts, int mouseX, int mouseY) {
         GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
         RenderHelper.disableStandardItemLighting();
     }

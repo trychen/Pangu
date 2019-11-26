@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 @Accessors(chain = true)
@@ -149,7 +150,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @SideOnly(Side.CLIENT)
     public void drawToolTips(List<String> texts, int mouseX, int mouseY) {
         if (getScreen() != null) {
-            getScreen().drawHovering(texts, mouseX, mouseY);
+            getScreen().drawHovering(this, texts, mouseX, mouseY);
         } else {
             GuiUtils.drawHoveringText(texts, mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRenderer);
             RenderHelper.disableStandardItemLighting();
@@ -159,6 +160,11 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @SideOnly(Side.CLIENT)
     public void playPressSound() {
         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+    }
+
+    public Component toolTips(String... toolTips) {
+        setToolTips(Arrays.asList(toolTips));
+        return this;
     }
 
     @Override

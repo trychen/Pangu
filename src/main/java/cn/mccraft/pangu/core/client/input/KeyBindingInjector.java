@@ -9,6 +9,7 @@ import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.util.NameBuilder;
 import cn.mccraft.pangu.core.util.Sides;
 import com.github.mouse0w0.fastreflection.FastReflection;
+import lombok.Getter;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -28,7 +29,10 @@ import java.util.Map;
 public enum  KeyBindingInjector {
     INSTANCE;
 
+    @Getter
     private List<CachedKeyBinder> keyBindedList = new ArrayList<>();
+
+    @Getter
     private Map<String, CachedKeyBinder> desc2KeyBinder = new HashMap<>();
 
     /**
@@ -46,31 +50,21 @@ public enum  KeyBindingInjector {
                         return;
                     }
 
-                    if (method.isAnnotationPresent(DevOnly.class)) return;
 
                     // get annotation info
                     final BindKeyPress bindKeyPress = method.getAnnotation(BindKeyPress.class);
 
-                    if (Sides.isDeobfuscatedEnvironment() && bindKeyPress.devOnly()) {
-                        return;
-                    }
+                    if ((method.isAnnotationPresent(DevOnly.class) || bindKeyPress.devOnly()) && !Sides.isDeobfuscatedEnvironment()) return;
 
                     String description = bindKeyPress.description();
-                    if (description.isEmpty()) {
-                        description = "key." + String.join(".", NameBuilder.apart(method.getName()));
-                    }
-
-                    // TODO: Support Older Version
-                    int keyCode = bindKeyPress.value() >= 0 ? bindKeyPress.value() : bindKeyPress.keyCode();
-                    if (keyCode < 0) return;
 
                     // register key binding
-                    final KeyBinding key = KeyBindingHelper.of(description, keyCode, bindKeyPress.category(), bindKeyPress.modifier());
+                    final KeyBinding key = description.isEmpty() ? null : KeyBindingHelper.of(description, bindKeyPress.value(), bindKeyPress.category(), bindKeyPress.modifier());
                     // put into cache
                     try {
                         CachedKeyBinder binder = new CachedKeyBinder(key, FastReflection.create(method), instance, bindKeyPress);
                         keyBindedList.add(binder);
-                        desc2KeyBinder.put(binder.getKeyBinding().getKeyDescription(), binder);
+                        if (key != null) desc2KeyBinder.put(binder.getKeyBinding().getKeyDescription(), binder);
 
                     } catch (Exception e) {
                         PanguCore.getLogger().error("Unexpected error while creating method reflection", e);

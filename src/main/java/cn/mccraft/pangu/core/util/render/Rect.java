@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -18,6 +20,8 @@ import static org.lwjgl.opengl.GL11.GL_LINEAR;
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
 public interface Rect {
+    int[] ZLEVEL = {0};
+
     static void startDrawing() {
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
@@ -46,6 +50,13 @@ public interface Rect {
         textureFiltering();
     }
 
+    static void zLevel() {
+        ZLEVEL[0] = 0;
+    }
+
+    static void zLevel(int level) {
+        ZLEVEL[0] = level;
+    }
 
     static void color(int color) {
         GlStateManager.color(RenderUtils.red(color), RenderUtils.green(color), RenderUtils.blue(color), RenderUtils.alpha(color));
@@ -83,24 +94,24 @@ public interface Rect {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-
+        int zLevel = ZLEVEL[0];
         bufferbuilder
-                .pos(right, top, 0)
+                .pos(right, top, zLevel)
                 .color(red(colorRightTop), green(colorRightTop), blue(colorRightTop), alpha(colorRightTop))
                 .endVertex();
 
         bufferbuilder
-                .pos(left, top, 0)
+                .pos(left, top, zLevel)
                 .color(red(colorLeftTop), green(colorLeftTop), blue(colorLeftTop), alpha(colorLeftTop))
                 .endVertex();
 
         bufferbuilder
-                .pos(left, bottom, 0)
+                .pos(left, bottom, zLevel)
                 .color(red(colorLeftBottom), green(colorLeftBottom), blue(colorLeftBottom), alpha(colorLeftBottom))
                 .endVertex();
 
         bufferbuilder
-                .pos(right, bottom, 0)
+                .pos(right, bottom, zLevel)
                 .color(red(colorRightBottom), green(colorRightBottom), blue(colorRightBottom), alpha(colorRightBottom))
                 .endVertex();
 
@@ -128,21 +139,21 @@ public interface Rect {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-
+        int zLevel = ZLEVEL[0];
         buffer
-                .pos(x, y + height, 0)
+                .pos(x, y + height, zLevel)
                 .tex(u * 0.00390625F, (v + height) * 0.00390625F)
                 .endVertex();
         buffer
-                .pos(x + width, y + height, 0)
+                .pos(x + width, y + height, zLevel)
                 .tex((u + width) * 0.00390625F, (v + height) * 0.00390625F)
                 .endVertex();
         buffer
-                .pos(x + width, y, 0)
+                .pos(x + width, y, zLevel)
                 .tex((u + width) * 0.00390625F, v * 0.00390625F)
                 .endVertex();
         buffer
-                .pos(x, y, 0)
+                .pos(x, y, zLevel)
                 .tex(u * 0.00390625F, v * 0.00390625F)
                 .endVertex();
         tessellator.draw();
@@ -159,20 +170,22 @@ public interface Rect {
         float f = 1.0F / textureWidth;
         float f1 = 1.0F / textureHeight;
 
+        int zLevel = ZLEVEL[0];
+
         buffer
-                .pos(x, y + height, 0)
+                .pos(x, y + height, zLevel)
                 .tex(u * f, (v + height) * f1)
                 .endVertex();
         buffer
-                .pos(x + width, y + height, 0)
+                .pos(x + width, y + height, zLevel)
                 .tex((u + width) * f, (v + height) * f1)
                 .endVertex();
         buffer
-                .pos(x + width, y, 0)
+                .pos(x + width, y, zLevel)
                 .tex((u + width) * f, v * f1)
                 .endVertex();
         buffer
-                .pos(x, y, 0)
+                .pos(x, y, zLevel)
                 .tex(u * f, v * f1)
                 .endVertex();
         tessellator.draw();
@@ -218,13 +231,15 @@ public interface Rect {
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
 
+        int zLevel = ZLEVEL[0];
+
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(left, bottom, 0.0D).endVertex();
-        bufferbuilder.pos(right, bottom, 0.0D).endVertex();
-        bufferbuilder.pos(right, top, 0.0D).endVertex();
-        bufferbuilder.pos(left, top, 0.0D).endVertex();
+        bufferbuilder.pos(left, bottom, zLevel).endVertex();
+        bufferbuilder.pos(right, bottom, zLevel).endVertex();
+        bufferbuilder.pos(right, top, zLevel).endVertex();
+        bufferbuilder.pos(left, top, zLevel).endVertex();
         tessellator.draw();
 
         GlStateManager.enableTexture2D();
@@ -253,13 +268,14 @@ public interface Rect {
     static void drawCustomSizeTextured(float x, float y, float u, float v, float uWidth, float vHeight, float textureWidth, float textureHeight, float width, float height) {
         float f = 1.0F / textureWidth;
         float f1 = 1.0F / textureHeight;
+        int zLevel = ZLEVEL[0];
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(x, y + height, 0.0D).tex(u * f, (v + vHeight) * f1).endVertex();
-        bufferbuilder.pos(x + width, y + height, 0.0D).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
-        bufferbuilder.pos(x + width, y, 0.0D).tex((u + uWidth) * f, v * f1).endVertex();
-        bufferbuilder.pos(x, y, 0.0D).tex(u * f, (v * f1)).endVertex();
+        bufferbuilder.pos(x, y + height, zLevel).tex(u * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex((u + uWidth) * f, v * f1).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(u * f, (v * f1)).endVertex();
         tessellator.draw();
     }
 

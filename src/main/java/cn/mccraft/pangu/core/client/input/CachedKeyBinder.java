@@ -44,11 +44,14 @@ public class CachedKeyBinder {
      * Check key if pressed and then invoke method
      */
     public void solve() {
-        if ((keyBinding.isPressed() || Keyboard.isKeyDown(keyBinding.getKeyCode())) && keyBinding.getKeyModifier().isActive()) try {
+        if (keyBinding != null ?
+                ((keyBinding.isPressed() || Keyboard.isKeyDown(keyBinding.getKeyCode())) && keyBinding.getKeyModifier().isActive())
+                : Keyboard.isKeyDown(meta.value())
+        ) try {
             method.invoke(instance);
         } catch (Exception e) {
             // catch all exception
-            PanguCore.getLogger().error("Unable to bind key input for " + keyBinding.getKeyDescription(), e);
+            PanguCore.getLogger().error("Unable to bind key input for " + toString(), e);
         }
     }
 }

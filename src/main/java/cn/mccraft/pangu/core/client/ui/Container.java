@@ -99,19 +99,20 @@ public class Container extends Component {
                 .filter(Component::isVisible)
                 .forEach(c -> {
                     c.onDraw(partialTicks, mouseX, mouseY);
-                    if (getScreen() != null && getScreen().isDebug() && getDebugMovingComponent() != c)
+
+                    if (getScreen() != null) {
+                        // draw tooltips
+                        if (c.isHovered()) {
+                            List<String> toolTip = c.getToolTips();
+                            if (toolTip != null)
+                                getScreen().setTooltips2Render(c);
+                        }
+
+                        if (getScreen().isDebug() && getDebugMovingComponent() != c)
                         c.drawComponentBox(debugComponent == c ? 0xFF00FF00 : 0xFFFF0000);
+                    }
                 });
 
-        // draw tooltips
-        for (Component c : getComponents()) {
-            if (!c.isHovered()) continue;
-            List<String> toolTip = c.getToolTips();
-            if (toolTip != null) {
-                drawToolTips(toolTip, mouseX, mouseY);
-                return;
-            }
-        }
 
         drawForeground();
 
