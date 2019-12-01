@@ -21,8 +21,12 @@ public class ScrollingContainer extends Scrolling {
     }
 
     @Override
-    public void onContentClick(float mouseListX, float mouseListY) {
-        container.onMousePressed(0, (int) (mouseListX), (int) (mouseListY));
+    public void onContentPressed(int mouseButton, float mouseListX, float mouseListY) {
+        container.onMousePressed(mouseButton, (int) (mouseListX), (int) (mouseListY));
+    }
+
+    @Override
+    public void onContentReleased(float mouseListX, float mouseListY) {
         container.onMouseReleased((int) (mouseListX), (int) (mouseListY));
     }
 

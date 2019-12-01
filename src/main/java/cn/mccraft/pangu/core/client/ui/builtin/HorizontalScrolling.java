@@ -53,18 +53,11 @@ public abstract class HorizontalScrolling extends Component {
         float scrollBarTop = getY() + getContentHeight();
         float scrollBarBottom = scrollBarTop + scrollBarHeight;
 
-        if ((getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
+        if (isShowScrollBar() && (getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
             if (this.initialMouseClickX == -1.0F) {
                 if (isHovered()) {
-                    float mouseListY = mouseY - getY() + this.scrollDistance;
-
-                    // on element click
-                    if (mouseX - getX() <= getContentWidth()) {
-                        onContentClick(mouseX - getX(), mouseListY);
-                    }
-
                     // on scroll bar clicked
-                    if (isShowScrollBar() && mouseY >= scrollBarTop && mouseX <= scrollBarBottom) {
+                    if (mouseY >= scrollBarTop && mouseX <= scrollBarBottom) {
                         this.scrollFactor = -1.0F;
                         float scrollWidth = this.getContentWidth() - getHeight();
                         if (scrollWidth < 1) scrollWidth = 1;
@@ -139,6 +132,26 @@ public abstract class HorizontalScrolling extends Component {
         GlStateManager.enableTexture2D();
     }
 
+    @Override
+    public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
+        float mouseListY = mouseY - getY();
+        if (mouseListY > getContentHeight()) return;
+
+        float mouseListX = mouseX - getX() + this.scrollDistance;
+
+        onContentPressed(mouseButton, mouseListX, mouseListY);
+    }
+
+    @Override
+    public void onMouseReleased(int mouseX, int mouseY) {
+        float mouseListY = mouseY - getY();
+        if (mouseListY > getContentHeight()) return;
+
+        float mouseListX = mouseX - getX() + this.scrollDistance;
+
+        onContentReleased(mouseListX, mouseListY);
+    }
+
     private void applyScrollLimits() {
         float listWidth = this.getContentWidth() - getWidth();
 
@@ -158,7 +171,20 @@ public abstract class HorizontalScrolling extends Component {
         }
     }
 
-    public abstract void onContentClick(float mouseListX, float mouseListY);
+    /**
+     * @deprecated {@link HorizontalScrolling#onContentPressed(int, float, float)}
+     */
+    @Deprecated
+    public void onContentClick(float mouseListX, float mouseListY) {
+    }
+
+    public void onContentPressed(int mouseButton, float mouseListX, float mouseListY) {
+        onContentClick(mouseListX, mouseListY);
+    }
+
+    public void onContentReleased(float mouseListX, float mouseListY) {
+
+    }
 
     public abstract void onContentDraw(float partialTicks, float baseX, float mouseListX, float mouseListY);
 

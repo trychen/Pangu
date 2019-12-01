@@ -67,11 +67,14 @@ public abstract class Screen extends GuiScreen {
     protected Component tooltips2Render;
 
     @Getter
-    protected long lastClick;
+    protected long openTime;
 
     @Getter
     @Setter
-    protected int clickTimer;
+    protected int openInputDelay;
+
+    @Getter
+    protected boolean canInput = true;
 
     public Screen() {
     }
@@ -104,6 +107,11 @@ public abstract class Screen extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (mc == null) return; // 避免提前打开
         if (drawDefaultBackground) drawDefaultBackground();
+        if (!canInput && openInputDelay > 0 && openTime != 0) {
+            if (Minecraft.getSystemTime() - openTime > openInputDelay) {
+                canInput = true;
+            }
+        }
         draw();
         if (getModal() != null){
             rootContainer.onDraw(partialTicks, 0, 0);
@@ -125,13 +133,7 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (clickTimer > 0) {
-            long systemTime = Minecraft.getSystemTime();
-            if (systemTime - lastClick < clickTimer) {
-                return;
-            }
-            lastClick = systemTime;
-        }
+        if (!canInput) return;
         (getModal() == null ? rootContainer : getModal()).onMousePressed(mouseButton, mouseX, mouseY);
     }
 
@@ -142,10 +144,12 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
+        if (!canInput) return;
         (getModal() == null ? rootContainer : getModal()).onMouseReleased(mouseX, mouseY);
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (!canInput) return;
         if (Sides.isDeobfuscatedEnvironment()) debugShortcut(keyCode);
         if (keyCode == 1) {
             closeScreen();
@@ -157,6 +161,7 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     public void handleMouseInput() throws IOException {
+        if (!canInput) return;
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
@@ -166,6 +171,10 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void setModal(Modal modal) {
+        if (openInputDelay > 0) {
+            canInput = false;
+            openTime = Minecraft.getSystemTime();
+        }
         this.modal = modal;
         if (this.modal != null) {
             this.modal.setScreen(this);
@@ -178,6 +187,10 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void open(GuiScreen parent) {
+        if (openInputDelay > 0) {
+            canInput = false;
+            openTime = Minecraft.getSystemTime();
+        }
         setParentScreen(parent);
         Minecraft.getMinecraft().displayGuiScreen(this);
     }

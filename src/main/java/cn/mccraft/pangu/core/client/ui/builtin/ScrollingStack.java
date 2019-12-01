@@ -18,9 +18,15 @@ public class ScrollingStack extends Scrolling {
         return stack.getHeight();
     }
 
+
     @Override
-    public void onContentClick(float mouseListX, float mouseListY) {
-        stack.onMousePressed(0, (int) mouseListX, (int) mouseListY);
+    public void onContentPressed(int mouseButton, float mouseListX, float mouseListY) {
+        stack.onMousePressed(mouseButton, (int) (mouseListX), (int) (mouseListY));
+    }
+
+    @Override
+    public void onContentReleased(float mouseListX, float mouseListY) {
+        stack.onMouseReleased((int) (mouseListX), (int) (mouseListY));
     }
 
     @Override

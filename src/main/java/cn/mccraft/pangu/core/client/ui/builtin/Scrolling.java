@@ -56,7 +56,7 @@ public abstract class Scrolling extends Component {
 
         float mouseListY = mouseY - getY() + this.scrollDistance;
 
-        if (Mouse.isButtonDown(0)) {
+        if (isShowScrollBar() && (getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
             if (this.initialMouseClickY == -1.0F) {
                 if (isHovered()) {
                     // on element click
@@ -65,7 +65,7 @@ public abstract class Scrolling extends Component {
                     }
 
                     // on scroll bar clicked
-                    if (isShowScrollBar() && mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {
+                    if (mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {
                         this.scrollFactor = -1.0F;
                         float scrollHeight = this.getContentHeight() - getHeight();
                         if (scrollHeight < 1) scrollHeight = 1;
@@ -158,7 +158,39 @@ public abstract class Scrolling extends Component {
         }
     }
 
-    public abstract void onContentClick(float mouseListX, float mouseListY);
+    @Override
+    public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
+        float mouseListX = mouseX - getX();
+        if (mouseListX > getContentWidth()) return;
+
+        float mouseListY = mouseY - getY() + this.scrollDistance;
+
+        onContentPressed(mouseButton, mouseListX, mouseListY);
+    }
+
+    @Override
+    public void onMouseReleased(int mouseX, int mouseY) {
+        float mouseListX = mouseX - getX();
+        if (mouseListX > getContentWidth()) return;
+
+        float mouseListY = mouseY - getY() + this.scrollDistance;
+
+        onContentReleased(mouseListX, mouseListY);
+    }
+
+    /**
+     * @deprecated {@link HorizontalScrolling#onContentPressed(int, float, float)}
+     */
+    @Deprecated
+    public void onContentClick(float mouseListX, float mouseListY) {
+    }
+
+    public void onContentPressed(int mouseButton, float mouseListX, float mouseListY) {
+        onContentClick(mouseListX, mouseListY);
+    }
+
+    public void onContentReleased(float mouseListX, float mouseListY) {
+    }
 
     public abstract void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY);
 
