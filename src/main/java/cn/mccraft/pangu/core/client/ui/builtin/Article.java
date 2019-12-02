@@ -23,11 +23,6 @@ public class Article extends Scrolling {
         return lines.size() * 12;
     }
 
-    @Override
-    public void onContentClick(float mouseListX, float mouseListY) {
-
-    }
-
     public Article addLine(Line... lines) {
         Collections.addAll(this.lines, lines);
         return this;

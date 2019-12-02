@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.gui;
 
+import cn.mccraft.pangu.core.util.font.FontProvider;
 import cn.mccraft.pangu.core.util.font.StringRenderer;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
@@ -10,20 +11,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class TextLabel extends GuiButton {
-    private final StringRenderer font;
+    private final FontProvider font;
     private boolean renderBox;
     private int fontYOffset;
     private int fontColor = 0xFFFFFFFF, hoverColor = 0xFFFFFFFF;
 
-    public TextLabel(int buttonId, int x, int y, int height, String buttonText, StringRenderer font) {
+    public TextLabel(int buttonId, int x, int y, int height, String buttonText, FontProvider font) {
         this(buttonId, x, y, height, height / 3, buttonText, font);
     }
 
-    public TextLabel(int buttonId, int x, int y, String buttonText, StringRenderer font) {
-        this(buttonId, x, y, font.getSize() / 2, buttonText, font);
+    public TextLabel(int buttonId, int x, int y, String buttonText, FontProvider font) {
+        this(buttonId, x, y, font.getFontHeight(), buttonText, font);
     }
 
-    public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, StringRenderer font) {
+    public TextLabel(int buttonId, int x, int y, int height, int fontYOffset, String buttonText, FontProvider font) {
         super(buttonId, x, y, font.getStringWidth(buttonText), height, buttonText);
         this.font = font;
         this.fontYOffset = fontYOffset;
@@ -55,7 +56,7 @@ public class TextLabel extends GuiButton {
         return this;
     }
 
-    public StringRenderer getFont() {
+    public FontProvider getFont() {
         return font;
     }
 

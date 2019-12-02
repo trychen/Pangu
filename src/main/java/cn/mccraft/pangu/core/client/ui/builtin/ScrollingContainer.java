@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
+import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.client.ui.Container;
+import cn.mccraft.pangu.core.client.ui.Screen;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,5 +36,11 @@ public class ScrollingContainer extends Scrolling {
     public void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY) {
         container.setOffset(getX(), baseY);
         container.onDraw(ticks, (int) (mouseListX + getX()), (int) (baseY + mouseListY));
+    }
+
+    @Override
+    public Component setScreen(Screen screen) {
+        container.setScreen(screen);
+        return super.setScreen(screen);
     }
 }

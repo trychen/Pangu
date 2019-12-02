@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import cn.mccraft.pangu.core.client.ui.Screen;
 import cn.mccraft.pangu.core.client.ui.Stack;
 
 public class ScrollingStack extends Scrolling {
@@ -41,5 +42,11 @@ public class ScrollingStack extends Scrolling {
     public Component setPosition(float x, float y) {
         stack.setPosition(x, y);
         return super.setPosition(x, y);
+    }
+
+    @Override
+    public Component setScreen(Screen screen) {
+        stack.setScreen(screen);
+        return super.setScreen(screen);
     }
 }

@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
+import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.client.ui.Container;
+import cn.mccraft.pangu.core.client.ui.Screen;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,5 +35,11 @@ public class HorizontalScrollingContainer extends HorizontalScrolling {
     public void onContentDraw(float ticks, float baseX, float mouseListX, float mouseListY) {
         container.setOffset(baseX, getY());
         container.onDraw(ticks, (int) (mouseListX + baseX), (int) (getY() + mouseListY));
+    }
+
+    @Override
+    public Component setScreen(Screen screen) {
+        container.setScreen(screen);
+        return super.setScreen(screen);
     }
 }

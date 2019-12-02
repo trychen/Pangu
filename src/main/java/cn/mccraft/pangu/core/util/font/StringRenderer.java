@@ -163,10 +163,10 @@ public class StringRenderer implements FontProvider {
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
             GlStateManager.bindTexture(texture.textureName);
             Rect.textureFiltering();
-            buffer.pos(x1, y1, 0).tex(texture.u1, texture.v1).color(r, g, b, a).endVertex();
-            buffer.pos(x1, y2, 0).tex(texture.u1, texture.v2).color(r, g, b, a).endVertex();
-            buffer.pos(x2, y2, 0).tex(texture.u2, texture.v2).color(r, g, b, a).endVertex();
-            buffer.pos(x2, y1, 0).tex(texture.u2, texture.v1).color(r, g, b, a).endVertex();
+            buffer.pos(x1, y1, Rect.ZLEVEL[0]).tex(texture.u1, texture.v1).color(r, g, b, a).endVertex();
+            buffer.pos(x1, y2, Rect.ZLEVEL[0]).tex(texture.u1, texture.v2).color(r, g, b, a).endVertex();
+            buffer.pos(x2, y2, Rect.ZLEVEL[0]).tex(texture.u2, texture.v2).color(r, g, b, a).endVertex();
+            buffer.pos(x2, y1, Rect.ZLEVEL[0]).tex(texture.u2, texture.v1).color(r, g, b, a).endVertex();
 
             tessellator.draw();
         }
@@ -225,10 +225,10 @@ public class StringRenderer implements FontProvider {
                     float y1 = startY + (STRIKETHROUGH_OFFSET) / 2.0F;
                     float y2 = startY + (STRIKETHROUGH_OFFSET + STRIKETHROUGH_THICKNESS) / 2.0F;
 
-                    buffer.pos(x1, y1, 0).color(r, g, b, a).endVertex();
-                    buffer.pos(x1, y2, 0).color(r, g, b, a).endVertex();
-                    buffer.pos(x2, y2, 0).color(r, g, b, a).endVertex();
-                    buffer.pos(x2, y1, 0).color(r, g, b, a).endVertex();
+                    buffer.pos(x1, y1, Rect.ZLEVEL[0]).color(r, g, b, a).endVertex();
+                    buffer.pos(x1, y2, Rect.ZLEVEL[0]).color(r, g, b, a).endVertex();
+                    buffer.pos(x2, y2, Rect.ZLEVEL[0]).color(r, g, b, a).endVertex();
+                    buffer.pos(x2, y1, Rect.ZLEVEL[0]).color(r, g, b, a).endVertex();
                 }
             }
 
