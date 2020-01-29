@@ -45,8 +45,19 @@ public interface Rect {
         if (texture != null) bind(texture);
     }
 
+
+    static void bind(TextureProvider textureProvider, ResourceLocation defaultTexture) {
+        ResourceLocation texture = textureProvider.getTexture(defaultTexture);
+        if (texture != null) bind(texture);
+    }
+
     static void bindWithFiltering(ResourceLocation resourceLocation) {
         bind(resourceLocation);
+        textureFiltering();
+    }
+
+    static void bindWithFiltering(TextureProvider textureProvider) {
+        bind(textureProvider);
         textureFiltering();
     }
 
@@ -79,7 +90,10 @@ public interface Rect {
     }
 
     static void linearMipmapLinearFiltering() {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     /**

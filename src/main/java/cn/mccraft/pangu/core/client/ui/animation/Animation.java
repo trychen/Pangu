@@ -58,6 +58,14 @@ public class Animation {
         return value * progress;
     }
 
+    public float climbWithSqrt(float value) {
+        return (float) (value * Math.sqrt(progress));
+    }
+
+    public float climbWithSquare(float value) {
+        return value * progress * progress;
+    }
+
     public boolean started() {
         return this.startTime >= 0;
     }

@@ -1,8 +1,11 @@
 package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.util.render.Rect;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -17,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Accessors(chain = true)
+@ToString
 public abstract class Component implements Cloneable, Comparable<Component> {
     @Getter
     @Setter
@@ -163,7 +167,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public Component toolTips(String... toolTips) {
-        setToolTips(Arrays.asList(toolTips));
+        setToolTips(Lists.newArrayList(toolTips));
         return this;
     }
 

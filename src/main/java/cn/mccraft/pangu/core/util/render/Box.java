@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.util.render;
 
+import cn.mccraft.pangu.core.util.Games;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public interface Box {
     static void offset2View(Runnable runnable, float partialTicks) {
-        Entity view = Minecraft.getMinecraft().getRenderViewEntity();
+        Entity view = Games.minecraft().getRenderViewEntity();
         double x = view.lastTickPosX + ((view.posX - view.lastTickPosX) * partialTicks);
         double y = view.lastTickPosY + ((view.posY - view.lastTickPosY) * partialTicks);
         double z = view.lastTickPosZ + ((view.posZ - view.lastTickPosZ) * partialTicks);

@@ -7,13 +7,16 @@ import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+
 public class ScrollingContainer extends Scrolling {
     @Getter
     @Setter
     protected Container container;
 
-    public ScrollingContainer(Container container, float height) {
+    public ScrollingContainer(@Nonnull Container container, float height) {
         super(container.getWidth(), height);
+        this.container.setParent(this);
         this.container = container;
     }
 

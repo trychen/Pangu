@@ -21,7 +21,7 @@ public interface Try {
         return () -> {
             try {
                 mapper.run();
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 PanguCore.getLogger().error(errorMessage, ex);
             }
         };
@@ -34,7 +34,7 @@ public interface Try {
         return t -> {
             try {
                 return mapper.apply(t);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 PanguCore.getLogger().error(errorMessage, ex);
             }
             return null;
@@ -48,7 +48,7 @@ public interface Try {
         return t -> {
             try {
                 action.accept(t);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 PanguCore.getLogger().error(errorMessage, ex);
             }
         };

@@ -8,6 +8,7 @@ import com.trychen.bytedatastream.DataOutput;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -40,6 +41,8 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
     @Getter
     protected String id;
 
+    protected boolean exception = false;
+
     @Getter
     protected File cachedFilePath;
 
@@ -68,10 +71,11 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
     @Override
     public ResourceLocation getTexture() {
         if (!bufferedImage.isDone()) return null;
+        if (exception) return null;
         if (resourceLocation == null) {
             LocalCache.markFileUsed(cachedFilePath.toPath());
             try {
-                resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("custommenu_banner_" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
+                resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("pangu_remote_image" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
             } catch (Exception e) {
                 PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
                 bufferedImage = new Future<BufferedImage>() {
@@ -100,7 +104,7 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
                         return null;
                     }
                 };
-                return null;
+                exception = true;
             }
         }
         return resourceLocation;
@@ -109,7 +113,7 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
     @Override
     public ResourceLocation getTexture(ResourceLocation loading) {
         ResourceLocation texture = getTexture();
-        if (texture == null) return loading;
+        if (texture == null || texture == TextureManager.RESOURCE_LOCATION_EMPTY) return loading;
         return texture;
     }
 

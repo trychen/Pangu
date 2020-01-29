@@ -2,8 +2,10 @@ package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.util.NonNullList;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,7 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Container that stored components
  */
 @Accessors(chain = true)
-public class Container extends Component {
+@ToString
+public class Container extends Component implements Cloneable {
     @Getter
     @Setter
     protected NonNullList<Component> components = NonNullList.create();
@@ -90,7 +93,12 @@ public class Container extends Component {
             getDebugMovingComponent().setPosition(mouseX + getDebugMovingComponentOffsetX(), mouseY + getDebugMovingComponentOffsetY());
         }
         // update information
+        onUpdate(mouseX, mouseY);
         getComponents().forEach(c -> c.onUpdate(mouseX, mouseY));
+
+        if (getParent() instanceof TransformHover) {
+            setHovered(getParent().isHovered());
+        }
 
         // draw component
         Component debugComponent = getDebugSelectedComponent();

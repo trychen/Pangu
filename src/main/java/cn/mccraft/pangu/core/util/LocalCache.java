@@ -44,8 +44,21 @@ public class LocalCache extends Thread {
         return new File(groupFile, id);
     }
 
+    public static File getCacheGroup(String group) {
+        File groupFile = groups.get(group);
+        if (groupFile == null) {
+            groupFile = new File(CACHE_DIR, group);
+            groupFile.mkdir();
+        }
+        return groupFile;
+    }
+
     public static void markFileUsed(Path usedFile) {
         usedFiles.add(usedFile);
+    }
+
+    public static void markGroupUsed(String group) {
+        usedFiles.add(new File(CACHE_DIR, group).toPath());
     }
 
     @Override
@@ -55,6 +68,11 @@ public class LocalCache extends Thread {
             Files.walkFileTree(CACHE_DIR.toPath(), new FileVisitor<Path>() {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    for (Path usedFile : usedFiles) {
+                        if (usedFile.equals(dir)) {
+                            return FileVisitResult.SKIP_SUBTREE;
+                        }
+                    }
                     if (dir.equals(CACHE_DIR.toPath()) || values.contains(dir.toFile()))
                         return FileVisitResult.CONTINUE;
                     FileUtils.deleteDirectory(dir.toFile());
@@ -83,7 +101,7 @@ public class LocalCache extends Thread {
                 }
             });
         } catch (Exception e) {
-            PanguCore.getLogger().error("", e);
+            PanguCore.getLogger().error("Error while delete unused cache", e);
         }
     }
 }

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(
         modid = PanguCore.ID,
         name = "Pangu Core",
-        version = "1.11.0",
+        version = "1.12.3",
         useMetadata = true,
         acceptedMinecraftVersions = "[1.12.2,1.13)"
 )
@@ -173,9 +173,9 @@ public class PanguCore {
 
 
     /*
-       ==============================
-          Configuration (Not exist)
-       ==============================
+       ==========================================
+          Configuration (Not exist currently)
+       ==========================================
 
        Pangu Core won't provide a configuration file
      */

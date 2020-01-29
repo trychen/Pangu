@@ -2,7 +2,6 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.ModFinder;
-import cn.mccraft.pangu.core.util.Try;
 import com.google.common.collect.Maps;
 import lombok.val;
 
@@ -27,14 +26,17 @@ public enum ElementInjector {
         anno.typeStream()
                 // clean non-annotation class
                 .filter(Annotation.class::isAssignableFrom)
-                .forEach(Try.safe(it -> {
-                            ElementInjector.INSTANCE.annotations
-                                    .put(
-                                            (Class<? extends Annotation>) it,
-                                            (AnnotationRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())
-                                    );
-                        }, "unexpect error while injecting annotation")
-                );
+                .forEach(it -> {
+                    try {
+                        ElementInjector.INSTANCE.annotations
+                                .put(
+                                        (Class<? extends Annotation>) it,
+                                        (AnnotationRegister) InstanceHolder.getInstance(it.getAnnotation(RegisteringHandler.class).value())
+                                );
+                    } catch (Throwable e) {
+                        PanguCore.getLogger().error("unexpect error while injecting RegisteringHandler " + it.toGenericString(), e);
+                    }
+                });
     }
 
     @Load
@@ -46,7 +48,7 @@ public enum ElementInjector {
                 try {
                     //noinspection unchecked
                     register.registerField(field, InstanceHolder.getObject(field), field.getAnnotation(annoClass), ModFinder.getDomain(field).orElse(PanguCore.ID));
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     PanguCore.getLogger().error(
                             String.format("Unable to register %s annotation for %s", annoClass.getName(), field.toGenericString())
                             , e
@@ -60,7 +62,7 @@ public enum ElementInjector {
                 try {
                     //noinspection unchecked
                     register.registerClass(clazz, clazz.getAnnotation(annoClass), ModFinder.getDomain(clazz).orElse(PanguCore.ID));
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     PanguCore.getLogger().error(
                             String.format("Unable to register %s annotation for %s", annoClass.getName(), clazz.toGenericString())
                             , e

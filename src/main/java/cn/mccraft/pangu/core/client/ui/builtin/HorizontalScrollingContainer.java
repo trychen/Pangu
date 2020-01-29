@@ -6,13 +6,16 @@ import cn.mccraft.pangu.core.client.ui.Screen;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.annotation.Nonnull;
+
 public class HorizontalScrollingContainer extends HorizontalScrolling {
     @Getter
     @Setter
     protected Container container;
 
-    public HorizontalScrollingContainer(Container container, float width) {
+    public HorizontalScrollingContainer(@Nonnull Container container, float width) {
         super(width, container.getHeight());
+        this.container.setParent(this);
         this.container = container;
     }
 
