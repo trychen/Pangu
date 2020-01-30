@@ -1,12 +1,9 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
-import cn.mccraft.pangu.core.client.input.BindKeyPress;
 import cn.mccraft.pangu.core.client.ui.UI;
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.network.Bridge;
-import cn.mccraft.pangu.core.network.Remote;
 import cn.mccraft.pangu.core.util.render.Rect;
-import cn.mccraft.pangu.core.util.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,7 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.Arrays;
 
 import static cn.mccraft.pangu.core.client.PGClient.PG_TOOLTIPS_TEXTURE;

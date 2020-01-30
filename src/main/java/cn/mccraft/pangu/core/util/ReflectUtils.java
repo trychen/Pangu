@@ -246,10 +246,19 @@ public interface ReflectUtils {
      * @return null if failed
      */
     static Class<?> forName(String name){
+        return forName(name, "Couldn't find or init class");
+    }
+
+    /**
+     * Get a instance of class by class name
+     *
+     * @return null if failed
+     */
+    static Class<?> forName(String name, String errorMessage){
         try {
             return Class.forName(name);
         } catch (Exception e) {
-            PanguCore.getLogger().error(e);
+            PanguCore.getLogger().error(errorMessage, e);
         }
         return null;
     }
@@ -264,6 +273,7 @@ public interface ReflectUtils {
         try {
             return Class.forName(name);
         } catch (Exception e) {
+            PanguCore.getLogger().debug(e.getLocalizedMessage(), e);
         }
         return null;
     }
@@ -280,7 +290,7 @@ public interface ReflectUtils {
             //noinspection ConstantConditions
             return Class.forName(name).newInstance();
         } catch (Exception e) {
-            PanguCore.getLogger().error(e);
+            PanguCore.getLogger().error(e.getLocalizedMessage(), e);
         }
         return null;
     }
@@ -295,7 +305,7 @@ public interface ReflectUtils {
         try {
             return clazz.newInstance();
         } catch (Exception e) {
-            PanguCore.getLogger().error(e);
+            PanguCore.getLogger().error(e.getLocalizedMessage(), e);
         }
         return null;
     }
@@ -311,7 +321,7 @@ public interface ReflectUtils {
         try {
             return clazz.getConstructor(toTypes(parameter)).newInstance(parameter);
         } catch (Exception e) {
-            PanguCore.getLogger().error(e);
+            PanguCore.getLogger().error(e.getLocalizedMessage(), e);
         }
         return null;
     }

@@ -65,6 +65,7 @@ public interface BridgeHandler {
     @AnnotationInjector.StaticInvoke
     static void registerMessages(AnnotationStream<Bridge> stream) {
         PanguCore.getLogger().info("Start register @Bridge message");
+
         stream.methodStream().forEach(method -> {
             try {
                 Bridge bridge = method.getAnnotation(Bridge.class);

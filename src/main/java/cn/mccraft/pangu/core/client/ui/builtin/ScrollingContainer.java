@@ -16,8 +16,8 @@ public class ScrollingContainer extends Scrolling {
 
     public ScrollingContainer(@Nonnull Container container, float height) {
         super(container.getWidth(), height);
-        this.container.setParent(this);
         this.container = container;
+        this.container.setParent(this);
     }
 
     @Override
