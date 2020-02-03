@@ -15,8 +15,8 @@ public class HorizontalScrollingContainer extends HorizontalScrolling {
 
     public HorizontalScrollingContainer(@Nonnull Container container, float width) {
         super(width, container.getHeight());
-        this.container.setParent(this);
         this.container = container;
+        this.container.setParent(this);
     }
 
     @Override

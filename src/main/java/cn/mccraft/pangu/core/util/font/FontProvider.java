@@ -33,6 +33,14 @@ public interface FontProvider {
         return drawString(text, x - half, y, color, shadow);
     }
 
+    default int drawCenteredString(String text, float x, float y, int color) {
+        return this.drawCenteredString(text, x, y, color, false);
+    }
+
+    default int drawCenteredString(String text, float x, float y) {
+        return this.drawCenteredString(text, x, y, 0xFF000000, false);
+    }
+
     default int drawString(String text, float x, float y, float parentWidth, int color, boolean shadow, Alignment alignment) {
         if (alignment == Alignment.LEADING) {
             return drawString(text, x, y, color, shadow);
