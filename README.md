@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.MinecraftPangu:Pangu:1.5.0:dev"
+    implementation "com.github.MinecraftPangu:Pangu:1.13.1:dev"
 }
 
 // IDE Runner Settings from https://blog.ustc-zzzz.net/add-jvm-arguments-to-ide-in-forge-mod-projects/
