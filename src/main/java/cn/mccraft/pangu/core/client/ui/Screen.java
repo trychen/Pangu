@@ -10,6 +10,8 @@ import lombok.experimental.Delegate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -106,6 +108,7 @@ public abstract class Screen extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (mc == null) return; // 避免提前打开
+        MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.BackgroundDrawnEvent(this));
         if (drawDefaultBackground) drawDefaultBackground();
         if (!canInput && openInputDelay > 0 && openTime != 0) {
             if (Minecraft.getSystemTime() - openTime > openInputDelay) {

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import cn.mccraft.pangu.core.util.Ticking;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +18,16 @@ import org.lwjgl.opengl.GL11;
 
 @Accessors(chain = true)
 public abstract class Scrolling extends Component {
+    protected float scrollFactor;
+    protected float initialMouseClickY = -2.0F;
+    protected double scrollVelocity;
+
+    protected Ticking scroller;
+
     @Getter
     @Setter
     protected int scrollBarWidth = 6;
 
-    protected float scrollFactor;
-    protected float initialMouseClickY = -2.0F;
     @Getter
     protected float scrollDistance;
 
@@ -34,8 +39,37 @@ public abstract class Scrolling extends Component {
     @Setter
     protected boolean showScrollBar = true;
 
+
     public Scrolling(float width, float height) {
         setSize(width, height);
+
+        this.scroller = (() -> {
+            if (this.scrollVelocity == 0.0 && this.scrollDistance >= 0.0 && this.scrollDistance <= this.getMaxScroll()) {
+                this.scroller.unregisterTick();
+            }
+            else {
+                final double change = this.scrollVelocity * 0.3;
+                if (this.scrollVelocity != 0.0) {
+                    this.scrollDistance += (float)change;
+                    this.scrollVelocity -= this.scrollVelocity * ((this.scrollDistance >= 0.0 && this.scrollDistance <= this.getMaxScroll()) ? 0.2 : 0.4);
+                    if (Math.abs(this.scrollVelocity) < 0.1) {
+                        this.scrollVelocity = 0.0;
+                    }
+                }
+                if (this.scrollDistance < 0.0f && this.scrollVelocity == 0.0) {
+                    this.scrollDistance = Math.min(this.scrollDistance + (0.0f - this.scrollDistance) * 0.2f, 0.0f);
+                    if (this.scrollDistance > -0.1f && this.scrollDistance < 0.0f) {
+                        this.scrollDistance = 0.0f;
+                    }
+                }
+                else if (this.scrollDistance > this.getMaxScroll() && this.scrollVelocity == 0.0) {
+                    this.scrollDistance = Math.max(this.scrollDistance - (this.scrollDistance - this.getMaxScroll()) * 0.2f, this.getMaxScroll());
+                    if (this.scrollDistance > this.getMaxScroll() && this.scrollDistance < this.getMaxScroll() + 0.1) {
+                        this.scrollDistance = this.getMaxScroll();
+                    }
+                }
+            }
+        });
     }
 
     public abstract float getContentHeight();
@@ -150,8 +184,31 @@ public abstract class Scrolling extends Component {
             this.scrollDistance = listHeight;
     }
 
+    public float getMaxScroll() {
+        return this.getContentHeight() - getHeight();
+    }
+
     @Override
     public void onMouseInput(int mouseX, int mouseY) {
+        int i2 = Mouse.getEventDWheel();
+        if (i2 != 0) {
+            if (i2 > 0) {
+                i2 = 1;
+            }
+            else if (i2 < 0) {
+                i2 = -1;
+            }
+            if (this.scrollDistance <= getMaxScroll() && i2 < 0.0) {
+                this.scrollVelocity += 16.0;
+            }
+            if (this.scrollDistance >= 0.0 && i2 > 0.0) {
+                this.scrollVelocity -= 16.0;
+            }
+            if (!this.scroller.isRegistered()) {
+                this.scroller.registerTick();
+            }
+        }
+
         int scroll = Mouse.getEventDWheel();
         if (scroll != 0) {
             this.scrollDistance += (-1 * scroll / 120.0F) * this.generalScrollingDistance / 2;
