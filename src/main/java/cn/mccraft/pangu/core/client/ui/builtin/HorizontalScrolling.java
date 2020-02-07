@@ -197,7 +197,7 @@ public abstract class HorizontalScrolling extends Component {
     }
 
     public float getMaxScroll() {
-        return this.getContentHeight() - getHeight();
+        return this.getContentWidth() - getWidth();
     }
 
     @Override

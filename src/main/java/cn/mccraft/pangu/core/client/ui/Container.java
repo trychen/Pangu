@@ -245,4 +245,11 @@ public class Container extends Component implements Cloneable {
 
     public void drawForeground() {
     }
+
+    @Override
+    public Container setScreen(Screen screen) {
+        for (Component component : components) component.setScreen(screen);
+        super.setScreen(screen);
+        return this;
+    }
 }

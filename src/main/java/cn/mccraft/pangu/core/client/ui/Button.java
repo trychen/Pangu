@@ -1,9 +1,6 @@
 package cn.mccraft.pangu.core.client.ui;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.function.Consumer;
@@ -32,15 +29,15 @@ public abstract class Button extends Component {
     @Getter
     protected Consumer<ButtonClickEvent> buttonClickEvent;
 
-    @Deprecated
-    public Button(int width, int height) {
-        super();
-        setSize(width, height);
-    }
 
     public Button(float width, float height) {
         super();
         setSize(width, height);
+    }
+
+    @Deprecated
+    public Button(int width, int height) {
+        this((float) width, height);
     }
 
     public void onClick(int mouseButton, int mouseX, int mouseY) {
@@ -91,10 +88,7 @@ public abstract class Button extends Component {
 
     @Data
     public static class ButtonClickEvent {
-        @NonNull
-        private Button button;
-
-        @NonNull
-        private int mouseButton, mouseX, mouseY;
+        private final Button button;
+        private final int mouseButton, mouseX, mouseY;
     }
 }

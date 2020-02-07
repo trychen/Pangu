@@ -44,7 +44,6 @@ public class TextField extends Component implements Focusable {
     protected int lineScrollOffset;
 
     @Getter
-    @Setter
     protected int cursorPosition;
 
     @Getter
