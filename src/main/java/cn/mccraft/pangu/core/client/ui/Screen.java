@@ -76,7 +76,7 @@ public abstract class Screen extends GuiScreen {
     protected int openInputDelay;
 
     @Getter
-    protected boolean canInput = true;
+    protected boolean canInput = true, ignoreKeyTypeDelay = false;
 
     public Screen() {
     }
@@ -110,6 +110,7 @@ public abstract class Screen extends GuiScreen {
         if (mc == null) return; // 避免提前打开
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.BackgroundDrawnEvent(this));
         if (drawDefaultBackground) drawDefaultBackground();
+        drawBackground();
         if (!canInput && openInputDelay > 0 && openTime != 0) {
             if (Minecraft.getSystemTime() - openTime > openInputDelay) {
                 canInput = true;
@@ -126,7 +127,7 @@ public abstract class Screen extends GuiScreen {
             Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
         }
-
+        drawForeground();
         if (getTooltips2Render() != null) {
             List<String> toolTips = getTooltips2Render().getToolTips();
             if (toolTips != null) getTooltips2Render().drawToolTips(toolTips, mouseX, mouseY);
@@ -152,7 +153,7 @@ public abstract class Screen extends GuiScreen {
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (!canInput) return;
+        if (!canInput && !ignoreKeyTypeDelay) return;
         if (Sides.isDeobfuscatedEnvironment()) debugShortcut(keyCode);
         if (keyCode == 1) {
             closeScreen();

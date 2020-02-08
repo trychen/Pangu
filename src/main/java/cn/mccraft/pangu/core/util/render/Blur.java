@@ -44,7 +44,6 @@ public enum Blur {
     private BlurData blurData;
 
     Blur() {
-//        Environment.devOnly(() -> getBlurDataMap().put(GuiIngameMenu.class.getName(), new BlurData(8, 0, 0)));
     }
 
     /**
@@ -91,9 +90,9 @@ public enum Blur {
         if (!er.isShaderActive() && include) {
             er.loadShader(SHADER_LOCATION);
             isActived = true;
-            PanguCore.getLogger().info("Enabled blur shader for gui " + event.getGui());
+            PanguCore.getLogger().debug("Enabled blur shader for gui " + event.getGui());
         } else if (er.isShaderActive() && !include) {
-            PanguCore.getLogger().info("Disabled blur shader for gui " + event.getGui());
+            PanguCore.getLogger().debug("Disabled blur shader for gui " + event.getGui());
             er.stopUseShader();
         }
 

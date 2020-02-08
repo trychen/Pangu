@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,12 +42,19 @@ public interface Rect {
     }
 
     static void bind(TextureProvider textureProvider) {
+        if (textureProvider == null) {
+            GlStateManager.bindTexture(TextureUtil.MISSING_TEXTURE.getGlTextureId());
+            return;
+        }
         ResourceLocation texture = textureProvider.getTexture();
         if (texture != null) bind(texture);
     }
 
-
     static void bind(TextureProvider textureProvider, ResourceLocation defaultTexture) {
+        if (textureProvider == null) {
+            bind(defaultTexture);
+            return;
+        }
         ResourceLocation texture = textureProvider.getTexture(defaultTexture);
         if (texture != null) bind(texture);
     }
@@ -266,6 +274,22 @@ public interface Rect {
         tessellator.draw();
 
         GlStateManager.enableTexture2D();
+    }
+
+    static void drawFullTexTextured(float x, float y, float width, float height) {
+        int zLevel = ZLEVEL[0];
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(1, 1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(1, 0).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(0, 0).endVertex();
+        tessellator.draw();
+    }
+
+    static void drawFullTexTextured(float x, float y, float width, float height, float factor) {
+        drawFullTexTextured(x, y, width * factor, height * factor);
     }
 
     static void drawCustomSizeTextured(float x, float y, float width, float height) {

@@ -68,7 +68,6 @@ public class BridgeTransformer implements IClassTransformer {
             if (side != SIDE) {
 
                 MethodNode newMethod = new MethodNode(method.access, method.name, method.desc, method.signature, method.exceptions.toArray(new String[0]));
-
                 GeneratorAdapter generator = new GeneratorAdapter(newMethod, newMethod.access, newMethod.name, newMethod.desc);
 
                 generator.push(key);

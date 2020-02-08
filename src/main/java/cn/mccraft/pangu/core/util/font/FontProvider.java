@@ -12,7 +12,7 @@ public interface FontProvider {
     int getFontHeight();
 
     default int drawString(String text, float x, float y, int color, boolean shadow, boolean centered) {
-        float half = centered ? getStringWidth(text) / 2 : 0;
+        float half = centered ? getStringWidth(text) / 2F : 0;
         return drawString(text, x - half, y, color, shadow);
     }
 
