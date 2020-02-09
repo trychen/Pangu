@@ -44,6 +44,12 @@ public class AnnotationStream<T extends Annotation> {
     public Stream<ASMDataTable.ASMData> stream() {
         return asmDatas.stream();
     }
+    /**
+     * Returns a sequential {@code Stream} with the native ASMData
+     */
+    public Stream<ASMDataTable.ASMData> parallelStream() {
+        return asmDatas.parallelStream();
+    }
 
     /**
      * Returns a sequential {@code Stream} with classes from element's declaring class.
@@ -51,6 +57,7 @@ public class AnnotationStream<T extends Annotation> {
     public Stream<Class<?>> classStream() {
         return asmDatas
                 .stream()
+                .filter(AnnotationInjector.INSTANCE::isSafeClass)
                 // get class name
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
@@ -64,6 +71,7 @@ public class AnnotationStream<T extends Annotation> {
     public Stream<Class<?>> fieldAndMethodOwnerClassStream() {
         return asmDatas
                 .stream()
+                .filter(AnnotationInjector.INSTANCE::isSafeClass)
                 .filter(it -> !it.getClassName().equals(it.getObjectName()))
                 // get class name
                 .map(ASMDataTable.ASMData::getClassName)
@@ -85,6 +93,7 @@ public class AnnotationStream<T extends Annotation> {
                 .stream()
                 // filter that clean non-class object
                 .filter(it -> it.getClassName().equals(it.getObjectName()))
+                .filter(AnnotationInjector.INSTANCE::isSafeClass)
                 // get class name
                 .map(ASMDataTable.ASMData::getClassName)
                 .distinct()
@@ -103,6 +112,7 @@ public class AnnotationStream<T extends Annotation> {
                 .stream()
                 // filter that clean non-class object
                 .filter(it -> !it.getClassName().equals(it.getObjectName()) && !it.getObjectName().contains("("))
+                .filter(AnnotationInjector.INSTANCE::isSafeClass)
                 // map class entity
                 .map(it -> {
                     try {

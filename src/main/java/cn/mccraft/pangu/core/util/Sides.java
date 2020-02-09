@@ -27,7 +27,7 @@ public interface Sides {
     @Nullable
     static Side currentThreadSide() {
         final ThreadGroup group = Thread.currentThread().getThreadGroup();
-        return group instanceof SidedThreadGroup ? ((SidedThreadGroup) group).getSide() : null;
+        return group instanceof SidedThreadGroup ? ((SidedThreadGroup) group).getSide() : Sides.commonSide();
     }
 
     /**

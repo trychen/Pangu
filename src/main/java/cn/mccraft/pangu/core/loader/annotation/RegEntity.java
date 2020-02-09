@@ -21,12 +21,12 @@ public @interface RegEntity {
     /**
      * The range at which MC will send tracking updates
      */
-    int trackingRange() default 40;
+    int trackingRange() default 64;
 
     /**
      * The frequency of tracking updates
      */
-    int updateFrequency() default 5;
+    int updateFrequency() default 20;
 
     /**
      * Whether to send velocity information packets as well

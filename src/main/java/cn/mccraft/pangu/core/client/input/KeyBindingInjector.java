@@ -26,7 +26,7 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 @AutoWired(registerCommonEventBus = true)
-public enum  KeyBindingInjector {
+public enum KeyBindingInjector {
     INSTANCE;
 
     @Getter

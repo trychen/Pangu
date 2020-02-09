@@ -89,7 +89,7 @@ public class BlockRegister extends StoredElementRegister<Block, RegBlock> {
     public void registerModel() {
         ItemModelMesher masher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         items.stream()
-                .filter(it -> it.getAnnotation().registerItemBlock())
+                .filter(it -> it.getAnnotation().registerRenderer())
                 .forEach(it -> {
                     try {
                         ModelResourceLocation modelResourceLocation = new ModelResourceLocation(it.getInstance().getRegistryName(), "inventory");

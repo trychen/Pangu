@@ -26,9 +26,6 @@ public class Container extends Component implements Cloneable {
     @Setter
     protected NonNullList<Component> components = NonNullList.create();
 
-    @Getter
-    @Setter
-    protected Component focusedComponent;
 
     @Setter
     protected float offsetX, offsetY;
@@ -79,9 +76,10 @@ public class Container extends Component implements Cloneable {
     }
 
     public Component focus(@Nonnull Component c) {
-        if (getFocusedComponent() != null) getFocusedComponent().setFocused(false);
+        if (getScreen() == null) return c;
+        if (getScreen().getFocusedComponent() != null) getScreen().getFocusedComponent().setFocused(false);
         c.setFocused(true);
-        setFocusedComponent(c);
+        getScreen().setFocusedComponent(c);
         return c;
     }
 
@@ -166,7 +164,7 @@ public class Container extends Component implements Cloneable {
                                 setDebugSelectedComponent(c);
                             }
 
-                            if (c != getFocusedComponent() && c instanceof Focusable) {
+                            if (getScreen() != null && c != getScreen().getFocusedComponent() && c instanceof Focusable) {
                                 focus(c);
                             }
                             c.onMousePressed(mouseButton, mouseX, mouseY);
@@ -235,7 +233,6 @@ public class Container extends Component implements Cloneable {
 
     public void clear() {
         getComponents().clear();
-        setFocusedComponent(null);
         setDebugSelectedComponent(null);
         setDebugMovingComponent(null);
     }

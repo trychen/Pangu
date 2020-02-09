@@ -114,14 +114,7 @@ public enum ToolTipRenderer {
         return 0;
     }
 
-    /**
-     * Display ToolTip, will replace the previous one if exists.
-     * ToolTip text width (from {@code FontRenderer.getStringWidth(String text)})
-     * cannot be longer than 387. If text width is longer than 387, the beyond part
-     * will be cut.
-     */
-    @Bridge(value = "ToolTips", side = Side.CLIENT)
-    public void set(@Nullable EntityPlayer entityPlayer, @Nonnull ToolTip toolTip) {
+    public void display(ToolTip toolTip) {
         text = fixStringWidth(toolTip.getText());
         style = toolTip.getStyle();
         duration = toolTip.getDuration() < 200 && toolTip.isAnimated() ? 200 : duration;

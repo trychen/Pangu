@@ -15,7 +15,7 @@ import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -36,10 +36,7 @@ import java.util.Map;
 public interface BridgeHandler {
     Map<String, Solution> SOLUTIONS = new HashMap<>();
 
-    static boolean send(String key, Object[] objects) {        // 是否在正在运行内置服务器
-        // 是否在正在运行内置服务器
-        if (Sides.isClient() && Games.isIntegratedServer()) return false;
-
+    static boolean send(String key, Object[] objects) {
         Solution solution = SOLUTIONS.get(key);
 
         // 空检测
@@ -51,13 +48,11 @@ public interface BridgeHandler {
         // 检测是否能运行
         if (solution.isContinue()) return false;
 
-        Threads.submit(() -> {
-            try {
-                solution.solve(objects);
-            } catch (Exception e) {
-                PanguCore.getLogger().error("Error while sending @Bridge info", e);
-            }
-        }, solution.isSync());
+        try {
+            solution.solve(objects);
+        } catch (Exception e) {
+            PanguCore.getLogger().error("Error while sending @Bridge info", e);
+        }
 
         return true;
     }
@@ -70,7 +65,8 @@ public interface BridgeHandler {
             try {
                 Bridge bridge = method.getAnnotation(Bridge.class);
 
-                if (bridge.value().isEmpty()) throw new IllegalAccessException("method with @Bridge haven't been hook by asm: " + method.toGenericString());
+                if (bridge.value().isEmpty())
+                    throw new IllegalAccessException("method with @Bridge haven't been hook by asm: " + method.toGenericString());
 
                 Solution solution = new BaseSolution(bridge, method);
 
@@ -80,6 +76,47 @@ public interface BridgeHandler {
                 PanguCore.getLogger().error("Couldn't register message for " + method.toGenericString(), e);
             }
         });
+    }
+
+    @Load
+    static void registerPacket() {
+        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_SERVER_MESSAGE, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_CLIENT_MESSAGE, Side.CLIENT);
+    }
+
+    @AllArgsConstructor
+    enum PacketHandler implements IMessageHandler<Packet, IMessage> {
+        INSTANCE;
+
+        @Override
+        public IMessage onMessage(Packet message, MessageContext ctx) {
+            Solution solution = SOLUTIONS.get(message.getKey());
+
+            // 空检测
+            if (solution == null) {
+                PanguCore.getLogger().error("Couldn't find any solution to handle @Bridge message: " + message.getKey());
+                return null;
+            }
+
+            if (!solution.isSync()) {
+                try {
+                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), message.getBytes());
+                } catch (Exception e) {
+                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
+                }
+                return null;
+            }
+
+            IThreadListener side = Threads.side(solution.side());
+            side.addScheduledTask(() -> {
+                try {
+                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), message.getBytes());
+                } catch (Exception e) {
+                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
+                }
+            });
+            return null;
+        }
     }
 
     interface Solution {
@@ -93,6 +130,8 @@ public interface BridgeHandler {
         boolean isContinue();
 
         boolean isSync();
+
+        Side side();
     }
 
     class BaseSolution implements Solution {
@@ -104,6 +143,8 @@ public interface BridgeHandler {
         private Method method;
         @Getter(lazy = true)
         private final Object ownerInstance = InstanceHolder.getInstance(method.getDeclaringClass());
+        @Getter(lazy = true)
+        private final String[] actualParameterNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
         @Getter
         private boolean withEntityPlayerParameter;
         @Getter
@@ -112,8 +153,6 @@ public interface BridgeHandler {
         private boolean isStatic;
         @Getter
         private MethodAccessor methodAccessor;
-        @Getter(lazy = true)
-        private final String[] actualParameterNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
         @Getter
         private boolean persistenceByParameterOrder;
 
@@ -151,7 +190,7 @@ public interface BridgeHandler {
             byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, persistenceByParameterOrder);
             Packet packet = new Packet(bridge.value(), bytes);
             // 发包
-            if (bridge.side().isClient()){
+            if (side().isClient()) {
                 if (isWithEntityPlayerParameter())
                     PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
                 else
@@ -169,6 +208,11 @@ public interface BridgeHandler {
         @Override
         public boolean isSync() {
             return bridge.sync();
+        }
+
+        @Override
+        public Side side() {
+            return bridge.side();
         }
     }
 
@@ -197,36 +241,6 @@ public interface BridgeHandler {
 
             ByteBufUtils.writeVarInt(buf, bytes.length, 2);
             buf.writeBytes(bytes);
-        }
-    }
-
-    @Load
-    static void registerPacket() {
-        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_SERVER_MESSAGE, Side.SERVER);
-        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_CLIENT_MESSAGE, Side.CLIENT);
-    }
-
-    enum PacketHandler implements IMessageHandler<Packet, IMessage> {
-        INSTANCE;
-        @Override
-        public IMessage onMessage(Packet message, MessageContext ctx) {
-            Solution solution = SOLUTIONS.get(message.getKey());
-
-            // 空检测
-            if (solution == null) {
-                PanguCore.getLogger().error("Couldn't find any solution to handle @Bridge message: " + message.getKey());
-                return null;
-            }
-
-            Threads.submit(() -> {
-                try {
-                    solution.solve(Sides.commonSide().isServer()?ctx.getServerHandler().player:Games.player(), message.getBytes());
-                } catch (Exception e) {
-                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
-                }
-            }, !solution.isSync());
-
-            return null;
         }
     }
 }

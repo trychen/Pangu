@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.client.input;
 
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.annotation.*;
 
@@ -10,6 +12,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@SideOnly(Side.CLIENT)
 public @interface BindKeyPress {
 
     /**

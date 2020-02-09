@@ -1,6 +1,9 @@
 package cn.mccraft.pangu.core.client.render.entity;
 
+import cn.mccraft.pangu.core.loader.RegisteringHandler;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.annotation.*;
 
@@ -15,6 +18,8 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@RegisteringHandler(EntityRenderRegister.class)
+@SideOnly(Side.CLIENT)
 public @interface RegEntityRender {
     Class<? extends Entity> value();
 

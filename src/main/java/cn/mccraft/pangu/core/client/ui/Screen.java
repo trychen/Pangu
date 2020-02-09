@@ -78,6 +78,10 @@ public abstract class Screen extends GuiScreen {
     @Getter
     protected boolean canInput = true, ignoreKeyTypeDelay = false;
 
+    @Getter
+    @Setter
+    protected Component focusedComponent;
+
     public Screen() {
     }
 

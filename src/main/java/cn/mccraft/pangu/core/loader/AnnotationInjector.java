@@ -1,12 +1,16 @@
 package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.asm.util.ASM;
 import cn.mccraft.pangu.core.util.ReflectUtils;
+import cn.mccraft.pangu.core.util.Sides;
 import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModDiscoverer;
+import net.minecraftforge.fml.common.discovery.asm.ModAnnotation;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +23,10 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * auto annotation discover
@@ -30,15 +38,29 @@ public enum AnnotationInjector {
     INSTANCE;
 
     /**
-     * invoke method like "public static void injectAnnotation(ASMDataTable data) ..."
-     * <p>
-     * 带有该注解的方法，必须是可见的，且是静态或者类的实例已存入 {@link InstanceHolder} （即使用了 {@link AutoWired} 的类）
-     *
-     * @since 1.0.2
+     * cached discoverer
      */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    public @interface StaticInvoke {
+    private static ModDiscoverer discoverer;
+    private Set<String> unsafeClass = Collections.EMPTY_SET;
+
+    /**
+     * get {@see Loader#discoverer} by {@link ReflectUtils}
+     * <p>
+     * 通过反射工具类获取 {@see Loader#discoverer}
+     */
+    public static ModDiscoverer getDiscoverer() {
+        if (discoverer == null) {
+            discoverer = ReflectUtils.getField(Loader.class, Loader.instance(), "discoverer", ModDiscoverer.class, true);
+
+            if (discoverer == null)
+                throw new RuntimeException("Unable to get ModDiscoverer to hook annotation, please check SecurityManager to make sure that reflection is enabled");
+            PanguCore.getLogger().debug("Got Loader#discoverer successfully.");
+        }
+        return discoverer;
+    }
+
+    public boolean isSafeClass(ASMDataTable.ASMData check) {
+        return !unsafeClass.contains(check.getClassName());
     }
 
     /**
@@ -51,6 +73,16 @@ public enum AnnotationInjector {
         // 获取 ASMTable
         InstanceHolder.putInstance(getDiscoverer().getASMTable());
         PanguCore.getLogger().debug("Put instance of ASMTable successfully");
+
+        unsafeClass = AnnotationStream.of(SideOnly.class)
+                .parallelStream()
+                .filter(it -> it.getClassName().equals(it.getObjectName()))
+                .filter(it -> {
+                    if (it.getClassName().startsWith("net.minecraft")) return false;
+                    return !((ModAnnotation.EnumHolder) it.getAnnotationInfo().get("value")).getValue().equals(Sides.commonSide().name());
+                })
+                .map(ASMDataTable.ASMData::getClassName)
+                .collect(Collectors.toSet());
 
         val stream = AnnotationStream.of(AutoWired.class);
 
@@ -140,23 +172,14 @@ public enum AnnotationInjector {
     }
 
     /**
-     * cached discoverer
-     */
-    private static ModDiscoverer discoverer;
-
-    /**
-     * get {@see Loader#discoverer} by {@link ReflectUtils}
+     * invoke method like "public static void injectAnnotation(ASMDataTable data) ..."
      * <p>
-     * 通过反射工具类获取 {@see Loader#discoverer}
+     * 带有该注解的方法，必须是可见的，且是静态或者类的实例已存入 {@link InstanceHolder} （即使用了 {@link AutoWired} 的类）
+     *
+     * @since 1.0.2
      */
-    public static ModDiscoverer getDiscoverer() {
-        if (discoverer == null) {
-            discoverer = ReflectUtils.getField(Loader.class, Loader.instance(), "discoverer", ModDiscoverer.class, true);
-
-            if (discoverer == null)
-                throw new RuntimeException("Unable to get ModDiscoverer to hook annotation, please check SecurityManager to make sure that reflection is enabled");
-            PanguCore.getLogger().debug("Got Loader#discoverer successfully.");
-        }
-        return discoverer;
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface StaticInvoke {
     }
 }

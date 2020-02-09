@@ -6,6 +6,7 @@ import com.trychen.bytedatastream.ByteDeserializable;
 import com.trychen.bytedatastream.ByteSerializable;
 import com.trychen.bytedatastream.DataOutput;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -41,6 +42,7 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
     @Getter
     protected String id;
 
+    @Getter
     protected boolean exception = false;
 
     @Getter
@@ -59,12 +61,19 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         this.cachedFilePath = createCachedFilePath();
 
         bufferedImage = EXECUTOR.submit(() -> {
-                if (!cachedFilePath.exists()) {
-                    PanguCore.getLogger().debug("Start fetching image from " + url.toString());
-                    saveImage();
-                    PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
-                } else PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
-                return readImage();
+                try {
+                    if (!cachedFilePath.exists()) {
+                        PanguCore.getLogger().debug("Start fetching image from " + url.toString());
+                        saveImage();
+                        PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
+                    } else
+                        PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
+                    return readImage();
+                } catch (Exception e) {
+                    PanguCore.getLogger().error("Error while fetching or reading image", e);
+                    exception = true;
+                    throw e;
+                }
             });
     }
 

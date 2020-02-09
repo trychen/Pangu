@@ -1,12 +1,17 @@
 package cn.mccraft.pangu.core.client.tooltip;
 
+import cn.mccraft.pangu.core.network.Bridge;
 import com.trychen.bytedatastream.ByteSerialization;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.val;
 import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @Data
@@ -51,6 +56,17 @@ public class ToolTip {
     private boolean animated = true;
 
     public void display(EntityPlayer entityPlayer) {
-        ToolTipRenderer.INSTANCE.set(entityPlayer, this);
+        ToolTip.set(entityPlayer, this);
+    }
+
+    /**
+     * Display ToolTip, will replace the previous one if exists.
+     * ToolTip text width (from {@code FontRenderer.getStringWidth(String text)})
+     * cannot be longer than 387. If text width is longer than 387, the beyond part
+     * will be cut.
+     */
+    @Bridge(value = "ToolTips", side = Side.CLIENT)
+    public static void set(@Nullable EntityPlayer entityPlayer, @Nonnull ToolTip toolTip) {
+        ToolTipRenderer.INSTANCE.display(toolTip);
     }
 }

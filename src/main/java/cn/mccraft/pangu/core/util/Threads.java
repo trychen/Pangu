@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
-public interface  Threads {
+public interface Threads {
     /**
      * Get client side thread listener
      */
@@ -24,11 +24,25 @@ public interface  Threads {
         return FMLServerHandler.instance().getServer();
     }
 
+    static IThreadListener integratedServer() {
+        return Minecraft.getMinecraft().getIntegratedServer();
+    }
+
     /**
      * Get thread listener safely
      */
     static IThreadListener safe() {
         return Sides.isServer() ? server() : client();
+    }
+
+    static IThreadListener side(Side side) {
+        if (Sides.isServer()) {
+            return server();
+        }
+        if (side.isServer()) {
+            return integratedServer();
+        }
+        return client();
     }
 
     /**
