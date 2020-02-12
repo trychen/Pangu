@@ -112,6 +112,7 @@ public abstract class Screen extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (mc == null) return; // 避免提前打开
+        if (rootContainer == null) return; // 避免提前打开
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.BackgroundDrawnEvent(this));
         if (drawDefaultBackground) drawDefaultBackground();
         drawBackground();
