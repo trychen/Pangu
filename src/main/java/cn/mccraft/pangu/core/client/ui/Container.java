@@ -243,6 +243,12 @@ public class Container extends Component implements Cloneable {
     public void drawForeground() {
     }
 
+    public void drawBackground(float partialTicks, int mouseX, int mouseY) {
+    }
+
+    public void drawForeground(float partialTicks, int mouseX, int mouseY) {
+    }
+
     @Override
     public Container setScreen(Screen screen) {
         for (Component component : components) component.setScreen(screen);

@@ -3,7 +3,7 @@ package cn.mccraft.pangu.core.asm.transformer;
 import cn.mccraft.pangu.core.asm.PanguPlugin;
 import cn.mccraft.pangu.core.asm.util.ASM;
 import cn.mccraft.pangu.core.asm.util.ASMHelper;
-import cn.mccraft.pangu.core.asm.util.CommonNoCheckClassWriter;
+import cn.mccraft.pangu.core.asm.util.PanguClassWriter;
 import cn.mccraft.pangu.core.util.Sides;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,9 +16,6 @@ import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.Optional;
 
@@ -98,7 +95,7 @@ public class BridgeTransformer implements IClassTransformer {
             PanguPlugin.getLogger().debug("Hook @Bridge method: " + classNode.name + "#" + method.name + method.desc + "");
         }
         if (!edited) return basicClass;
-        ClassWriter cw = new CommonNoCheckClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassWriter cw = new PanguClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(cw);
         return cw.toByteArray();
     }

@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.util.render;
 
+import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.util.image.TextureProvider;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.lwjgl.opengl.GL11;
 
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -20,7 +22,8 @@ import static org.lwjgl.opengl.GL11.GL_LINEAR;
 
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
-public interface Rect {
+public interface
+Rect {
     int[] ZLEVEL = {0};
 
     static void startDrawing() {
@@ -61,12 +64,12 @@ public interface Rect {
 
     static void bindWithFiltering(ResourceLocation resourceLocation) {
         bind(resourceLocation);
-        textureFiltering();
+        linearFiltering();
     }
 
     static void bindWithFiltering(TextureProvider textureProvider) {
         bind(textureProvider);
-        textureFiltering();
+        linearFiltering();
     }
 
     static void zLevel() {
@@ -85,21 +88,27 @@ public interface Rect {
         GlStateManager.color(1, 1, 1, 1);
     }
 
+    @Deprecated
     static void textureFiltering() {
         linearFiltering();
     }
 
+    static void resetFiltering() {
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_LINEAR);
+    }
+
     static void nearestFiltering() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     static void linearFiltering() {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
     static void linearMipmapLinearFiltering() {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }

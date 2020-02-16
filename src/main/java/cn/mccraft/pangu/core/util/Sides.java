@@ -30,11 +30,12 @@ public interface Sides {
         return group instanceof SidedThreadGroup ? ((SidedThreadGroup) group).getSide() : Sides.commonSide();
     }
 
+    Side COMMON_SIDE = FMLLaunchHandler.side();
     /**
      * Get environment side
      */
     static Side commonSide() {
-        return FMLLaunchHandler.side();
+        return COMMON_SIDE;
     }
     /**
      * Is client environment.
@@ -57,7 +58,7 @@ public interface Sides {
     }
 
     static boolean isDeobfuscatedEnvironment() {
-        return Launch.blackboard.get("fml.deobfuscatedEnvironment") == Boolean.TRUE;
+        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
     }
 
     static void devOnly(Runnable runnable) {

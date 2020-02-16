@@ -31,7 +31,7 @@ public class SimpleButton extends Button {
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         Rect.startDrawing();
         Rect.bind(getTexture());
-        Rect.textureFiltering();
+        Rect.linearFiltering();
         Rect.drawCustomSizeTextured(getX(), getY(), isHovered() ? textureWidth : 0, 0, textureWidth, textureHeight, getWidth(), getHeight());
     }
 }

@@ -30,7 +30,7 @@ public abstract class Screen extends GuiScreen {
 
     @Getter
     @Setter
-    protected boolean drawDefaultBackground = true;
+    protected boolean drawDefaultBackground = true, drawHUD = true;
 
     @Getter
     @Setter
@@ -116,12 +116,14 @@ public abstract class Screen extends GuiScreen {
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.BackgroundDrawnEvent(this));
         if (drawDefaultBackground) drawDefaultBackground();
         drawBackground();
+        drawBackground(partialTicks, mouseX, mouseY);
         if (!canInput && openInputDelay > 0 && openTime != 0) {
             if (Minecraft.getSystemTime() - openTime > openInputDelay) {
                 canInput = true;
             }
         }
         draw();
+        draw(partialTicks, mouseX, mouseY);
         if (getModal() != null){
             rootContainer.onDraw(partialTicks, 0, 0);
             getModal().onDraw(partialTicks, mouseX, mouseY);
@@ -133,11 +135,13 @@ public abstract class Screen extends GuiScreen {
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
         }
         drawForeground();
+        drawForeground(partialTicks, mouseX, mouseY);
         if (getTooltips2Render() != null) {
             List<String> toolTips = getTooltips2Render().getToolTips();
             if (toolTips != null) getTooltips2Render().drawToolTips(toolTips, mouseX, mouseY);
             setTooltips2Render(null);
         }
+//        Rect.resetFiltering();
     }
 
     @Override
@@ -233,6 +237,12 @@ public abstract class Screen extends GuiScreen {
      * Draw background or else
      */
     public void draw() {
+    }
+
+    /**
+     * Draw background or else
+     */
+    public void draw(float partialTicks, int mouseX, int mouseY) {
     }
 
     /**

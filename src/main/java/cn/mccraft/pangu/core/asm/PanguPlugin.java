@@ -24,6 +24,7 @@ public class PanguPlugin implements IFMLLoadingPlugin {
     public String[] getASMTransformerClass() {
         List<String> transformers = new ArrayList<>();
 
+        transformers.add("cn.mccraft.pangu.core.asm.util.ClassManager");
         transformers.add("cn.mccraft.pangu.core.asm.transformer.DevTransformer");
         transformers.add("cn.mccraft.pangu.core.asm.transformer.CheckPrefixTransformer");
         transformers.add("cn.mccraft.pangu.core.asm.transformer.BridgeTransformer");
