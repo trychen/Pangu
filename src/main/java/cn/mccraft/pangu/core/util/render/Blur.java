@@ -126,7 +126,12 @@ public class Blur {
 //            if (!er.isShaderActive()) {
 //                er.loadShader(SHADER_LOCATION);
 //            }
-            if (er.getShaderGroup() == null) return;
+            if (er.getShaderGroup() == null) {
+                PanguCore.getLogger().error("Error while init Blur, empty shader group");
+                active = false;
+                currentBlurData = null;
+                return;
+            }
             try {
                 float progress = getProgress();
                 if (progress == 1) return;
@@ -165,8 +170,8 @@ public class Blur {
         @Deprecated
         int radius() default 0;
 
-        int startColor() default 0x2CFFFFFF;
-        int endColor() default 0x2CFFFFFF;
+        int startColor() default 0x1C000000;
+        int endColor() default 0x1C000000;
 
         int fadeTime() default 200;
     }
