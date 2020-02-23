@@ -43,13 +43,14 @@ public class BridgeTransformer implements IClassTransformer {
             // 获取注解数据
             Map<String, Object> meta = ASM.mapAnnotationValues(optionalAnnotation.get());
 
+            if ((boolean) meta.getOrDefault("hooked", false)) continue;
+            ASM.modifyAnnotation(optionalAnnotation.get(), "hooked", true);
+
             Side side = ASM.mapAnnotationSideValue("side", meta);
+            String key = (String) meta.get("value");
+            boolean also = (boolean) meta.getOrDefault("also", false);
 
             edited = true;
-
-            String key = (String) meta.get("value");
-//            boolean sync = (boolean) meta.getOrDefault("sync", true);
-            boolean also = (boolean) meta.getOrDefault("also", false);
 
             // key 不存在时通过类名方法生成
             if (key == null || key.isEmpty()) {

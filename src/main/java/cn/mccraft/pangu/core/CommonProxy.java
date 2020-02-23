@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core;
 
 import cn.mccraft.pangu.core.loader.*;
+import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
@@ -30,11 +31,11 @@ public class CommonProxy {
      */
 
     public void construction(FMLConstructionEvent event) {
-        AnnotationInjector.INSTANCE.startSolveAutoWireds();
         Proxy.INSTANCE.invoke(event, LoaderState.CONSTRUCTING, Side.SERVER);
     }
 
     public void preInit(FMLPreInitializationEvent event) {
+        AnnotationInjector.INSTANCE.startSolveAutoWireds();
         AnnotationInjector.INSTANCE.startSolveInjectors();
         InstanceHolder.storeAllModInstance();
         Proxy.INSTANCE.invoke(event, LoaderState.PREINITIALIZATION, Side.SERVER);

@@ -87,6 +87,10 @@ public abstract class Screen extends GuiScreen {
 
     @Override
     public void initGui() {
+        if (openInputDelay > 0) {
+            canInput = false;
+            openTime = Minecraft.getSystemTime();
+        }
         halfWidth = width / 2F;
         halfHeight = height / 2F;
 
@@ -124,12 +128,7 @@ public abstract class Screen extends GuiScreen {
         }
         draw();
         draw(partialTicks, mouseX, mouseY);
-        if (getModal() != null){
-            rootContainer.onDraw(partialTicks, 0, 0);
-            getModal().onDraw(partialTicks, mouseX, mouseY);
-        } else {
-            rootContainer.onDraw(partialTicks, mouseX, mouseY);
-        }
+        rootContainer.onDraw(partialTicks, mouseX, mouseY);
         if (isDebug()) {
             Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
@@ -141,7 +140,9 @@ public abstract class Screen extends GuiScreen {
             if (toolTips != null) getTooltips2Render().drawToolTips(toolTips, mouseX, mouseY);
             setTooltips2Render(null);
         }
-//        Rect.resetFiltering();
+        if (getModal() != null){
+            getModal().onDraw(partialTicks, mouseX, mouseY);
+        }
     }
 
     @Override
@@ -200,10 +201,6 @@ public abstract class Screen extends GuiScreen {
     }
 
     public void open(GuiScreen parent) {
-        if (openInputDelay > 0) {
-            canInput = false;
-            openTime = Minecraft.getSystemTime();
-        }
         setParentScreen(parent);
         Minecraft.getMinecraft().displayGuiScreen(this);
     }

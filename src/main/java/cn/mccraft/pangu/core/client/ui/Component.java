@@ -78,35 +78,34 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public void onUpdate(int mouseX, int mouseY) {
-        this.hovered = isHovered(mouseX, mouseY);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
         return mouseX >= this.getX()
                 && mouseY >= this.getY()
-                && mouseX < this.getX() + this.width
-                && mouseY < this.getY() + this.height;
+                && mouseX < this.getX() + this.getWidth()
+                && mouseY < this.getY() + this.getHeight();
     }
 
     public float getX() {
-        if (parent instanceof Container) return getNativeX() + ((Container) parent).getOffsetX();
-        else if (parent instanceof TabContainer) return getNativeX() + parent.getX();
+        if (getParent() instanceof Container) return getNativeX() + ((Container) getParent()).getOffsetX();
+        else if (getParent() instanceof TabContainer) return getNativeX() + getParent().getX();
         return getNativeX();
     }
 
     public float getY() {
-        if (parent instanceof Container) return getNativeY() + ((Container) parent).getOffsetY();
-        else if (parent instanceof TabContainer) return getNativeY() + parent.getY();
+        if (getParent() instanceof Container) return getNativeY() + ((Container) getParent()).getOffsetY();
+        else if (getParent() instanceof TabContainer) return getNativeY() + getParent().getY();
         else return getNativeY();
     }
 
     public float getNativeX() {
-        if (screen != null && screen.centerOrigin) return screen.halfWidth + x;
+        if (getScreen() != null && getScreen().centerOrigin) return getScreen().halfWidth + x;
         return x;
     }
 
     public float getNativeY() {
-        if (screen != null && screen.centerOrigin) return screen.halfHeight + y;
+        if (getScreen() != null && getScreen().centerOrigin) return getScreen().halfHeight + y;
         return y;
     }
 

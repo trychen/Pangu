@@ -3,12 +3,13 @@ package cn.mccraft.pangu.core.client.ui.builtin;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.client.ui.Container;
 import cn.mccraft.pangu.core.client.ui.Screen;
+import cn.mccraft.pangu.core.client.ui.TransformHover;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nonnull;
 
-public class HorizontalScrollingContainer extends HorizontalScrolling {
+public class HorizontalScrollingContainer extends HorizontalScrolling implements TransformHover {
     @Getter
     @Setter
     protected Container container;

@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         mavenCentral()
@@ -64,12 +63,12 @@ configurations {
 }
 
 dependencies {
-    embed ('com.github.trychen:ByteDataStream:1.7') {
+    embed('com.github.trychen:ByteDataStream:1.7') {
         exclude group: 'org.ow2.asm'
         exclude group: 'com.github.Mouse0w0'
     }
-    
-    embed ('com.github.Mouse0w0:FastReflection:1.0.1') {
+
+    embed('com.github.Mouse0w0:FastReflection:1.0.1') {
         exclude group: 'org.ow2.asm'
     }
 
@@ -108,7 +107,7 @@ task deobfJar(type: Jar, dependsOn: 'jar') {
 // because the normal output has been made to be obfuscated
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
-    
+
     classifier = 'sources'
 }
 
@@ -129,7 +128,6 @@ idea.workspace.iws.withXml {
         }
     }
 }
-
 
 uploadArchives {
     repositories {

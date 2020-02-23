@@ -1,12 +1,12 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.Http;
 import cn.mccraft.pangu.core.util.LocalCache;
 import com.trychen.bytedatastream.ByteDeserializable;
 import com.trychen.bytedatastream.ByteSerializable;
 import com.trychen.bytedatastream.DataOutput;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -14,17 +14,22 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.DataInput;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSerializable {
 
-    protected static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactory() {
+    protected static final ExecutorService FETCHER_EXECUTOR = Executors.newFixedThreadPool(5, new ThreadFactory() {
         private ThreadGroup group = new ThreadGroup("Pangu Remote Image Fetcher Threads");
         private int index = 1;
 
@@ -33,88 +38,93 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         }
     });
 
+    protected static final ExecutorService LOADING_EXECUTOR = Executors.newFixedThreadPool(5, new ThreadFactory() {
+        private ThreadGroup group = new ThreadGroup("Pangu Remote Image Fetcher Threads");
+        private int index = 1;
+
+        public Thread newThread(Runnable r) {
+            return new Thread(this.group, r, "Remote Image Thread #" + this.index++);
+        }
+    });
+
+    private static Map<String, RemoteImage> cachedImages = new HashMap();
+
     @Getter
     protected final String urlPath;
-
     @Getter
-    protected final URL url;
-
+    protected final URI url;
     @Getter
     protected String id;
-
     @Getter
-    protected boolean exception = false;
-
+    protected transient boolean exception = true;
     @Getter
     protected File cachedFilePath;
-
     @Getter
     protected DynamicTexture dynamicTexture;
-
     protected Future<BufferedImage> bufferedImage;
     protected ResourceLocation resourceLocation;
 
-    protected RemoteImage(String urlPath) throws MalformedURLException {
+    protected RemoteImage(String urlPath) throws URISyntaxException {
         this.urlPath = urlPath;
-        this.url = new URL(urlPath);
+        this.url = new URI(urlPath);
         this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
         this.cachedFilePath = createCachedFilePath();
+        LocalCache.markFileUsed(cachedFilePath.toPath());
 
-        bufferedImage = EXECUTOR.submit(() -> {
-                try {
-                    if (!cachedFilePath.exists()) {
-                        PanguCore.getLogger().debug("Start fetching image from " + url.toString());
-                        saveImage();
-                        PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
-                    } else
-                        PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
-                    return readImage();
-                } catch (Exception e) {
-                    PanguCore.getLogger().error("Error while fetching or reading image", e);
-                    exception = true;
-                    throw e;
-                }
-            });
+        FETCHER_EXECUTOR.submit(() -> {
+            try {
+                if (!cachedFilePath.exists()) {
+                    PanguCore.getLogger().debug("Start fetching image from " + url.toString());
+                    saveImage();
+                    PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
+                } else
+                    PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
+                exception = false;
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Error while fetching or reading image " + url.toString(), e);
+                exception = true;
+            }
+        });
+    }
+
+    public static RemoteImage deserialize(DataInput out) throws IOException {
+        return of(out.readUTF());
+    }
+
+    public static TextureProvider of(String url, ResourceLocation missingTexture) {
+        RemoteImage image = of(url);
+        if (image == null) return new BuiltinImage(missingTexture);
+        return image;
+    }
+
+    public static RemoteImage of(String url) {
+        RemoteImage remoteImage = cachedImages.get(url);
+        if (remoteImage == null) {
+            try {
+                remoteImage = new RemoteImage(url);
+                cachedImages.put(url, remoteImage);
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Couldn't load remote resourceLocation", e);
+                return null;
+            }
+        }
+        return remoteImage;
     }
 
     @Override
     public ResourceLocation getTexture() {
-        if (!bufferedImage.isDone()) return null;
+        if (resourceLocation != null) return resourceLocation;
         if (exception) return null;
-        if (resourceLocation == null) {
-            LocalCache.markFileUsed(cachedFilePath.toPath());
-            try {
-                resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("pangu_remote_image" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
-            } catch (Exception e) {
-                PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
-                bufferedImage = new Future<BufferedImage>() {
-                    @Override
-                    public boolean cancel(boolean mayInterruptIfRunning) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean isCancelled() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean isDone() {
-                        return false;
-                    }
-
-                    @Override
-                    public BufferedImage get() {
-                        return null;
-                    }
-
-                    @Override
-                    public BufferedImage get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-                        return null;
-                    }
-                };
-                exception = true;
-            }
+        if (bufferedImage == null) {
+            bufferedImage = LOADING_EXECUTOR.submit(this::readImage);
+            return null;
+        }
+        if (!bufferedImage.isDone()) return null;
+        try {
+            resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("pangu_remote_image_" + id, this.dynamicTexture = new DynamicTexture(this.bufferedImage.get()));
+        } catch (Exception e) {
+            PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
+            exception = true;
         }
         return resourceLocation;
     }
@@ -136,7 +146,7 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         if (!bufferedImage.isDone()) return null;
         try {
             return bufferedImage.get();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
     }
@@ -146,55 +156,15 @@ public class RemoteImage implements TextureProvider, ByteDeserializable, ByteSer
         out.writeUTF(urlPath);
     }
 
-    public static RemoteImage deserialize(DataInput out) throws IOException {
-        return of(out.readUTF());
-    }
-
     protected BufferedImage readImage() throws IOException {
         return ImageIO.read(cachedFilePath);
     }
 
     protected void saveImage() throws IOException {
-        DataInputStream dataInputStream = new DataInputStream(url.openStream());
-
-        FileOutputStream fileOutputStream = new FileOutputStream(cachedFilePath);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        byte[] buffer = new byte[1024];
-        int length;
-
-        while ((length = dataInputStream.read(buffer)) > 0) {
-            output.write(buffer, 0, length);
-        }
-        fileOutputStream.write(output.toByteArray());
-        fileOutputStream.flush();
-        dataInputStream.close();
-        fileOutputStream.close();
+        Http.download(url, cachedFilePath);
     }
 
     public File createCachedFilePath() {
         return LocalCache.getCachePath("images", id);
-    }
-
-    private static Map<String, RemoteImage> cachedImages = new HashMap();
-
-    public static TextureProvider of(String url, ResourceLocation missingTexture) {
-        RemoteImage image = of(url);
-        if (image == null) return new BuiltinImage(missingTexture);
-        return image;
-    }
-
-    public static RemoteImage of(String url) {
-        RemoteImage remoteImage = cachedImages.get(url);
-        if (remoteImage == null) {
-            try {
-                remoteImage = new RemoteImage(url);
-                cachedImages.put(url, remoteImage);
-            } catch (Exception e) {
-                PanguCore.getLogger().error("Couldn't load remote resourceLocation",  e);
-                return null;
-            }
-        }
-        return remoteImage;
     }
 }

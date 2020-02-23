@@ -3,13 +3,14 @@ package cn.mccraft.pangu.core.client.ui.builtin;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.client.ui.Container;
 import cn.mccraft.pangu.core.client.ui.Screen;
+import cn.mccraft.pangu.core.client.ui.TransformHover;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nonnull;
 
-public class ScrollingContainer extends Scrolling {
+public class ScrollingContainer extends Scrolling implements TransformHover {
     @Getter
     @Setter
     protected Container container;
