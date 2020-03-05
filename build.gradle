@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'maven'
+//    id 'maven'
     id 'net.ltgt.apt' version '0.10'
 }
 
@@ -129,15 +129,15 @@ idea.workspace.iws.withXml {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
-                authentication(userName: "$clayUsername", password: "$clayPassword")
-            }
-            pom.version = "$project.version"
-            pom.artifactId = "$project.name"
-            pom.groupId = "$project.group"
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
+//                authentication(userName: "$clayUsername", password: "$clayPassword")
+//            }
+//            pom.version = "$project.version"
+//            pom.artifactId = "$project.name"
+//            pom.groupId = "$project.group"
+//        }
+//    }
+//}

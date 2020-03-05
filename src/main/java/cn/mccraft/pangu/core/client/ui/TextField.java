@@ -3,11 +3,7 @@ package cn.mccraft.pangu.core.client.ui;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.font.FontProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.GuiScreen;
@@ -18,11 +14,21 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.function.Predicate;
+
 @Accessors(chain = true)
 public class TextField extends Component implements Focusable {
     @Getter
     @Setter
     protected FontProvider font = DefaultFontProvider.INSTANCE;
+
+    @Getter
+    @Setter
+    protected int fontColor = 0xFFE0E0E0;
+
+    @Getter
+    @Setter
+    protected boolean fontShadow = true;
 
     @Getter
     @Setter
@@ -53,7 +59,7 @@ public class TextField extends Component implements Focusable {
     @Getter
     @Setter
     /** Called to check if the text is valid */
-    protected Predicate<String> validator = Predicates.alwaysTrue();
+    protected Predicate<String> validator = s -> true;
 
     @Getter
     @Setter
@@ -197,7 +203,7 @@ public class TextField extends Component implements Focusable {
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         drawBackground();
-        int fontColor = this.isDisabled() ? 7368816 : 14737632;
+        int color = this.isDisabled() ? 0xFF707070 : getFontColor();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         String text2Render = font.trimStringToWidth(this.text.substring(this.lineScrollOffset), (int) this.getWidth(), false);
@@ -213,7 +219,7 @@ public class TextField extends Component implements Focusable {
 
         if (!text2Render.isEmpty()) {
             String s1 = flag ? text2Render.substring(0, j) : text2Render;
-            j1 = font.drawStringWithShadow(s1, l, i1, fontColor);
+            j1 = font.drawString(s1, l, i1, color, isFontShadow());
         }
 
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -227,14 +233,14 @@ public class TextField extends Component implements Focusable {
         }
 
         if (!text2Render.isEmpty() && flag && j < text2Render.length()) {
-            j1 = font.drawStringWithShadow(text2Render.substring(j), j1, i1, fontColor);
+            j1 = font.drawStringWithShadow(text2Render.substring(j), j1, i1, color);
         }
 
         if (flag1) {
             if (flag2) {
                 Rect.draw(k1, i1 - 1, k1 + 1, i1 + 1 + font.getFontHeight(), -3092272);
             } else {
-                font.drawStringWithShadow("_", k1, i1, fontColor);
+                font.drawStringWithShadow("_", k1, i1, color);
             }
         }
 
@@ -336,7 +342,7 @@ public class TextField extends Component implements Focusable {
             s = s + this.text.substring(j);
         }
 
-        if (this.validator.apply(s)) {
+        if (this.validator.test(s)) {
             if (textChangeEvent == null || textChangeEvent.onTextChange(s, this.text)) {
                 this.text = s;
                 this.moveCursorBy(i - this.selectionEnd + l);
@@ -452,7 +458,7 @@ public class TextField extends Component implements Focusable {
                     s = s + this.text.substring(j);
                 }
 
-                if (this.validator.apply(s)) {
+                if (this.validator.test(s)) {
                     this.text = s;
 
                     if (flag) {

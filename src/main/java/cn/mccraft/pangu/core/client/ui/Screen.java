@@ -117,32 +117,53 @@ public abstract class Screen extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (mc == null) return; // 避免提前打开
         if (rootContainer == null) return; // 避免提前打开
+
+        // 触发事件
         MinecraftForge.EVENT_BUS.post(new GuiScreenEvent.BackgroundDrawnEvent(this));
+
+        // 画默认背景
         if (drawDefaultBackground) drawDefaultBackground();
+
+        boolean hasModal = getModal() != null;
+
+        int contentMouseX = hasModal ? Integer.MAX_VALUE : mouseX;
+        int contentMouseY = hasModal ? Integer.MAX_VALUE : mouseY;
+
+        // 画背景
         drawBackground();
-        drawBackground(partialTicks, mouseX, mouseY);
+        drawBackground(partialTicks, contentMouseX, contentMouseY);
+
         if (!canInput && openInputDelay > 0 && openTime != 0) {
             if (Minecraft.getSystemTime() - openTime > openInputDelay) {
                 canInput = true;
             }
         }
         draw();
-        draw(partialTicks, mouseX, mouseY);
-        rootContainer.onDraw(partialTicks, mouseX, mouseY);
+        draw(partialTicks, contentMouseX, contentMouseY);
+        rootContainer.onDraw(partialTicks, contentMouseX, contentMouseY);
+
+        // 画调试的中线框
         if (isDebug()) {
             Rect.draw(halfWidth, 0, halfWidth + 1 , height, 0xAA00FF00);
             Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
         }
+
         drawForeground();
-        drawForeground(partialTicks, mouseX, mouseY);
+        drawForeground(partialTicks, contentMouseX, contentMouseY);
+
+        if (hasModal){
+            getModal().drawBackground(partialTicks, mouseX, mouseY);
+            getModal().onDraw(partialTicks, mouseX, mouseY);
+            getModal().drawForeground(partialTicks, mouseX, mouseY);
+        }
+
         if (getTooltips2Render() != null) {
             List<String> toolTips = getTooltips2Render().getToolTips();
             if (toolTips != null) getTooltips2Render().drawToolTips(toolTips, mouseX, mouseY);
             setTooltips2Render(null);
         }
-        if (getModal() != null){
-            getModal().onDraw(partialTicks, mouseX, mouseY);
-        }
+
+        Rect.resetFiltering();
     }
 
     @Override

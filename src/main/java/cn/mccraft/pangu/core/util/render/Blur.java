@@ -102,10 +102,9 @@ public class Blur {
             }
         }
 
-        if (!include) active = false;
+        active = include;
 
         if (!er.isShaderActive() && include) {
-            active = true;
             start = System.currentTimeMillis();
             er.loadShader(SHADER_LOCATION);
             PanguCore.getLogger().debug("Enabled blur shader for gui " + event.getGui());
@@ -133,6 +132,7 @@ public class Blur {
                 return;
             }
             try {
+                if (!er.isShaderActive()) return;
                 float progress = getProgress();
                 if (progress == 1) return;
                 @SuppressWarnings("unchecked")
