@@ -3,6 +3,7 @@ package cn.mccraft.pangu.core.client.render.entity;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationRegister;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
+import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.util.ReflectUtils;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
+@AutoWired
 public class EntityRenderRegister implements AnnotationRegister<RegEntityRender, Object> {
     @Override
     public void registerClass(Class<? extends Object> clazz, RegEntityRender meta, String domain) {
