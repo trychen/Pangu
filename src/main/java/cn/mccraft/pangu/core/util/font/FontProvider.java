@@ -29,7 +29,7 @@ public interface FontProvider {
     }
 
     default int drawCenteredString(String text, float x, float y, int color, boolean shadow) {
-        float half = getStringWidth(text) / 2;
+        float half = getStringWidth(text) / 2F;
         return drawString(text, x - half, y, color, shadow);
     }
 

@@ -9,15 +9,12 @@ import javax.imageio.ImageIO;
 import java.io.File;
 
 public interface TextureProvider {
-    ResourceLocation getTexture();
-    ResourceLocation getTexture(ResourceLocation loading);
-    ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error);
-
-    int[] ID = new int[] {0};
+    int[] ID = new int[]{0};
 
     static TextureProvider of(String path, ResourceLocation missing) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
-            return RemoteImage.of(path, missing);
+            if (path.endsWith(".gif")) return RemoteGif.of(path, missing);
+            else return RemoteImage.of(path, missing);
         } else if (path.startsWith("location:")) {
             return new BuiltinImage(new ResourceLocation(path.substring(9)));
         } else if (path.startsWith("file:")) {
@@ -33,8 +30,20 @@ public interface TextureProvider {
                     PanguCore.getLogger().error("error while loading image from file " + path, e);
                 }
             }
+        } else if (path.startsWith("gif:")) {
+            return new BuiltinGif(new ResourceLocation(path.substring("gif:".length())));
         }
 
         return new BuiltinImage(path);
     }
+
+    default ResourceLocation getTexture() {
+        return getTexture(null, null);
+    }
+
+    default ResourceLocation getTexture(ResourceLocation loading) {
+        return getTexture(loading, loading);
+    }
+
+    ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error);
 }

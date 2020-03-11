@@ -96,6 +96,7 @@ public class Container extends Component implements Cloneable {
     @SideOnly(Side.CLIENT)
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         drawBackground();
+        drawBackground(partialTicks, mouseX, mouseY);
         if (getScreen() != null && getScreen().isDebug() && getDebugMovingComponent() != null) {
             getDebugMovingComponent().setPosition(mouseX + getDebugMovingComponentOffsetX(), mouseY + getDebugMovingComponentOffsetY());
         }
@@ -130,6 +131,7 @@ public class Container extends Component implements Cloneable {
 
 
         drawForeground();
+        drawForeground(partialTicks, mouseX, mouseY);
 
         // draw tooltips
         if (isHovered() && hoveredComponent != null) {

@@ -36,6 +36,13 @@ public class TextField extends Component implements Focusable {
 
     @Getter
     @Setter
+    protected String placeHolder = "";
+    @Getter
+    @Setter
+    protected int placeHolderColor = 0x9AE0E0E0;
+
+    @Getter
+    @Setter
     protected int maxStringLength = 32;
 
     @Getter
@@ -77,12 +84,10 @@ public class TextField extends Component implements Focusable {
 
     @Override
     public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
-        if (isFocused() && mouseButton == 0)
-        {
+        if (isFocused() && mouseButton == 0) {
             int i = (int) (mouseX - getX());
 
-            if (this.enableBackgroundDrawing)
-            {
+            if (this.enableBackgroundDrawing) {
                 i -= 4;
             }
 
@@ -191,7 +196,6 @@ public class TextField extends Component implements Focusable {
 
                 break;
             default:
-
                 if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
                     if (!isDisabled()) {
                         this.writeText(Character.toString(typedChar));
@@ -209,44 +213,46 @@ public class TextField extends Component implements Focusable {
         String text2Render = font.trimStringToWidth(this.text.substring(this.lineScrollOffset), (int) this.getWidth(), false);
         boolean flag = j >= 0 && j <= text2Render.length();
         boolean flag1 = this.isFocused() && this.cursorCounter / 6 % 2 == 0 && flag;
-        float l = this.enableBackgroundDrawing ? getX() + 4 : getX();
-        float i1 = this.enableBackgroundDrawing ? getY() + (this.height - 8) / 2 : getY();
-        float j1 = l;
+        float fontStartX = this.enableBackgroundDrawing ? getX() + 4 : getX();
+        float fontStartY = this.enableBackgroundDrawing ? getY() + (this.height - 8) / 2 : getY();
+        float currentX = fontStartX;
 
         if (k > text2Render.length()) {
             k = text2Render.length();
         }
 
         if (!text2Render.isEmpty()) {
-            String s1 = flag ? text2Render.substring(0, j) : text2Render;
-            j1 = font.drawString(s1, l, i1, color, isFontShadow());
+            String startRenderText = flag ? text2Render.substring(0, j) : text2Render;
+            currentX = font.drawString(startRenderText, fontStartX, fontStartY, color, isFontShadow());
+        } else if (!isFocused() && !placeHolder.isEmpty()) {
+            font.drawString(placeHolder, fontStartX, fontStartY, placeHolderColor, false);
         }
 
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
-        float k1 = j1;
+        float k1 = currentX;
 
         if (!flag) {
-            k1 = j > 0 ? l + this.width : l;
+            k1 = j > 0 ? fontStartX + this.width : fontStartX;
         } else if (flag2) {
-            k1 = j1 - 1;
-            --j1;
+            k1 = currentX - 1;
+            --currentX;
         }
 
         if (!text2Render.isEmpty() && flag && j < text2Render.length()) {
-            j1 = font.drawStringWithShadow(text2Render.substring(j), j1, i1, color);
+            currentX = font.drawString(text2Render.substring(j), currentX, fontStartY, color, isFontShadow());
         }
 
         if (flag1) {
             if (flag2) {
-                Rect.draw(k1, i1 - 1, k1 + 1, i1 + 1 + font.getFontHeight(), -3092272);
+                Rect.draw(k1, fontStartY - 1, k1 + 1, fontStartY + 1 + font.getFontHeight(), -3092272);
             } else {
-                font.drawStringWithShadow("_", k1, i1, color);
+                font.drawString("_", k1, fontStartY, color, isFontShadow());
             }
         }
 
         if (k != j) {
-            float l1 = l + font.getStringWidth(text2Render.substring(0, k));
-            this.drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + font.getFontHeight());
+            float l1 = fontStartX + font.getStringWidth(text2Render.substring(0, k));
+            this.drawSelectionBox(k1, fontStartY - 1, l1 - 1, fontStartY + 1 + font.getFontHeight());
         }
     }
 
@@ -261,6 +267,7 @@ public class TextField extends Component implements Focusable {
      * Draws the blue selection box.
      */
     protected void drawSelectionBox(float startX, float startY, float endX, float endY) {
+        int z = Rect.ZLEVEL[0];
         if (startX < endX) {
             float i = startX;
             startX = endX;
@@ -288,10 +295,10 @@ public class TextField extends Component implements Focusable {
         GlStateManager.enableColorLogic();
         GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos((double) startX, (double) endY, 0.0D).endVertex();
-        bufferbuilder.pos((double) endX, (double) endY, 0.0D).endVertex();
-        bufferbuilder.pos((double) endX, (double) startY, 0.0D).endVertex();
-        bufferbuilder.pos((double) startX, (double) startY, 0.0D).endVertex();
+        bufferbuilder.pos(startX, endY, z).endVertex();
+        bufferbuilder.pos(endX, endY, z).endVertex();
+        bufferbuilder.pos(endX, startY, z).endVertex();
+        bufferbuilder.pos(startX, startY, z).endVertex();
         tessellator.draw();
         GlStateManager.disableColorLogic();
         GlStateManager.enableTexture2D();
@@ -517,6 +524,7 @@ public class TextField extends Component implements Focusable {
 
         return i;
     }
+
     @FunctionalInterface
     public interface TextChangeEvent {
         boolean onTextChange(String newText, String oldText);

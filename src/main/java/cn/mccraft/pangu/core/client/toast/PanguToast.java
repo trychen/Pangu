@@ -51,11 +51,14 @@ public class PanguToast implements IToast {
     }
 
     protected void drawIcon(GuiToast toastGui, long delta) {
+        info.getStyle().draw();
         if (info.getItemStacks() != null && !info.getItemStacks().isEmpty()) {
             RenderHelper.enableGUIStandardItemLighting();
             toastGui.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(null, this.info.getItemStacks().get((int) (delta * (long) this.info.getItemStacks().size() / 5000L % (long) this.info.getItemStacks().size())), 8, 8);
+        } else if (info.getImageIcon() != null) {
+            Rect.bind(info.getImageIcon());
+            Rect.drawFullTexTextured(6, 6, 20, 20);
         } else {
-            info.getStyle().draw();
             info.getIcon().draw(6, 6);
         }
     }

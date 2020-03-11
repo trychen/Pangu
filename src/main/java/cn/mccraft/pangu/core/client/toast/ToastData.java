@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.toast;
 
+import cn.mccraft.pangu.core.util.image.TextureProvider;
 import com.trychen.bytedatastream.ByteDeserializable;
 import com.trychen.bytedatastream.ByteSerializable;
 import com.trychen.bytedatastream.DataInput;
@@ -27,6 +28,7 @@ public class ToastData implements ByteSerializable, ByteDeserializable {
     private List<ItemStack> itemStacks = new ArrayList<>();
     private boolean progress = false;
     private boolean isCustomProgress = false;
+    private TextureProvider imageIcon;
 
     @Override
     public void serialize(DataOutput dataOutput) throws IOException {

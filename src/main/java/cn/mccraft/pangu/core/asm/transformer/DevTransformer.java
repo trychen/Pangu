@@ -6,7 +6,9 @@ import cn.mccraft.pangu.core.asm.util.LambdaGatherer;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import cn.mccraft.pangu.core.asm.util.PanguClassWriter;
 import cn.mccraft.pangu.core.util.Sides;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.common.FMLLog;
@@ -27,7 +29,7 @@ public class DevTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (isDevMode) return basicClass;
-
+        AtomicBoolean edited = new AtomicBoolean(false);
         ClassNode classNode = ASMHelper.newClassNode(basicClass);
 
         if (isDevOnly(classNode.invisibleAnnotations)) {
@@ -35,7 +37,14 @@ public class DevTransformer implements IClassTransformer {
         }
 
         // remove fields
-        classNode.fields.removeIf(field -> isDevOnly(field.visibleAnnotations));
+        classNode.fields.removeIf(field -> {
+            if (isDevOnly(field.visibleAnnotations)) {
+                edited.set(true);
+                return true;
+            } else {
+                return false;
+            }
+        });
 
         // remove methods
         LambdaGatherer lambdaGatherer = new LambdaGatherer();
@@ -43,6 +52,7 @@ public class DevTransformer implements IClassTransformer {
         while (methods.hasNext()) {
             MethodNode method = methods.next();
             if (isDevOnly(method.visibleAnnotations)) {
+                edited.set(true);
                 methods.remove();
                 lambdaGatherer.accept(method);
             }
@@ -51,12 +61,20 @@ public class DevTransformer implements IClassTransformer {
         // remove dynamic lambda methods that are inside of removed methods
         List<Handle> dynamicLambdaHandles = lambdaGatherer.getDynamicLambdaHandles();
         if (!dynamicLambdaHandles.isEmpty()) {
-            classNode.methods.forEach(method -> dynamicLambdaHandles.removeIf(dynamicLambdaHandle -> method.name.equals(dynamicLambdaHandle.getName()) && method.desc.equals(dynamicLambdaHandle.getDesc())));
+            classNode.methods.forEach(method -> dynamicLambdaHandles.removeIf(dynamicLambdaHandle -> {
+                if (method.name.equals(dynamicLambdaHandle.getName()) && method.desc.equals(dynamicLambdaHandle.getDesc())) {
+                    edited.set(true);
+                    return true;
+                }
+                return false;
+            }));
         }
-
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classNode.accept(writer);
-        return writer.toByteArray();
+        if (edited.get()) {
+            ClassWriter writer = new PanguClassWriter(ClassWriter.COMPUTE_MAXS);
+            classNode.accept(writer);
+            return writer.toByteArray();
+        }
+        return basicClass;
     }
 
     /**

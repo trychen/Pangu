@@ -62,6 +62,14 @@ Rect {
         if (texture != null) bind(texture);
     }
 
+    static void bind(ResourceLocation texture, ResourceLocation defaultTexture) {
+        if (texture == null) {
+            bind(defaultTexture);
+            return;
+        }
+        bind(texture);
+    }
+
     static void bindWithFiltering(ResourceLocation resourceLocation) {
         bind(resourceLocation);
         linearFiltering();
