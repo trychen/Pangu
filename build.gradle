@@ -11,7 +11,6 @@ buildscript {
 }
 
 plugins {
-    id 'maven'
     id 'net.ltgt.apt' version '0.10'
 }
 
@@ -129,19 +128,6 @@ idea.workspace.iws.withXml {
         if (mainClass == 'GradleStart' || mainClass == 'GradleStartServer') {
             def jvmArg = String.join(' ', ['-Dfml.coreMods.load=' + mod_core_plugin])
             it.option.find({ it.@name == 'VM_PARAMETERS' }).@value = jvmArg
-        }
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
-                authentication(userName: "$clayUsername", password: "$clayPassword")
-            }
-            pom.version = "$project.version"
-            pom.artifactId = "$project.name"
-            pom.groupId = "$project.group"
         }
     }
 }
