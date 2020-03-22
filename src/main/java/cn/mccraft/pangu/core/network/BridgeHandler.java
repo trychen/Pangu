@@ -68,6 +68,10 @@ public interface BridgeHandler {
                 if (bridge.value().isEmpty())
                     throw new IllegalAccessException("method with @Bridge haven't been hook by asm: " + method.toGenericString());
 
+                if (SOLUTIONS.containsKey(bridge.value())) {
+                    throw new IllegalAccessException("@Bridge with " + bridge.value() + " has already exists, try to change a key for " + method.toGenericString());
+                }
+
                 Solution solution = new BaseSolution(bridge, method);
 
                 SOLUTIONS.put(bridge.value(), solution);

@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-//    id 'maven'
+    id 'maven'
     id 'net.ltgt.apt' version '0.10'
 }
 
@@ -79,9 +79,13 @@ dependencies {
 }
 
 // Either Forge and Project required Java 8
-sourceCompatibility = targetCompatibility = '1.8'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 jar {
@@ -129,15 +133,15 @@ idea.workspace.iws.withXml {
     }
 }
 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
-//                authentication(userName: "$clayUsername", password: "$clayPassword")
-//            }
-//            pom.version = "$project.version"
-//            pom.artifactId = "$project.name"
-//            pom.groupId = "$project.group"
-//        }
-//    }
-//}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://maven.mineclay.cn/repository/zhuapublic-release/") {
+                authentication(userName: "$clayUsername", password: "$clayPassword")
+            }
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
+        }
+    }
+}

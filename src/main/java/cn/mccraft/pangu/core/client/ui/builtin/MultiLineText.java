@@ -49,7 +49,7 @@ public class MultiLineText extends Component {
     }
 
     public MultiLineText setContent(List<String> content) {
-        this.content = UI.resizeStringList(content, (int) width);
+        this.content = UI.resizeStringList(font, content, (int) width);
         return this;
     }
 }
