@@ -338,24 +338,24 @@ public class StringRenderer implements FontProvider {
     /**
      * Trim a string so that it fits in the specified width when rendered, optionally reversing the string
      *
-     * @param str     the String to trim
+     * @param text    the String to trim
      * @param width   the desired string width (in GUI coordinate system)
      * @param reverse if true, the returned string will also be reversed
      * @return the trimmed and optionally reversed string
      */
     @SuppressWarnings("unused")
-    public String trimStringToWidth(String str, int width, boolean reverse) {
+    public String trimStringToWidth(String text, int width, boolean reverse) {
         if (reverse)
-            str = new StringBuilder(str).reverse().toString();
+            text = new StringBuilder(text).reverse().toString();
 
-        int length = sizeString(str, width, true);
-        str = str.substring(0, length);
+        int length = sizeString(text, width, false);
+        text = text.substring(0, length);
 
         if (reverse) {
-            str = (new StringBuilder(str)).reverse().toString();
+            text = (new StringBuilder(text)).reverse().toString();
         }
 
-        return str;
+        return text;
     }
 
     /**

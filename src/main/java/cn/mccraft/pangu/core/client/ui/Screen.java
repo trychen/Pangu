@@ -152,9 +152,7 @@ public abstract class Screen extends GuiScreen {
         drawForeground(partialTicks, contentMouseX, contentMouseY);
 
         if (hasModal){
-            getModal().drawBackground(partialTicks, mouseX, mouseY);
             getModal().onDraw(partialTicks, mouseX, mouseY);
-            getModal().drawForeground(partialTicks, mouseX, mouseY);
         }
 
         if (getTooltips2Render() != null) {

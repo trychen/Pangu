@@ -1,13 +1,17 @@
 package cn.mccraft.pangu.core.util.data.builtin;
 
+import com.google.gson.*;
 import com.trychen.bytedatastream.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
-public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeserializer<ItemStack> {
+public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeserializer<ItemStack>, JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
     INSTANCE;
 
     @Override
@@ -41,5 +45,40 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
             itemstack.setTagCompound(NBTSerializer.INSTANCE.deserialize(in));
             return itemstack;
         }
+    }
+
+    @Override
+    public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject element = json.getAsJsonObject();
+
+        short id = element.get("id").getAsShort();
+        if (id < 0) {
+            return ItemStack.EMPTY;
+        }
+        int amount = element.get("amount").getAsByte();
+        int meta = element.get("meta").getAsShort();
+        ItemStack itemstack = new ItemStack(Item.getItemById(id), amount, meta);
+
+        return itemstack;
+    }
+
+    @Override
+    public JsonElement serialize(ItemStack src, Type type, JsonSerializationContext context) {
+        Map<String, Object> map = new HashMap<>();
+        if (src.isEmpty()) {
+            map.put("id", -1);
+        } else {
+            map.put("id", Item.getIdFromItem(src.getItem()));
+            map.put("amount", src.getCount());
+            map.put("meta", src.getMetadata());
+
+            NBTTagCompound nbttagcompound = null;
+
+            if (src.getItem().isDamageable() || src.getItem().getShareTag()) {
+                nbttagcompound = src.getItem().getNBTShareTag(src);
+            } else nbttagcompound = new NBTTagCompound();
+            map.put("nbt", nbttagcompound);
+        }
+        return context.serialize(map);
     }
 }

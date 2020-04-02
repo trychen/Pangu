@@ -64,17 +64,15 @@ public interface UI {
     }
 
     static List<String> resizeStringList(FontProvider font, List<String> lines, int maxTextLength) {
+        if (maxTextLength <= 0) return lines;
         List<ITextComponent> ret = new ArrayList<>();
         for (String line : lines) {
             if (line == null) {
-                ret.add(null);
+                ret.add(new TextComponentString(""));
                 continue;
             }
 
-            ITextComponent chat = ForgeHooks.newChatWithLinks(line, false);
-            if (maxTextLength >= 0) {
-                ret.addAll(splitText(chat, maxTextLength, font, false, true));
-            }
+            ret.addAll(splitText(new TextComponentString(line), maxTextLength, font, false, true));
         }
         return ret.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }
@@ -83,10 +81,20 @@ public interface UI {
         return !forceColor && !Minecraft.getMinecraft().gameSettings.chatColours ? TextFormatting.getTextWithoutFormattingCodes(text) : text;
     }
 
-    static List<ITextComponent> splitText(ITextComponent textComponent, int maxTextLenght, FontProvider font, boolean p_178908_3_, boolean forceTextColor) {
+    static List<ITextComponent> splitText(ITextComponent textComponent, int maxTextLength, FontProvider font, boolean p_178908_3_, boolean forceTextColor) {
+//        List<ITextComponent> result = Lists.newArrayList(textComponent);
+//        for (int i = 0; i < result.size(); i++) {
+//            ITextComponent current = result.get(i);
+//            String plain = current.getUnformattedComponentText();
+//
+//            if (plain.contains("\n")) {
+//
+//            }
+//        }
+
         int i = 0;
         ITextComponent itextcomponent = new TextComponentString("");
-        List<ITextComponent> list = Lists.<ITextComponent>newArrayList();
+        List<ITextComponent> list = Lists.newArrayList();
         List<ITextComponent> list1 = Lists.newArrayList(textComponent);
 
         for (int j = 0; j < list1.size(); ++j) {
@@ -110,8 +118,8 @@ public interface UI {
             TextComponentString textcomponentstring = new TextComponentString(s5);
             textcomponentstring.setStyle(itextcomponent1.getStyle().createShallowCopy());
 
-            if (i + i1 > maxTextLenght) {
-                String s2 = font.trimStringToWidth(s4, maxTextLenght - i, false);
+            if (i + i1 > maxTextLength) {
+                String s2 = font.trimStringToWidth(s4, maxTextLength - i, false);
                 String s3 = s2.length() < s4.length() ? s4.substring(s2.length()) : null;
 
                 if (s3 != null && !s3.isEmpty()) {
@@ -143,7 +151,7 @@ public interface UI {
                 flag = true;
             }
 
-            if (i + i1 <= maxTextLenght) {
+            if (i + i1 <= maxTextLength) {
                 i += i1;
                 itextcomponent.appendSibling(textcomponentstring);
             } else {

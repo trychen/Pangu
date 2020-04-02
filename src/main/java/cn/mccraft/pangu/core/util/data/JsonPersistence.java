@@ -2,12 +2,14 @@ package cn.mccraft.pangu.core.util.data;
 
 import cn.mccraft.pangu.core.loader.AutoWired;
 import cn.mccraft.pangu.core.loader.Load;
-import cn.mccraft.pangu.core.util.image.RemoteImage;
+import cn.mccraft.pangu.core.util.data.builtin.ItemStackSerializer;
+import cn.mccraft.pangu.core.util.data.builtin.NBTSerializer;
 import com.google.gson.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -26,6 +28,8 @@ public enum JsonPersistence implements Persistence {
     @Load
     public void createGsonInstance() {
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(ItemStack.class, ItemStackSerializer.INSTANCE);
+        builder.registerTypeAdapter(NBTTagCompound.class, NBTSerializer.INSTANCE);
         MinecraftForge.EVENT_BUS.post(new GsonCreateEvent(builder));
         this.gson = builder.create();
     }
