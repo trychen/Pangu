@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.trychen.bytedatastream.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
@@ -55,11 +57,19 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
         if (id < 0) {
             return ItemStack.EMPTY;
         }
-        int amount = element.get("amount").getAsByte();
-        int meta = element.get("meta").getAsShort();
-        ItemStack itemstack = new ItemStack(Item.getItemById(id), amount, meta);
+        int amount = element.has("amount") ? element.get("amount").getAsByte() : 1;
+        int meta = element.has("meta") ? element.get("meta").getAsShort() : 0;
+        ItemStack itemStack = new ItemStack(Item.getItemById(id), amount, meta);
 
-        return itemstack;
+        if (element.has("nbt"))
+            itemStack.setTagCompound(context.deserialize(element.get("nbt"), NBTTagCompound.class));
+        if (element.has("nbt-json")) try {
+            itemStack.setTagCompound(JsonToNBT.getTagFromJson(element.getAsJsonObject("nbt-json").toString()));
+        } catch (NBTException e) {
+            e.printStackTrace();
+        }
+
+        return itemStack;
     }
 
     @Override
@@ -72,12 +82,11 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
             map.put("amount", src.getCount());
             map.put("meta", src.getMetadata());
 
-            NBTTagCompound nbttagcompound = null;
-
+            NBTTagCompound nbt = null;
             if (src.getItem().isDamageable() || src.getItem().getShareTag()) {
-                nbttagcompound = src.getItem().getNBTShareTag(src);
-            } else nbttagcompound = new NBTTagCompound();
-            map.put("nbt", nbttagcompound);
+                nbt = src.getItem().getNBTShareTag(src);
+                map.put("nbt", nbt);
+            }
         }
         return context.serialize(map);
     }

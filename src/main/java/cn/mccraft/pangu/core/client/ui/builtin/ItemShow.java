@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
+import cn.mccraft.pangu.core.client.ui.Button;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.util.ToolTips;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
@@ -8,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class ItemShow extends Component {
+public abstract class ItemShow extends Button {
     public ItemShow() {
         width = 16;
         height = 16;

@@ -29,9 +29,12 @@ public abstract class Button extends Component {
     @Getter
     protected Consumer<ButtonClickEvent> buttonClickEvent;
 
+    public Button() {
+        super();
+    }
 
     public Button(float width, float height) {
-        super();
+        this();
         setSize(width, height);
     }
 
@@ -81,6 +84,7 @@ public abstract class Button extends Component {
     public interface ClickEvent {
         void onClick(int mouseButton, int mouseX, int mouseY);
     }
+
     public Button onButtonClick(Consumer<ButtonClickEvent> consumer) {
         buttonClickEvent = consumer;
         return this;

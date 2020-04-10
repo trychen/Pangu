@@ -87,4 +87,8 @@ public enum JsonPersistence implements Persistence {
         @Setter
         private GsonBuilder builder;
     }
+
+    public Gson getGson() {
+        return gson;
+    }
 }

@@ -7,14 +7,12 @@ import com.trychen.bytedatastream.ByteSerializer;
 import com.trychen.bytedatastream.DataInput;
 import com.trychen.bytedatastream.DataOutput;
 import io.netty.handler.codec.EncoderException;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagEnd;
+import net.minecraft.nbt.*;
 
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.Base64;
 import java.util.List;
 
 public enum NBTSerializer implements ByteSerializer<NBTTagCompound>, ByteDeserializer<NBTTagCompound>, JsonSerializer<NBTTagCompound>, JsonDeserializer<NBTTagCompound> {
@@ -40,9 +38,9 @@ public enum NBTSerializer implements ByteSerializer<NBTTagCompound>, ByteDeseria
 
     @Override
     public NBTTagCompound deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        byte[] raw = context.deserialize(json, new TypeToken<byte[]>(){}.getType());
-        ByteArrayInputStream stream = new ByteArrayInputStream(raw);
         try {
+            byte[] raw = Base64.getDecoder().decode(json.getAsString());
+            ByteArrayInputStream stream = new ByteArrayInputStream(raw);
             return CompressedStreamTools.read(new DataInputStream(stream), new NBTSizeTracker(2097152L));
         } catch (IOException ioexception) {
             throw new EncoderException(ioexception);
@@ -54,7 +52,7 @@ public enum NBTSerializer implements ByteSerializer<NBTTagCompound>, ByteDeseria
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             CompressedStreamTools.write(src, new DataOutputStream(stream));
-            return context.serialize(stream.toByteArray());
+            return new JsonPrimitive(Base64.getEncoder().encodeToString(stream.toByteArray()));
         } catch (IOException ioexception) {
             throw new EncoderException(ioexception);
         }

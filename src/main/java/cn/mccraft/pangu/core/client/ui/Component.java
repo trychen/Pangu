@@ -35,6 +35,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     protected int zLevel = 100;
 
     @Getter
+    @Setter
     protected float height = 0, width = 0;
 
     @Setter

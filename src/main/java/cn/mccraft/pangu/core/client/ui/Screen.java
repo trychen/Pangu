@@ -161,6 +161,8 @@ public abstract class Screen extends GuiScreen {
             setTooltips2Render(null);
         }
 
+        // TODO: It just work
+        Rect.drawFullTexTextured(0, 0, 0, 0);
         Rect.resetFiltering();
     }
 

@@ -1,6 +1,5 @@
 package cn.mccraft.pangu.core.util.render;
 
-import cn.mccraft.pangu.core.loader.Load;
 import cn.mccraft.pangu.core.util.image.TextureProvider;
 import cn.mccraft.pangu.core.util.resource.PanguResLoc;
 import net.minecraft.client.Minecraft;
@@ -12,18 +11,14 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.lwjgl.opengl.GL11;
 
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
 
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
-public interface
-Rect {
+public interface Rect {
     int[] ZLEVEL = {0};
 
     static void startDrawing() {
@@ -94,6 +89,17 @@ Rect {
 
     static void color() {
         GlStateManager.color(1, 1, 1, 1);
+    }
+
+    static void color(float r, float g, float b, float a) {
+        GlStateManager.color(r,g,b,a);
+    }
+
+    static void color(float r, float g, float b) {
+        GlStateManager.color(r,g,b);
+    }
+    static void color(int r, int g, int b, int a) {
+        GlStateManager.color(r,g,b,a);
     }
 
     @Deprecated

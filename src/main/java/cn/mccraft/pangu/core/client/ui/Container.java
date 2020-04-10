@@ -149,10 +149,12 @@ public class Container extends Component implements Cloneable {
     }
 
     private void drawComponentDebugInfo(int mouseX, int mouseY, Component debugC) {
-        String lineOne = String.format("(x,y)=%d,%d", (int) debugC.getX(), (int) debugC.getY());
+        String lineOne = String.format("(x,y)=%d,%d    (width,height)=%d,%d", (int) debugC.getX(), (int) debugC.getY(), (int) debugC.getWidth(), (int) debugC.getHeight());
         String lineTwo = String.format("(x,y)-(halfWidth,halfHeight)=%d,%d", (int) (debugC.getX() - getScreen().getHalfWidth()), (int) (debugC.getY() - getScreen().getHalfHeight()));
+        String lineThree = String.format("(centerX,centerY)-(halfWidth,halfHeight)=%d,%d", (int) (debugC.getX() + debugC.getWidth() / 2 - getScreen().getHalfWidth()), (int) (debugC.getY() + debugC.getHeight() / 2 - getScreen().getHalfHeight()));
         DefaultFontProvider.INSTANCE.drawString(lineOne, mouseX, mouseY - 34, 0x7ed321, true);
         DefaultFontProvider.INSTANCE.drawString(lineTwo, mouseX, mouseY - 26, 0x7ed321, true);
+        DefaultFontProvider.INSTANCE.drawString(lineThree, mouseX, mouseY - 18, 0x7ed321, true);
     }
 
     @Override
