@@ -4,7 +4,9 @@ import cn.mccraft.pangu.core.client.ui.Button;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.util.ToolTips;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -22,9 +24,14 @@ public abstract class ItemShow extends Button {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
+
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         ItemStack item = getItem();
         if (item == null || item.isEmpty()) return;
         onItemDraw(item);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        RenderHelper.disableStandardItemLighting();
     }
 
     public void onItemDraw(ItemStack item) {

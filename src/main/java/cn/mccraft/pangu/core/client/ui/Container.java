@@ -72,6 +72,12 @@ public class Container extends Component implements Cloneable {
         return this;
     }
 
+    @Override
+    public Component setPosition(float x, float y) {
+        setOffset(x, y);
+        return super.setPosition(x, y);
+    }
+
     public Container setOffset(float x, float y) {
         setOffsetX(x);
         setOffsetY(y);

@@ -49,6 +49,7 @@ public abstract class Stack extends Container {
     @Override
     public Stack setPosition(float x, float y) {
         super.setPosition(x, y);
+        setOffset(0, 0);
         resolve();
         return this;
     }

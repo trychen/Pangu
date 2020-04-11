@@ -53,13 +53,13 @@ public enum ItemStackSerializer implements ByteSerializer<ItemStack>, ByteDeseri
     public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject element = json.getAsJsonObject();
 
-        short id = element.get("id").getAsShort();
-        if (id < 0) {
+        Item id = Item.getByNameOrId(element.get("id").getAsString());
+        if (id == null) {
             return ItemStack.EMPTY;
         }
         int amount = element.has("amount") ? element.get("amount").getAsByte() : 1;
         int meta = element.has("meta") ? element.get("meta").getAsShort() : 0;
-        ItemStack itemStack = new ItemStack(Item.getItemById(id), amount, meta);
+        ItemStack itemStack = new ItemStack(id, amount, meta);
 
         if (element.has("nbt"))
             itemStack.setTagCompound(context.deserialize(element.get("nbt"), NBTTagCompound.class));

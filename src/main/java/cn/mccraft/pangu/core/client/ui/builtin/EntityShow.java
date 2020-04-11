@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @Accessors(chain = true)
 @SideOnly(Side.CLIENT)
@@ -37,8 +38,9 @@ public class EntityShow extends Component {
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         int aimX = (int) (getX() - mouseX);
-        int aimY = (int) (getY() - 150 - mouseY);
-        Rect.color();
+        int aimY = (int) (getY() - scale * 1.5F - mouseY);
+        Rect.startDrawing();
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GlStateManager.enableColorMaterial();
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
@@ -73,9 +75,11 @@ public class EntityShow extends Component {
         entity.prevRotationYawHead = f3;
         entity.rotationYawHead = f4;
         GlStateManager.popMatrix();
-        RenderHelper.enableGUIStandardItemLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-        Rect.color();
-        GlStateManager.enableRescaleNormal();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 }
