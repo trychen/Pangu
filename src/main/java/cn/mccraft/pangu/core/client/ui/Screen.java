@@ -163,7 +163,6 @@ public abstract class Screen extends GuiScreen {
         }
 
         // TODO: It just work
-        DefaultFontProvider.INSTANCE.drawString("a", -100, -100, 0, false);
         Rect.drawFullTexTextured(0, 0, 0, 0);
 
         Rect.resetFiltering();
