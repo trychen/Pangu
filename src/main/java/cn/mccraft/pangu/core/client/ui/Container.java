@@ -215,7 +215,7 @@ public class Container extends Component implements Cloneable {
     }
 
     @Override
-    public void onMouseReleased(int mouseX, int mouseY) {
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
         setDebugMovingComponent(null);
 
         if (getScreen() != null && getScreen().isDebug()) return;
@@ -226,7 +226,7 @@ public class Container extends Component implements Cloneable {
 
             if (!c.isHovered()) continue;
 
-            c.onMouseReleased(mouseX, mouseY);
+            c.onMouseReleased(mouseButton, mouseX, mouseY);
 
             if (isHasClickPriority()) break;
         }

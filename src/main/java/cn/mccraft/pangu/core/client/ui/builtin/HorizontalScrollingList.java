@@ -25,7 +25,9 @@ public class HorizontalScrollingList<T extends HorizontalScrollingList.Entry> ex
     }
 
     @Override
-    public void onContentReleased(float mouseListX, float mouseListY) {
+    public void onContentReleased(int mouseButton, float mouseListX, float mouseListY) {
+        if (mouseButton != 0) return;
+
         float currentX = 0;
         for (int i = 0; i < getEntryCounts(); i++) {
             T entry = getEntry(i);

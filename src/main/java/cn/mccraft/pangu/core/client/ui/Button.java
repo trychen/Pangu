@@ -53,21 +53,30 @@ public abstract class Button extends Component {
 
     @Override
     public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
-        if (actionOnReleased(mouseX, mouseY)) return;
+        if (!actionOnButton(mouseButton, mouseX, mouseY)) return;
+        if (actionOnReleased(mouseButton, mouseX, mouseY)) return;
         this.onClick(mouseButton, mouseX, mouseY);
     }
 
     @Override
-    public void onMouseReleased(int mouseX, int mouseY) {
-        if (!actionOnReleased(mouseX, mouseY)) return;
-        this.onClick(0, mouseX, mouseY);
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
+        if (!actionOnButton(mouseButton, mouseX, mouseY)) return;
+        if (!actionOnReleased(mouseButton, mouseX, mouseY)) return;
+        this.onClick(mouseButton, mouseX, mouseY);
     }
 
     /**
      * @return if action click event while mouse released
      */
-    public boolean actionOnReleased(int mouseX, int mouseY) {
+    public boolean actionOnReleased(int mouseButton, int mouseX, int mouseY) {
         return true;
+    }
+
+    /**
+     * @return if action click event while mouse released
+     */
+    public boolean actionOnButton(int mouseButton, int mouseX, int mouseY) {
+        return mouseButton == 0;
     }
 
     /**

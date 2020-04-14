@@ -41,7 +41,7 @@ public class Card extends Button {
         this(text, 65, 80,  null, 0, 0);
     }
 
-    public Card(String name, int width, int height, TextureProvider textureProvider, int u, int v) {
+    public Card(String name, float width, float height, TextureProvider textureProvider, int u, int v) {
         super(width, height);
         this.text = name;
         this.icon = textureProvider;

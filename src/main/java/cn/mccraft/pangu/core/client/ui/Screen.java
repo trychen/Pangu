@@ -2,6 +2,7 @@ package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.client.ui.stack.Spacer;
 import cn.mccraft.pangu.core.util.Sides;
+import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
@@ -162,7 +163,9 @@ public abstract class Screen extends GuiScreen {
         }
 
         // TODO: It just work
+        DefaultFontProvider.INSTANCE.drawString("a", -100, -100, 0, false);
         Rect.drawFullTexTextured(0, 0, 0, 0);
+
         Rect.resetFiltering();
     }
 
@@ -180,7 +183,7 @@ public abstract class Screen extends GuiScreen {
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         if (!canInput) return;
-        (getModal() == null ? rootContainer : getModal()).onMouseReleased(mouseX, mouseY);
+        (getModal() == null ? rootContainer : getModal()).onMouseReleased(state, mouseX, mouseY);
     }
 
     protected void keyTyped(char typedChar, int keyCode) throws IOException {

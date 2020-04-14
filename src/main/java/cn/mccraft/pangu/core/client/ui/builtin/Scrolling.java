@@ -226,13 +226,13 @@ public abstract class Scrolling extends Component {
     }
 
     @Override
-    public void onMouseReleased(int mouseX, int mouseY) {
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
         float mouseListX = mouseX - getX();
         if (mouseListX > getContentWidth()) return;
 
         float mouseListY = mouseY - getY() + this.scrollDistance;
 
-        onContentReleased(mouseListX, mouseListY);
+        onContentReleased(mouseButton, mouseListX, mouseListY);
     }
 
     /**
@@ -246,7 +246,7 @@ public abstract class Scrolling extends Component {
         onContentClick(mouseListX, mouseListY);
     }
 
-    public void onContentReleased(float mouseListX, float mouseListY) {
+    public void onContentReleased(int mouseButton, float mouseListX, float mouseListY) {
     }
 
     public abstract void onContentDraw(float ticks, float baseY, float mouseListX, float mouseListY);

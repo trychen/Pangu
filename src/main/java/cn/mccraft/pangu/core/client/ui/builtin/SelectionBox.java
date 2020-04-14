@@ -28,7 +28,7 @@ public class SelectionBox extends Button {
     protected SelectEvent selectEvent;
 
     public SelectionBox(String text) {
-        super(DefaultFontProvider.INSTANCE.getStringWidth(text) + 10, 8);
+        super(DefaultFontProvider.INSTANCE.getStringWidth(text) + 10, 8F);
         this.text = text;
     }
 

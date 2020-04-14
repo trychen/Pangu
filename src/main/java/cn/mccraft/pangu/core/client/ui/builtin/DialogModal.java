@@ -56,7 +56,7 @@ public class DialogModal extends Modal {
     }
 
     @Override
-    public void drawBackground() {
+    public void drawBackground(float partialTicks, int mouseX, int mouseY) {
         float contentWidth = getMinWidth();
         float wholeHeight = 16 + text.size() * 12;
         if (!buttons.isEmpty()) wholeHeight += 24;

@@ -176,13 +176,13 @@ public abstract class HorizontalScrolling extends Component {
 
 
     @Override
-    public void onMouseReleased(int mouseX, int mouseY) {
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
         float mouseListY = mouseY - getY();
         if (mouseListY > getContentHeight()) return;
 
         float mouseListX = mouseX - getX() + this.scrollDistance;
 
-        onContentReleased(mouseListX, mouseListY);
+        onContentReleased(mouseButton, mouseListX, mouseListY);
     }
 
     private void applyScrollLimits() {
@@ -238,7 +238,7 @@ public abstract class HorizontalScrolling extends Component {
         onContentClick(mouseListX, mouseListY);
     }
 
-    public void onContentReleased(float mouseListX, float mouseListY) {
+    public void onContentReleased(int mouseButton, float mouseListX, float mouseListY) {
 
     }
 

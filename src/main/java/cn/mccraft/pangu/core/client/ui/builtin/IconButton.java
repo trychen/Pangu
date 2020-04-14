@@ -28,7 +28,7 @@ public class IconButton extends Button {
     @Setter
     protected Icon icon;
 
-    public IconButton(int width, int height, Style style, Icon icon) {
+    public IconButton(float width, float height, Style style, Icon icon) {
         super(width, height);
         this.style = style;
         this.icon = icon;

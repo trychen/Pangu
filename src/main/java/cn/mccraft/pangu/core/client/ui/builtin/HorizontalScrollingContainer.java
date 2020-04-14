@@ -31,8 +31,8 @@ public class HorizontalScrollingContainer extends HorizontalScrolling implements
     }
 
     @Override
-    public void onContentReleased(float mouseListX, float mouseListY) {
-        container.onMouseReleased((int) (mouseListX), (int) (mouseListY));
+    public void onContentReleased(int mouseButton, float mouseListX, float mouseListY) {
+        container.onMouseReleased(mouseButton, (int) (mouseListX), (int) (mouseListY));
     }
 
     @Override

@@ -63,7 +63,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public void onMousePressed(int mouseButton, int mouseX, int mouseY) {
     }
 
-    public void onMouseReleased(int mouseX, int mouseY) {
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
     }
 
     /**

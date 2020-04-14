@@ -29,7 +29,7 @@ public class ScrollingList<T extends ScrollingList.Entry> extends Scrolling {
     }
 
     @Override
-    public void onContentReleased(float mouseListX, float mouseListY) {
+    public void onContentReleased(int mouseButton, float mouseListX, float mouseListY) {
         float currentY = 0;
         for (int i = 0; i < getEntryCounts(); i++) {
             Entry entry = getEntry(i);

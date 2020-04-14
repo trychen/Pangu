@@ -83,9 +83,9 @@ public class TabContainer extends Component {
     }
 
     @Override
-    public void onMouseReleased(int mouseX, int mouseY) {
+    public void onMouseReleased(int mouseButton, int mouseX, int mouseY) {
         if (currentContainer == null) return;
-        currentContainer.onMouseReleased(mouseX, mouseY);
+        currentContainer.onMouseReleased(mouseButton, mouseX, mouseY);
     }
 
     @Override
