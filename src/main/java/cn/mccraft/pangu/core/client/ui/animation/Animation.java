@@ -45,7 +45,6 @@ public class Animation {
 
     public void end() {
         this.ended = true;
-        this.startTime = -1;
     }
 
     public float climb(float start, float end) {

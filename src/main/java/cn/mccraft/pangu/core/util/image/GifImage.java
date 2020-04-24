@@ -60,6 +60,7 @@ public abstract class GifImage implements TextureProvider {
         List<ResourceLocation> sequences = new ArrayList<>(duration);
         int count = 0;
         for (Frame frame : frames.get()) {
+
             ResourceLocation resourceLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("pangu_gif_image_" + id + "_" + count, new DynamicTexture(frame.image));
 
             for (int i = 0; i < frame.delay; i++) {
