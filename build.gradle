@@ -71,6 +71,8 @@ dependencies {
         exclude group: 'org.ow2.asm'
     }
 
+    embed "com.github.depsypher:pngtastic:1.5"
+
     compileOnly 'org.projectlombok:lombok:1.18.4'
     apt 'org.projectlombok:lombok:1.18.4'
 

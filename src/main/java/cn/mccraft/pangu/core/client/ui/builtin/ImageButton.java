@@ -7,28 +7,36 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ImageButton extends Button {
-    @Getter @Setter
-    protected TextureProvider texture;
-    @Getter @Setter
-    protected float u, v;
+    @Getter
+    @Setter
+    protected TextureProvider image;
 
-    public ImageButton(TextureProvider texture, float width, float height, float u, float v) {
-        super(width, height);
-        this.texture = texture;
-        this.u = u;
-        this.v = v;
+    @Getter
+    @Setter
+    protected int color;
+
+    @Getter
+    @Setter
+    protected boolean linear = true;
+
+    @Getter
+    @Setter
+    protected boolean hover;
+
+    public ImageButton() {
+        super(0F, 0);
     }
-
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         Rect.startDrawing();
-        Rect.bind(texture);
-        int state = this.getHoverState();
+        Rect.color(color);
+        Rect.bind(getImage());
 
-        Rect.drawTextured(
-                getX(), getY(),
-                u, v + state * width,
-                width, height);
+        if (isLinear()) Rect.linearFiltering();
+        else Rect.nearestFiltering();
+
+        Rect.drawFullTexTextured(getX(), getY(), getWidth(), getHeight());
+        if (isHovered() && isHover()) Rect.drawBox(getX(), getY(), getWidth(), getHeight(), 0x2cFFFFFF);
     }
 }

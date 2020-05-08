@@ -1,38 +1,34 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
-import cn.mccraft.pangu.core.util.Games;
 import cn.mccraft.pangu.core.util.Http;
 import cn.mccraft.pangu.core.util.LocalCache;
 import cn.mccraft.pangu.core.util.render.OpenGL;
-import cn.mccraft.pangu.core.util.render.Rect;
-import cn.mccraft.pangu.core.util.resource.PanguResLoc;
+import com.googlecode.pngtastic.core.PngImage;
 import com.trychen.bytedatastream.ByteDeserializable;
 import com.trychen.bytedatastream.ByteSerializable;
 import com.trychen.bytedatastream.DataOutput;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.DataInput;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.IntBuffer;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializable, ByteSerializable {
 
@@ -74,8 +70,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     @Getter
     protected int width, height;
 
-    protected Future<BufferedImage> bufferedImage;
-    protected CompletableFuture<int[]> imageBuffer = new CompletableFuture<>();
+    protected Future<ImageBuffer> imageBuffer;
 
     protected RemoteImage(String urlPath) throws URISyntaxException {
         this.urlPath = urlPath;
@@ -135,22 +130,17 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
         if (textureID > 0) return textureID;
         if (!loaded) return 0;
         if (exception) return -1;
-        if (bufferedImage == null) {
-            bufferedImage = LOADING_EXECUTOR.submit(() -> {
-                BufferedImage image = readImage();
-                imageBuffer.complete(OpenGL.buildARGB(image));
-                PanguCore.getLogger().debug("Built image for " + url.toString());
-                return image;
-            });
+        if (imageBuffer == null) {
+            imageBuffer = LOADING_EXECUTOR.submit(this::buildBuffer);
             return 0;
         }
-        if (!bufferedImage.isDone()) return 0;
+        if (!imageBuffer.isDone()) return 0;
         try {
-            width = bufferedImage.get().getWidth();
-            height = bufferedImage.get().getHeight();
-            textureID = OpenGL.uploadTexture(imageBuffer.get(), width, height);
+            width = imageBuffer.get().getWidth();
+            height = imageBuffer.get().getHeight();
+            textureID = OpenGL.uploadTexture(imageBuffer.get().getBuffer(), width, height);
+            imageBuffer = null;
             PanguCore.getLogger().debug("Uploaded image for " + url.toString());
-            if (!keepBufferedImage) this.bufferedImage = null;
         } catch (Exception e) {
             PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
             exception = true;
@@ -159,20 +149,23 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
         return textureID;
     }
 
-    public BufferedImage getBufferedImage() {
-        if (!bufferedImage.isDone()) return null;
-        try {
-            return bufferedImage.get();
-        } catch (Exception ignored) {
-        }
-        return null;
-    }
-
     @Override
     public void serialize(DataOutput out) throws IOException {
         out.writeUTF(urlPath);
     }
 
+    protected ImageBuffer buildBuffer() throws IOException {
+        if (id.endsWith(".png")) {
+            PngImage image = new PngImage(new FileInputStream(cachedFilePath));
+            int[] argb = PngReader.INSTANCE.readARGB8(image);
+            return new ImageBuffer(argb, (int) image.getWidth(), (int) image.getHeight());
+        }
+
+        BufferedImage image = readImage();
+        return new ImageBuffer(OpenGL.buildARGB(image), image.getWidth(), image.getHeight());
+    }
+
+    @Deprecated
     protected BufferedImage readImage() throws IOException {
         return ImageIO.read(cachedFilePath);
     }
@@ -183,5 +176,12 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
     public File createCachedFilePath() {
         return LocalCache.getCachePath("images", id);
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class ImageBuffer {
+        protected int[] buffer;
+        protected int width, height;
     }
 }
