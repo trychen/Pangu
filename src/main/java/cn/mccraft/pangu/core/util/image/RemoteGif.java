@@ -77,9 +77,9 @@ public class RemoteGif extends GifImage {
     }
 
     @Override
-    public ResourceLocation getTexture(ResourceLocation loading, ResourceLocation error) {
-        if (!loaded) return loading;
-        return super.getTexture(loading, error);
+    public int getTextureID() {
+        if (!loaded) return -1;
+        return super.getTextureID();
     }
 
     protected void saveImage() throws IOException {

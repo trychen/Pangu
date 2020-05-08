@@ -1,19 +1,21 @@
 package cn.mccraft.pangu.core.util.render;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.awt.image.BufferedImage;
+import java.nio.*;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -328,6 +330,10 @@ public class OpenGL {
         GL11.glBindTexture(target, texture);
     }
 
+    public static void bindTexture(int texture) {
+        GL11.glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
     public static void copyTexSubImage(int target, int level, int xoffset, int yoffset, int x, int y) {
         GL11.glCopyTexSubImage1D(target, level, xoffset, yoffset, x, y);
     }
@@ -359,4 +365,57 @@ public class OpenGL {
         frameBuffers.remove(buffer);
     }
 
+    public static int uploadTexture(BufferedImage image) {
+        return uploadTexture(buildBuffer(image), image.getWidth(), image.getHeight());
+    }
+
+    public static int uploadTexture(IntBuffer buffer, int width, int height) {
+        //Generate texture ID
+        int textureID = glGenTextures();
+
+        /*
+         * Initialize texture with the now cleared BufferedImage. Using a texture with GL_ALPHA8 internal format may result in
+         * faster rendering since the GPU has to only fetch 1 byte per texel instead of 4 with a regular RGBA texture.
+         */
+        GlStateManager.bindTexture(textureID);
+        GL11.glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA8, width, height, 0,
+                GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+        /* Explicitely disable mipmap support becuase updateTexture() will only update the base level 0 */
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        GL11.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        return textureID;
+    }
+
+    public static int uploadTexture(int[] buffer, int width, int height) {
+        //Generate texture ID
+        int textureID = glGenTextures();
+        TextureUtil.allocateTexture(textureID, width, height);
+        TextureUtil.uploadTexture(textureID, buffer, width, height);
+        return textureID;
+    }
+
+    public static IntBuffer buildBuffer(BufferedImage image) {
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+
+        for (int i = 0; i < pixels.length; i++) {
+            int color = pixels[i];
+            pixels[i] = (color << 8) | (color >>> 24);
+        }
+
+        IntBuffer buffer = ByteBuffer.allocateDirect(4 * image.getWidth() * image.getHeight()).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
+
+        buffer.put(pixels);
+        buffer.flip();
+
+        return buffer;
+    }
+
+    public static int[] buildARGB(BufferedImage image) {
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+        return pixels;
+    }
 }

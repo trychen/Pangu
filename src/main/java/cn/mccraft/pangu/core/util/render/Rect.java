@@ -36,7 +36,7 @@ public interface Rect {
     }
 
     static void bind(ResourceLocation resourceLocation) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
+        if (resourceLocation != null) Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
     }
 
     static void bind(TextureProvider textureProvider) {
@@ -44,8 +44,7 @@ public interface Rect {
             GlStateManager.bindTexture(TextureUtil.MISSING_TEXTURE.getGlTextureId());
             return;
         }
-        ResourceLocation texture = textureProvider.getTexture();
-        if (texture != null) bind(texture);
+        textureProvider.bind();
     }
 
     static void bind(TextureProvider textureProvider, ResourceLocation defaultTexture) {
@@ -53,8 +52,8 @@ public interface Rect {
             bind(defaultTexture);
             return;
         }
-        ResourceLocation texture = textureProvider.getTexture(defaultTexture);
-        if (texture != null) bind(texture);
+
+        textureProvider.bind(defaultTexture);
     }
 
     static void bind(ResourceLocation texture, ResourceLocation defaultTexture) {
@@ -88,13 +87,11 @@ public interface Rect {
     }
 
     static void color() {
-        GlStateManager.color(1, 1, 1, 1);
+        color(1F, 1F, 1F, 1F);
     }
-
     static void color(float r, float g, float b, float a) {
         GlStateManager.color(r,g,b,a);
     }
-
     static void color(float r, float g, float b) {
         GlStateManager.color(r,g,b);
     }
