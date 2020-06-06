@@ -362,4 +362,68 @@ public interface Rect {
         bind(CLASSICAL_BACKGROUND);
         drawCorner(x, y, width, height, 0, 0, 256, 256);
     }
+
+
+    static float alpha(int color) {
+        return (color >>> 24 & 0xFF) / 255.0F;
+    }
+
+    static float red(int color) {
+        return (color >>> 16 & 0xFF) / 255.0F;
+    }
+
+    static float green(int color) {
+        return (color >>> 8 & 0xFF) / 255.0F;
+    }
+
+    static float blue(int color) {
+        return (color & 0xFF) / 255.0F;
+    }
+
+    static int alphaInt(int color) {
+        return color >>> 24 & 255;
+    }
+
+    static int redInt(int color) {
+        return color >> 16 & 0xFF;
+    }
+
+    static int greenInt(int color) {
+        return color >> 8 & 0xFF;
+    }
+
+    static int blueInt(int color) {
+        return color & 0xFF;
+    }
+
+    static int alpha(int color, float alpha) {
+        return alpha(color, (int) alpha * 0xFF);
+    }
+
+    static int alpha(int color, int alpha) {
+        return (color & 0x00FFFFFF) | (alpha << 24);
+    }
+
+    static int red(int color, float red) {
+        return red(color, (int) red * 0xFF);
+    }
+    static int red(int color, int red) {
+        return (color & 0xFF00FFFF) | (red << 16);
+    }
+
+    static int green(int color, float green) {
+        return green(color, (int) green * 0xFF);
+    }
+
+    static int green(int color, int green) {
+        return (color & 0xFFFF00FF) | (green << 8);
+    }
+
+    static int blue(int color, float blue) {
+        return blue(color, (int) blue * 0xFF);
+    }
+
+    static int blue(int color, int blue) {
+        return (color & 0xFFFFFF00) | blue;
+    }
 }

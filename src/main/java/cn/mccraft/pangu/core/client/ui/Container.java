@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import cn.mccraft.pangu.core.client.ui.style.Style;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import lombok.Getter;
 import lombok.Setter;
@@ -130,7 +131,10 @@ public class Container extends Component implements Cloneable {
                 .stream()
                 .filter(Component::isVisible)
                 .forEach(c -> {
+                    for (Style style : c.getStyles()) style.onPreDraw(c, partialTicks, mouseX, mouseY);
                     c.onDraw(partialTicks, mouseX, mouseY);
+                    for (Style style : c.getStyles()) style.onPostDraw(c, partialTicks, mouseX, mouseY);
+
                     if (getScreen() != null && getScreen().isDebug() && getDebugMovingComponent() != c)
                         c.drawComponentBox(debugComponent == c ? 0xFF00FF00 : 0xFFFF0000);
                 });
@@ -193,6 +197,8 @@ public class Container extends Component implements Cloneable {
                 focus(c);
             }
 
+            for (Style style : c.getStyles()) style.onMousePressed(c, mouseButton, mouseX, mouseY);
+
             c.onMousePressed(mouseButton, mouseX, mouseY);
 
             if (isHasClickPriority()) break;
@@ -226,6 +232,7 @@ public class Container extends Component implements Cloneable {
 
             if (!c.isHovered()) continue;
 
+            for (Style style : c.getStyles()) style.onMouseReleased(c, mouseButton, mouseX, mouseY);
             c.onMouseReleased(mouseButton, mouseX, mouseY);
 
             if (isHasClickPriority()) break;

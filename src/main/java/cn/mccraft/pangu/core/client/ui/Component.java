@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import cn.mccraft.pangu.core.client.ui.style.Style;
 import cn.mccraft.pangu.core.util.render.Rect;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -17,7 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Accessors(chain = true)
 @ToString
@@ -52,6 +55,9 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Setter
     @Getter
     protected List<String> toolTips;
+
+    @Setter
+    protected Set<Style> styles;
 
     public Component() {
     }
@@ -169,6 +175,11 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public Component toolTips(String... toolTips) {
         setToolTips(Lists.newArrayList(toolTips));
         return this;
+    }
+
+    public Set<Style> getStyles() {
+        if (styles == null) return Collections.emptySet();
+        return styles;
     }
 
     @Override
