@@ -299,4 +299,10 @@ public class Container extends Component implements Cloneable {
         super.setScreen(screen);
         return this;
     }
+
+    public void onScreenClose() {
+        for (Component component : getComponents()) {
+            component.onScreenClose();
+        }
+    }
 }

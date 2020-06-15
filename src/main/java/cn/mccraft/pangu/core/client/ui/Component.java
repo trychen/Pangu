@@ -186,4 +186,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public int compareTo(Component o) {
         return Integer.compare(this.getZLevel(), o.getZLevel());
     }
+
+    public void onScreenClose() {
+    }
 }

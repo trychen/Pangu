@@ -16,10 +16,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.DataInput;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
@@ -156,9 +153,16 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
     protected ImageBuffer buildBuffer() throws IOException {
         if (id.endsWith(".png")) {
-            PngImage image = new PngImage(new FileInputStream(cachedFilePath));
-            int[] argb = PngReader.INSTANCE.readARGB8(image);
-            return new ImageBuffer(argb, (int) image.getWidth(), (int) image.getHeight());
+            try {
+                PngImage image = new PngImage(new FileInputStream(cachedFilePath));
+                int[] argb = PngReader.INSTANCE.readARGB8(image);
+                return new ImageBuffer(argb, (int) image.getWidth(), (int) image.getHeight());
+            } catch (FileNotFoundException e) {
+                exception = true;
+                PanguCore.getLogger().error("Image cache file not exists " + url.toString());
+            } catch (Exception e) {
+                PanguCore.getLogger().warn("Error while loading png " + url.toString() + " downgrade to ImageIO", e);
+            }
         }
 
         BufferedImage image = readImage();

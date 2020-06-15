@@ -238,6 +238,12 @@ public abstract class Screen extends GuiScreen {
         }
     }
 
+    @Override
+    public void onGuiClosed() {
+        onClose();
+        rootContainer.onScreenClose();
+    }
+
     public void debugShortcut(int key) {
         if (key == Keyboard.KEY_D && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             setDebug(!isDebug());
@@ -258,6 +264,12 @@ public abstract class Screen extends GuiScreen {
      * Draw background or else
      */
     public void draw() {
+    }
+
+    /**
+     * On Screen Close
+     */
+    public void onClose() {
     }
 
     /**
