@@ -1,6 +1,8 @@
 # Pangu
 基于内容的 Minecraft Forge Mod 快速开发框架
 
+![JitPack](https://jitpack.io/v/MinecraftPangu/Pangu.svg)
+
 # Usage
 Add the following code to your `build.gradle`
 ```groovy
