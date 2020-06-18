@@ -160,6 +160,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
             } catch (FileNotFoundException e) {
                 exception = true;
                 PanguCore.getLogger().error("Image cache file not exists " + url.toString());
+                return null;
             } catch (Exception e) {
                 PanguCore.getLogger().warn("Error while loading png " + url.toString() + " downgrade to ImageIO", e);
             }
