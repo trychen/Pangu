@@ -2,12 +2,15 @@ package cn.mccraft.pangu.core.loader.creativetabs;
 
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.*;
+import cn.mccraft.pangu.core.loader.buildin.StoredElementRegister;
 import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -21,8 +24,8 @@ import java.util.Map;
  * @since 1.0.1
  * @author trychen
  */
-@AutoWired
-public class CreativeTabSharing implements AnnotationRegister<SharedCreativeTab, Object> {
+@AutoWired(registerCommonEventBus = true)
+public class CreativeTabSharing extends StoredElementRegister<Object, SharedCreativeTab> {
     /**
      * shared creative tabs
      */
@@ -31,20 +34,28 @@ public class CreativeTabSharing implements AnnotationRegister<SharedCreativeTab,
 
     private int creativeTabsLength = -1;
 
-    @Override
-    public void registerField(Field field, Object o, SharedCreativeTab annotation, String domain) {
-        if (isCreateTabSetable(field))
-            setCreativeTab(field, annotation.value(), annotation.asTabIcon());
-    }
+//    @Override
+//    public void registerField(Field field, Object o, SharedCreativeTab annotation, String domain) {
+//        if (isCreateTabSetable(field))
+//            setCreativeTab(field, annotation.value(), annotation.asTabIcon());
+//    }
 
     @Override
     public void registerClass(Class clazz, SharedCreativeTab annotation, String domain) {
         Arrays.stream(clazz.getDeclaredFields())
-                // clean special annotated field
-                .filter(field -> !field.isAnnotationPresent(SharedCreativeTab.class))
                 // clean unsetable field
                 .filter(this::isCreateTabSetable)
-                .forEach(field -> setCreativeTab(field, annotation.value(), annotation.asTabIcon()));
+                .forEach(field -> registerField(field, null, annotation, domain));
+    }
+
+    @Override
+    public boolean acceptInstance(Field field, Object instance, SharedCreativeTab annotation, String domain) {
+        return true;
+    }
+
+    @Load(LoaderState.INITIALIZATION)
+    public void register() {
+        items.forEach(it -> setCreativeTab(it.getField(), it.getAnnotation().value(), it.getAnnotation().asTabIcon()));
     }
 
     /**

@@ -144,9 +144,12 @@ public class Container extends Component implements Cloneable {
         drawForeground(partialTicks, mouseX, mouseY);
 
         // draw tooltips
-        if (isHovered() && hoveredComponent != null) {
-            List<String> toolTip = hoveredComponent.getToolTips();
-            if (toolTip != null) getScreen().setTooltips2Render(hoveredComponent);
+        if (getScreen() != null) {
+            if (isHovered() && hoveredComponent != null && hoveredComponent.getToolTips() != null) {
+                getScreen().setTooltips2Render(hoveredComponent);
+            } else if (isHovered() && getToolTips() != null) {
+                getScreen().setTooltips2Render(this);
+            }
         }
 
         // debug info

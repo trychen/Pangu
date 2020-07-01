@@ -2,8 +2,9 @@ package cn.mccraft.pangu.core.loader;
 
 import cn.mccraft.pangu.core.PanguCore;
 import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.event.FMLStateEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nonnull;
@@ -23,6 +24,21 @@ import java.util.*;
  */
 public enum Proxy {
     INSTANCE;
+
+    private static Map<Class<? extends FMLStateEvent>, LoaderState> eventType2State = new HashMap<>();
+
+    static {
+        eventType2State.put(FMLConstructionEvent.class, LoaderState.CONSTRUCTING);
+        eventType2State.put(FMLPreInitializationEvent.class, LoaderState.PREINITIALIZATION);
+        eventType2State.put(FMLInitializationEvent.class, LoaderState.INITIALIZATION);
+        eventType2State.put(FMLPostInitializationEvent.class, LoaderState.POSTINITIALIZATION);
+        eventType2State.put(FMLLoadCompleteEvent.class, LoaderState.AVAILABLE);
+        eventType2State.put(FMLServerAboutToStartEvent.class, LoaderState.SERVER_ABOUT_TO_START);
+        eventType2State.put(FMLServerStartingEvent.class, LoaderState.SERVER_STARTING);
+        eventType2State.put(FMLServerStartedEvent.class, LoaderState.SERVER_STARTED);
+        eventType2State.put(FMLServerStoppingEvent.class, LoaderState.SERVER_STOPPING);
+        eventType2State.put(FMLServerStoppedEvent.class, LoaderState.SERVER_STOPPED);
+    }
 
     /**
      * Set to check if has loaded, to prevent repeat add
@@ -47,11 +63,21 @@ public enum Proxy {
      */
     public <T extends FMLStateEvent> void invoke(T event, LoaderState state, Side side) {
         PanguCore.getLogger().info("Start invoke FML event " + event.getEventType() + " in side " + side.name());
-        getStateLoaderMap().values().forEach(methods -> methods.forEach(method -> {
+        List<Method> methods = getStateLoaderMap().get(state);
+
+        if (methods == null || methods.isEmpty()) return;
+
+        // bar display
+        ProgressManager.ProgressBar bar = ProgressManager.push("Invoking " + state.getPrettyName(), methods.size());
+
+        methods.forEach(method -> {
+            bar.step(method.getDeclaringClass().getSimpleName());
+            Load load = method.getAnnotation(Load.class);
             // check side
-            if (!method.getAnnotation(Load.class).side().equals(side)) return;
+            if (!load.side().equals(side)) return;
             // check state
-            if (!method.getAnnotation(Load.class).value().equals(state)) return;
+            // no longer needed for multi action & auto
+//            if (!load.value().equals(state)) return;
             // check method parameters
             if (method.getParameterCount() > 1 || (method.getParameterCount() == 1 && !method.getParameterTypes()[0].equals(event.getClass())))
                 return;
@@ -72,7 +98,8 @@ public enum Proxy {
             } catch (Exception e) {
                 PanguCore.getLogger().error("Un-able to invoke method " + method.getName(), e);
             }
-        }));
+        });
+        ProgressManager.pop(bar);
     }
 
     /**
@@ -100,19 +127,26 @@ public enum Proxy {
             if (loadedLoader.contains(isStatic ? loaderClass : instance)) return instance;
 
             // searching method
-            for (Method method : loaderClass.getDeclaredMethods())
-                // searching annotations
-                for (Annotation annotation : method.getDeclaredAnnotations())
-                    // checking annotation type
-                    if (annotation.annotationType().equals(Load.class))
-                        // checking parameter count
-                        if (method.getParameterCount() <= 1) {
-                            List<Method> methods = getStateLoaderMap().getOrDefault(((Load) annotation).value(), new ArrayList<>());
-                            if (!methods.contains(method))
-                                methods.add(method);
-                            getStateLoaderMap().put(((Load) annotation).value(), methods);
-                        }
+            for (Method method : loaderClass.getDeclaredMethods()) {
+                Load load = method.getAnnotation(Load.class);
+                if (load == null) continue;
+                // checking parameter count
+                LoaderState state = load.value();
+                if (method.getParameterCount() == 1) {
+                    boolean valid = FMLStateEvent.class.isAssignableFrom(method.getParameterTypes()[0]);
+                    if (valid) {
+                        state = eventType2State.get(method.getParameterTypes()[0]);
+                    }
 
+                    if (!valid || state == null) {
+                        PanguCore.getLogger().error("Invalid parameter type " + method.getParameterTypes()[0].toGenericString() + " for method " + method.toGenericString());
+                        continue;
+                    }
+                }
+                List<Method> methods = getStateLoaderMap().computeIfAbsent(state, it -> new ArrayList<>());
+                if (!methods.contains(method)) methods.add(method);
+                getStateLoaderMap().put(state, methods);
+            }
             loadedLoader.add(isStatic ? loaderClass : instance);
             return instance;
         } catch (Exception e) {

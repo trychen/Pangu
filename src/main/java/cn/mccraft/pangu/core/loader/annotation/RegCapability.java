@@ -16,6 +16,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @RegisteringHandler(value = CapabilityRegister.class)
+@Deprecated
 public @interface RegCapability {
     Class<? extends Capability.IStorage> storageClass();
     Class<?> implClass();

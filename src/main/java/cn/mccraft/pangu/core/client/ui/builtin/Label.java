@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
+import cn.mccraft.pangu.core.client.ui.Button;
 import cn.mccraft.pangu.core.client.ui.Component;
 import cn.mccraft.pangu.core.util.font.DefaultFontProvider;
 import cn.mccraft.pangu.core.util.font.FontProvider;
@@ -11,7 +12,7 @@ import lombok.experimental.Accessors;
 import javax.annotation.Nonnull;
 
 @Accessors(chain = true)
-public class Label extends Component {
+public class Label extends Button {
     @Getter
     @Setter
     private String text;
@@ -22,7 +23,7 @@ public class Label extends Component {
 
     @Setter
     @Getter
-    private int color = 0xFFFFFFFF;
+    private int color = 0xFFFFFFFF, hoverColor;
 
     @Setter
     @Getter
@@ -44,6 +45,6 @@ public class Label extends Component {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        fontProvider.drawString(text, getX(), getY(), color, dropShadow, centered);
+        fontProvider.drawString(text, getX(), getY(), isHovered() && hoverColor != 0 ? hoverColor : color, dropShadow, centered);
     }
 }

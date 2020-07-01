@@ -1,6 +1,8 @@
 package cn.mccraft.pangu.core.util.font;
 
 import cn.mccraft.pangu.core.util.render.Rect;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -36,6 +38,10 @@ public class StringRenderer implements FontProvider {
     private static final int STRIKETHROUGH_THICKNESS = 2;
 
     private final StringCache cache;
+
+    @Setter
+    @Getter
+    private boolean linearFiltering = true, nearestFiltering = false;
 
     /**
      * Color codes from original FontRender class. First 16 entries are the primary chat colors; second 16 are darker versions
@@ -162,7 +168,8 @@ public class StringRenderer implements FontProvider {
 
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
             GlStateManager.bindTexture(texture.textureName);
-            Rect.linearFiltering();
+            if (linearFiltering) Rect.linearFiltering();
+            else if (nearestFiltering) Rect.nearestFiltering();
             buffer.pos(x1, y1, Rect.ZLEVEL[0]).tex(texture.u1, texture.v1).color(r, g, b, a).endVertex();
             buffer.pos(x1, y2, Rect.ZLEVEL[0]).tex(texture.u1, texture.v2).color(r, g, b, a).endVertex();
             buffer.pos(x2, y2, Rect.ZLEVEL[0]).tex(texture.u2, texture.v2).color(r, g, b, a).endVertex();

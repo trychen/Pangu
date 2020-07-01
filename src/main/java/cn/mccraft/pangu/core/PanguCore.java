@@ -1,11 +1,14 @@
 package cn.mccraft.pangu.core;
 
+import cn.mccraft.pangu.core.loader.Proxy;
 import lombok.Getter;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -171,6 +174,30 @@ public class PanguCore {
         proxy.loadComplete(event);
     }
 
+    @Mod.EventHandler
+    public void serverAboutToStart(FMLServerAboutToStartEvent event) {
+        Proxy.INSTANCE.invoke(event, LoaderState.SERVER_ABOUT_TO_START, Side.SERVER);
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        Proxy.INSTANCE.invoke(event, LoaderState.SERVER_STARTING, Side.SERVER);
+    }
+
+    @Mod.EventHandler
+    public void serverStarted(FMLServerStartedEvent event) {
+        Proxy.INSTANCE.invoke(event, LoaderState.SERVER_STARTED, Side.SERVER);
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+        Proxy.INSTANCE.invoke(event, LoaderState.SERVER_STOPPING, Side.SERVER);
+    }
+
+    @Mod.EventHandler
+    public void serverStopped(FMLServerStoppedEvent event) {
+        Proxy.INSTANCE.invoke(event, LoaderState.SERVER_STOPPED, Side.SERVER);
+    }
 
     /*
        ==========================================

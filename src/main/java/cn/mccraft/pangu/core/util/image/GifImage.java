@@ -89,6 +89,11 @@ public abstract class GifImage extends OpenGLTextureProvider {
         return getFromSequences();
     }
 
+    @Override
+    public boolean isReady() {
+        return sequences != null;
+    }
+
     public abstract void readGifImage(GifDecoder decoder);
 
     public List<Frame> decodeFrames() {

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.Games;
 import cn.mccraft.pangu.core.util.Http;
 import cn.mccraft.pangu.core.util.LocalCache;
 import cn.mccraft.pangu.core.util.render.OpenGL;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -57,6 +59,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     protected String id;
     @Getter
     protected transient boolean exception = false, loaded = false;
+
     @Getter
     protected File cachedFilePath;
 
@@ -123,6 +126,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
     protected int textureID = 0;
 
+    @Override
     public int getTextureID() {
         if (textureID > 0) return textureID;
         if (!loaded) return 0;
@@ -147,11 +151,16 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     }
 
     @Override
+    public boolean isReady() {
+        return textureID > 0;
+    }
+
+    @Override
     public void serialize(DataOutput out) throws IOException {
         out.writeUTF(urlPath);
     }
 
-    protected ImageBuffer buildBuffer() throws IOException {
+    public ImageBuffer buildBuffer() throws IOException {
         if (id.endsWith(".png")) {
             try {
                 PngImage image = new PngImage(new FileInputStream(cachedFilePath));
@@ -159,7 +168,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
                 return new ImageBuffer(argb, (int) image.getWidth(), (int) image.getHeight());
             } catch (FileNotFoundException e) {
                 exception = true;
-                PanguCore.getLogger().error("Image cache file not exists " + url.toString());
+                PanguCore.getLogger().error("Image file not exists " + url.toString());
                 return null;
             } catch (Exception e) {
                 PanguCore.getLogger().warn("Error while loading png " + url.toString() + " downgrade to ImageIO", e);
@@ -167,7 +176,18 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
         }
 
         BufferedImage image = readImage();
+        if (image == null) {
+            PanguCore.getLogger().error("Image file not exists " + url.toString());
+        }
         return new ImageBuffer(OpenGL.buildARGB(image), image.getWidth(), image.getHeight());
+    }
+
+    @Override
+    public TextureAtlasSprite asAtlasSprite() {
+        if (!isLoaded()) return null;
+        PackagedTextureAtlasSprite sprite = new PackagedTextureAtlasSprite();
+        if (!sprite.initPackage(getCachedFilePath())) return null;
+        return sprite;
     }
 
     @Deprecated
@@ -180,7 +200,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     }
 
     public File createCachedFilePath() {
-        return LocalCache.getCachePath("images", id);
+        return LocalCache.get("images", id).toFile();
     }
 
     @Data

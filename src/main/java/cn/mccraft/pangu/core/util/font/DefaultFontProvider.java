@@ -1,5 +1,6 @@
 package cn.mccraft.pangu.core.util.font;
 
+import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fml.relauncher.Side;

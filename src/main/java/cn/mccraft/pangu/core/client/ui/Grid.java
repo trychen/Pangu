@@ -14,6 +14,7 @@ public class Grid extends Container {
     protected float paddingX, paddingY;
     protected float currentLineHeight;
     protected int line = 0, lineIndex = 0;
+    protected boolean leadingPadding = true;
 
     public Grid(float width, float height) {
         super(width, height);
@@ -21,23 +22,29 @@ public class Grid extends Container {
 
     @Override
     public Container addComponent(@Nonnull Component c) {
-        if (c.getWidth() + paddingX > width) {
-            if (line != 0) nextLine();
+        float fixedPaddingX = leadingPadding ? paddingX : (currentX == 0 ? 0 : paddingX);
+        if (c.getWidth() + fixedPaddingX > width) {
+            if (line != 0) {
+                nextLine();
+            }
             c.setPosition(currentX, currentY);
             super.addComponent(c);
             nextLine();
             return this;
         }
 
-        if (currentX + c.getWidth() + paddingX > width) nextLine();
+        if (currentX + c.getWidth() + fixedPaddingX > width) {
+            nextLine();
+            fixedPaddingX = leadingPadding ? paddingX : (currentX == 0 ? 0 : paddingX);
+        }
 
         if (c.getHeight() > currentLineHeight) {
             currentLineHeight = c.getHeight();
         }
-        c.setPosition(currentX + paddingX, currentY);
+        c.setPosition(currentX + fixedPaddingX, currentY);
         super.addComponent(c);
 
-        currentX += paddingX + c.getWidth();
+        currentX += fixedPaddingX + c.getWidth();
 
         return this;
     }

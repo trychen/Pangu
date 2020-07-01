@@ -4,6 +4,7 @@ import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -50,6 +51,14 @@ public interface TextureProvider {
         return error;
     }
 
+    default int getTextureID() {
+        return 0;
+    }
+
+    default boolean isReady() {
+        return true;
+    }
+
     default void bind() {
         Rect.bind(this.getTexture());
     }
@@ -60,5 +69,9 @@ public interface TextureProvider {
 
     default void bind(ResourceLocation loading, ResourceLocation error) {
         Rect.bind(this.getTexture(loading, error));
+    }
+
+    default TextureAtlasSprite asAtlasSprite() {
+        return null;
     }
 }

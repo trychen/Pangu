@@ -56,7 +56,6 @@ public class CommonProxy {
     public void loadComplete(FMLLoadCompleteEvent event) {
         Proxy.INSTANCE.invoke(event, LoaderState.AVAILABLE, Side.SERVER);
     }
-
     /*
      *        FML Initialization
      *  ==============================
