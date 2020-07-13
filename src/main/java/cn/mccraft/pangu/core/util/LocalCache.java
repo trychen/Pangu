@@ -40,8 +40,6 @@ public class LocalCache extends Thread {
 
     @Load
     public static void init() {
-        ProgressManager.ProgressBar bar = ProgressManager.push("Resolving Cache", 2);
-        bar.step("Add Shutdown Hook");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 LocalDate now = LocalDate.now();
@@ -73,7 +71,7 @@ public class LocalCache extends Thread {
                         if (fileTime == null) {
                             data.put(key, now);
                         } else {
-                            if (ChronoUnit.DAYS.between(fileTime, now) > 8) {
+                            if (ChronoUnit.DAYS.between(fileTime, now) > 20) {
                                 data.remove(key);
                                 Files.delete(file);
                             }
@@ -91,10 +89,10 @@ public class LocalCache extends Thread {
                         return FileVisitResult.CONTINUE;
                     }
                 });
-
-                Files.delete(CACHE_MARK_FILE);
+                if (Files.exists(CACHE_MARK_FILE))
+                    Files.delete(CACHE_MARK_FILE);
                 Files.write(CACHE_MARK_FILE, data.entrySet().stream().map(e -> e.getKey() + "," + e.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()).collect(Collectors.toList()), StandardCharsets.UTF_8, StandardOpenOption.CREATE);
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }));
@@ -112,9 +110,8 @@ public class LocalCache extends Thread {
                 }
             }
 
-            bar.step("Cleaning Invalid Cache");
             for (Map.Entry<String, LocalDate> e : data.entrySet()) {
-                if (ChronoUnit.DAYS.between(e.getValue(), now) > 8) {
+                if (ChronoUnit.DAYS.between(e.getValue(), now) > 20) {
                     String[] split = e.getKey().split(":");
                     if (split.length != 2) continue;
                     String group = split[0];
@@ -126,10 +123,9 @@ public class LocalCache extends Thread {
                     data.remove(e.getKey());
                 }
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             PanguCore.getLogger().info("Error while read cache file", e);
         }
-        ProgressManager.pop(bar);
     }
 
     public static Path get(String group, String id) {

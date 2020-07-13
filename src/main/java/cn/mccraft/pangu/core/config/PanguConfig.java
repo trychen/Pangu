@@ -5,4 +5,5 @@ import net.minecraftforge.common.config.Config;
 
 @Config(modid = PanguCore.ID)
 public class PanguConfig {
+
 }

@@ -50,7 +50,7 @@ public interface BridgeHandler {
 
         try {
             solution.solve(objects);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             PanguCore.getLogger().error("Error while sending @Bridge info", e);
         }
 
@@ -76,7 +76,7 @@ public interface BridgeHandler {
 
                 SOLUTIONS.put(bridge.value(), solution);
                 PanguCore.getLogger().debug("Registered @Bridge message with key " + bridge.value() + " from method " + method.toGenericString());
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 PanguCore.getLogger().error("Couldn't register message for " + method.toGenericString(), e);
             }
         });
@@ -105,7 +105,7 @@ public interface BridgeHandler {
             if (!solution.isSync()) {
                 try {
                     solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), message.getBytes());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
                 }
                 return null;
@@ -115,7 +115,7 @@ public interface BridgeHandler {
             side.addScheduledTask(() -> {
                 try {
                     solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), message.getBytes());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
                 }
             });

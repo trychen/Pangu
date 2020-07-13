@@ -174,7 +174,6 @@ public abstract class Screen extends GuiScreen {
 
             // TODO: It just work
             Rect.drawFullTexTextured(0, 0, 0, 0);
-
             Rect.resetFiltering();
         } catch (Throwable e) {
             PanguCore.getLogger().error("Error while draw ui " + getClass().toGenericString(), e);

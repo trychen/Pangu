@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public interface Message {
-    Minecraft minecraft =Minecraft.getMinecraft();
+    Minecraft minecraft = Minecraft.getMinecraft();
 
     /**
      * add chat message as game info

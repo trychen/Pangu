@@ -14,7 +14,7 @@ import java.io.*;
 public class PackagedTextureAtlasSprite extends TextureAtlasSprite {
     protected BufferedImage image;
 
-    protected PackagedTextureAtlasSprite() {
+    public PackagedTextureAtlasSprite() {
         super("NA");
     }
 

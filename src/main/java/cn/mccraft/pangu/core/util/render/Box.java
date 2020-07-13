@@ -36,6 +36,14 @@ public interface Box {
         GlStateManager.popMatrix();
     }
 
+    static void translate2Entity(Entity view, float partialTicks) {
+        double x = view.lastTickPosX + ((view.posX - view.lastTickPosX) * partialTicks);
+        double y = view.lastTickPosY + ((view.posY - view.lastTickPosY) * partialTicks);
+        double z = view.lastTickPosZ + ((view.posZ - view.lastTickPosZ) * partialTicks);
+
+        GlStateManager.translate(-x, -y, -z);
+    }
+
     static void quads(AxisAlignedBB box) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder render = tessellator.getBuffer();

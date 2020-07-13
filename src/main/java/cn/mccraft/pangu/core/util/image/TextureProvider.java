@@ -59,6 +59,10 @@ public interface TextureProvider {
         return true;
     }
 
+    default boolean isLoaded() {
+        return true;
+    }
+
     default void bind() {
         Rect.bind(this.getTexture());
     }

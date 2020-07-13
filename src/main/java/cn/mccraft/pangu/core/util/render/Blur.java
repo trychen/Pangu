@@ -65,6 +65,7 @@ public class Blur {
      * @return
      */
     public static int getGuiBackgroundColor(GuiScreen guiScreen, boolean second) {
+//        return second ? DEFAULT_END_COLOR : DEFAULT_START_COLOR;
         if (!active || currentBlurData == null) return second ? DEFAULT_END_COLOR : DEFAULT_START_COLOR;
         return second ? currentBlurData.endColor : currentBlurData.startColor;
     }

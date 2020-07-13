@@ -28,6 +28,7 @@ public class RemoteGif extends GifImage {
     });
     @Getter
     protected final String urlPath;
+
     @Getter
     protected final URI url;
 
