@@ -78,4 +78,14 @@ public interface TextureProvider {
     default TextureAtlasSprite asAtlasSprite() {
         return null;
     }
+
+    default void remove() {
+    }
+
+    default void refresh() {
+    }
+
+    default boolean free() {
+        return false;
+    }
 }

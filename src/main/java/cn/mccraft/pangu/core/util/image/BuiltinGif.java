@@ -4,12 +4,13 @@ import cn.mccraft.pangu.core.PanguCore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class BuiltinGif extends GifImage {
-    private ResourceLocation path;
+    protected ResourceLocation path;
 
     public BuiltinGif(ResourceLocation path) {
         this.path = path;

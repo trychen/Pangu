@@ -17,10 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Accessors(chain = true)
 @ToString
@@ -180,6 +177,12 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     public Set<Style> getStyles() {
         if (styles == null) return Collections.emptySet();
         return styles;
+    }
+
+    public Component addStyles(Style... s) {
+        if (styles == null) styles = new HashSet<>();
+        Collections.addAll(styles, s);
+        return this;
     }
 
     @Override

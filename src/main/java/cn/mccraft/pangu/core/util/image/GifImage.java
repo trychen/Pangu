@@ -5,10 +5,12 @@ import cn.mccraft.pangu.core.util.render.OpenGL;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -42,6 +44,10 @@ public abstract class GifImage extends OpenGLTextureProvider {
     protected int duration;
 
     @Getter
+    @Setter
+    protected int frameTimeOffset;
+
+    @Getter
     protected transient int width, height;
 
     /**
@@ -66,7 +72,7 @@ public abstract class GifImage extends OpenGLTextureProvider {
     }
 
     public int getFromSequences() {
-        return sequences[(int) (System.currentTimeMillis() % this.duration)];
+        return sequences[((int) (System.currentTimeMillis() % this.duration) + frameTimeOffset) % sequences.length];
     }
 
     public int getTextureID() {
@@ -91,7 +97,7 @@ public abstract class GifImage extends OpenGLTextureProvider {
 
     @Override
     public boolean isReady() {
-        return sequences != null;
+        return getTextureID() > 0;
     }
 
     public abstract void readGifImage(GifDecoder decoder);
@@ -111,6 +117,22 @@ public abstract class GifImage extends OpenGLTextureProvider {
         duration = time;
         if (duration == 0) throw new IllegalArgumentException("GIF duration can not be zero " + id);
         return frames;
+    }
+
+    public void restart() {
+        if (sequences == null) return;
+        int currentFrame = (int) (System.currentTimeMillis() % this.duration);
+        setFrameTimeOffset(duration - currentFrame);
+    }
+
+    @Override
+    public boolean free() {
+        if (sequences == null) return true;
+        for (int sequence : sequences) {
+            GL11.glDeleteTextures(sequence);
+        }
+        sequences = null;
+        return false;
     }
 
     @Getter

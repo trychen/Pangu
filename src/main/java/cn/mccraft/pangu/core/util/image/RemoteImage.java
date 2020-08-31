@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -75,24 +76,10 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     protected RemoteImage(String urlPath) throws URISyntaxException {
         this.urlPath = urlPath;
         this.url = new URI(urlPath);
-        this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
+        this.id = Base64.getEncoder().encodeToString(urlPath.getBytes()).replace('/', '_').replace('\\', '_');
         this.cachedFilePath = createCachedFilePath();
         LocalCache.markFileUsed(cachedFilePath.toPath());
 
-        FETCHER_EXECUTOR.submit(() -> {
-            try {
-                if (!cachedFilePath.exists()) {
-                    PanguCore.getLogger().debug("Start fetching image from " + url.toString());
-                    saveImage();
-                    PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
-                } else
-                    PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
-            } catch (Exception e) {
-                PanguCore.getLogger().error("Error while fetching or reading image " + url.toString(), e);
-                exception = true;
-            }
-            loaded = true;
-        });
     }
 
     public static RemoteImage deserialize(DataInput out) throws IOException {
@@ -140,7 +127,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
             width = imageBuffer.get().getWidth();
             height = imageBuffer.get().getHeight();
             textureID = OpenGL.uploadTexture(imageBuffer.get().getBuffer(), width, height);
-            imageBuffer = null;
+            if (!isKeepBufferedImage())imageBuffer = null;
             PanguCore.getLogger().debug("Uploaded image for " + url.toString());
         } catch (Exception e) {
             PanguCore.getLogger().error("Couldn't load remote image from url " + url.toString(), e);
@@ -152,7 +139,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
     @Override
     public boolean isReady() {
-        return textureID > 0;
+        return getTextureID() > 0;
     }
 
     @Override
@@ -177,7 +164,9 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
         BufferedImage image = readImage();
         if (image == null) {
+            exception = true;
             PanguCore.getLogger().error("Image file not exists " + url.toString());
+            return null;
         }
         return new ImageBuffer(OpenGL.buildARGB(image), image.getWidth(), image.getHeight());
     }
@@ -201,6 +190,49 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
 
     public File createCachedFilePath() {
         return LocalCache.get("images", id).toFile();
+    }
+
+    @Override
+    public boolean free() {
+        if (textureID == 0) return true;
+        GL11.glDeleteTextures(textureID);
+        textureID = 0;
+        if (!isKeepBufferedImage()) imageBuffer = null;
+        PanguCore.getLogger().debug("Free image " + url.toString());
+        return true;
+    }
+
+    @Override
+    public void remove() {
+        cachedFilePath.delete();
+        free();
+        exception = false;
+        loaded = false;
+        PanguCore.getLogger().debug("Remove image " + url.toString());
+    }
+
+    @Override
+    public void refresh() {
+        remove();
+        fetch();
+        PanguCore.getLogger().debug("Refresh image " + url.toString());
+    }
+
+    public void fetch() {
+        FETCHER_EXECUTOR.submit(() -> {
+            try {
+                if (!cachedFilePath.exists()) {
+                    PanguCore.getLogger().debug("Start fetching image from " + url.toString());
+                    saveImage();
+                    PanguCore.getLogger().debug("Saved " + urlPath + " to " + cachedFilePath.getAbsolutePath());
+                } else
+                    PanguCore.getLogger().debug("Loading image " + urlPath + " from local " + cachedFilePath.getAbsolutePath());
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Error while fetching or reading image " + url.toString(), e);
+                exception = true;
+            }
+            loaded = true;
+        });
     }
 
     @Data

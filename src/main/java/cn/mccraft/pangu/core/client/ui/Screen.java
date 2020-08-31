@@ -85,6 +85,9 @@ public abstract class Screen extends GuiScreen {
     @Setter
     protected Component focusedComponent;
 
+    @Getter
+    protected CursorHolder cursor = new CursorHolder();
+
     public Screen() {
     }
 

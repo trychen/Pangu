@@ -25,13 +25,13 @@ public interface Rect {
         GlStateManager.enableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.enableAlpha();
+        GlStateManager.disableAlpha();
         Rect.color();
     }
 
     static void endDrawing() {
         GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
     }
 
