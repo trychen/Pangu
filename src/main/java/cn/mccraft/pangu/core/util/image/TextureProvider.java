@@ -88,4 +88,12 @@ public interface TextureProvider {
     default boolean free() {
         return false;
     }
+
+    default int getWidth() {
+        return 0;
+    }
+
+    default int getHeight() {
+        return 0;
+    }
 }

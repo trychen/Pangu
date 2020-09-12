@@ -32,6 +32,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface BridgeHandler {
     Map<String, Solution> SOLUTIONS = new HashMap<>();
@@ -86,6 +88,9 @@ public interface BridgeHandler {
     static void registerPacket() {
         PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_SERVER_MESSAGE, Side.SERVER);
         PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, Packet.class, Network.BRIDGE_CLIENT_MESSAGE, Side.CLIENT);
+
+        PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_SERVER_MULTIPART_MESSAGE, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_CLIENT_MULTIPART_MESSAGE, Side.CLIENT);
     }
 
     @AllArgsConstructor
@@ -112,6 +117,10 @@ public interface BridgeHandler {
             }
 
             IThreadListener side = Threads.side(solution.side());
+            if (side == null) {
+                PanguCore.getLogger().error("Not a valid side for @Bridge message " + message.getKey());
+                return null;
+            }
             side.addScheduledTask(() -> {
                 try {
                     solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), message.getBytes());
@@ -192,15 +201,32 @@ public interface BridgeHandler {
 
             // 序列化
             byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, persistenceByParameterOrder);
-            Packet packet = new Packet(bridge.value(), bytes);
-            // 发包
-            if (side().isClient()) {
-                if (isWithEntityPlayerParameter())
-                    PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
-                else
-                    PanguCore.getNetwork().sendToAll(packet);
+
+            if (bytes.length > 30000) {
+                MultiPartPacketBuffer buffer = new MultiPartPacketBuffer(bridge.value(), bytes);
+
+                for (MultiPartPacket packet : buffer.getPackets()) {
+                    if (side().isClient()) {
+                        if (isWithEntityPlayerParameter())
+                            PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
+                        else
+                            PanguCore.getNetwork().sendToAll(packet);
+                    } else {
+                        PanguCore.getNetwork().sendToServer(packet);
+                    }
+                }
             } else {
-                PanguCore.getNetwork().sendToServer(packet);
+                IMessage packet = new Packet(bridge.value(), bytes);
+
+                // 发包
+                if (side().isClient()) {
+                    if (isWithEntityPlayerParameter())
+                        PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
+                    else
+                        PanguCore.getNetwork().sendToAll(packet);
+                } else {
+                    PanguCore.getNetwork().sendToServer(packet);
+                }
             }
         }
 
@@ -245,6 +271,161 @@ public interface BridgeHandler {
 
             ByteBufUtils.writeVarInt(buf, bytes.length, 4);
             buf.writeBytes(bytes);
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    class MultiPartPacket implements IMessage {
+        /**
+         * Unique id for every packet
+         */
+        private UUID uuid;
+
+        /**
+         * Total packet size
+         */
+        private short total;
+
+        /**
+         * Current packet index
+         */
+        private short current;
+
+        private String key;
+        private byte[] bytes;
+
+        @Override
+        public void fromBytes(ByteBuf buf) {
+            this.uuid = new UUID(buf.readLong(), buf.readLong());
+
+            this.total = buf.readShort();
+            this.current = buf.readShort();
+
+            byte[] utf8Bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
+            buf.readBytes(utf8Bytes);
+            this.key = new String(utf8Bytes, StandardCharsets.UTF_8);
+
+            this.bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
+            buf.readBytes(bytes);
+        }
+
+        @Override
+        public void toBytes(ByteBuf buf) {
+            buf.writeLong(uuid.getMostSignificantBits());
+            buf.writeLong(uuid.getLeastSignificantBits());
+
+            buf.writeShort(total);
+            buf.writeShort(current);
+
+            byte[] utf8Bytes = key.getBytes(StandardCharsets.UTF_8);
+            ByteBufUtils.writeVarInt(buf, utf8Bytes.length, 4);
+            buf.writeBytes(utf8Bytes);
+
+            ByteBufUtils.writeVarInt(buf, bytes.length, 4);
+            buf.writeBytes(bytes);
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    class MultiPartPacketBuffer {
+        private MultiPartPacket[] packets;
+        private int size;
+
+        public MultiPartPacketBuffer(String key, byte[] bytes) {
+            short total = (short) ((bytes.length / 30000) + (bytes.length % 30000 > 0 ? 1 : 0));
+
+            UUID id = UUID.randomUUID();
+            packets = new MultiPartPacket[total];
+
+            for (short i = 0; i < total; i++) {
+                MultiPartPacket packet = new MultiPartPacket();
+
+                packet.setUuid(id);
+                packet.setCurrent(i);
+                packet.setTotal(total);
+                packet.setKey(key);
+                packet.setBytes(
+                        ArrayUtils.subarray(bytes, i * 30000, Math.min(bytes.length, (i + 1) * 30000))
+                );
+
+                packets[i] = packet;
+            }
+        }
+
+        public MultiPartPacketBuffer(MultiPartPacket packet) {
+            packets = new MultiPartPacket[packet.total];
+            process(packet);
+        }
+
+        public void process(MultiPartPacket packet) {
+            packets[packet.getCurrent()] = packet;
+            size += packet.getBytes().length;
+        }
+
+        public boolean isComplete() {
+            for (MultiPartPacket packet : packets) {
+                if (packet == null) return false;
+            }
+            return true;
+        }
+
+        public byte[] getBytes() {
+            byte[] bytes = new byte[size];
+            int cursor = 0;
+            for (MultiPartPacket packet : packets) {
+                System.arraycopy(packet.bytes, 0, bytes, cursor, cursor + packet.getBytes().length);
+                cursor += packet.getBytes().length;
+            }
+            return bytes;
+        }
+    }
+
+    Map<UUID, MultiPartPacketBuffer> MULTI_PART_PACKET_BUFFER = new ConcurrentHashMap<>();
+
+    @AllArgsConstructor
+    enum MultiPartPacketHandler implements IMessageHandler<MultiPartPacket, IMessage> {
+        INSTANCE;
+
+        @Override
+        public IMessage onMessage(MultiPartPacket message, MessageContext ctx) {
+            Solution solution = SOLUTIONS.get(message.getKey());
+
+            // 空检测
+            if (solution == null) {
+                PanguCore.getLogger().error("Couldn't find any solution to handle @Bridge message: " + message.getKey());
+                return null;
+            }
+
+            MultiPartPacketBuffer buffer = MULTI_PART_PACKET_BUFFER.computeIfAbsent(message.getUuid(), it -> new MultiPartPacketBuffer(message));
+
+            if (!buffer.isComplete()) return null;
+
+            if (!solution.isSync()) {
+                try {
+                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), buffer.getBytes());
+                } catch (Throwable e) {
+                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
+                }
+                return null;
+            }
+
+            IThreadListener side = Threads.side(solution.side());
+            if (side == null) {
+                PanguCore.getLogger().error("Not a valid side for @Bridge message " + message.getKey());
+                return null;
+            }
+            side.addScheduledTask(() -> {
+                try {
+                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), buffer.getBytes());
+                } catch (Throwable e) {
+                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
+                }
+            });
+            return null;
         }
     }
 }

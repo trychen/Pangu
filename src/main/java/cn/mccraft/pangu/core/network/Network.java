@@ -16,6 +16,8 @@ import java.util.NoSuchElementException;
 public interface Network {
     int BRIDGE_SERVER_MESSAGE = 0;
     int BRIDGE_CLIENT_MESSAGE = 1;
+    int BRIDGE_SERVER_MULTIPART_MESSAGE = 2;
+    int BRIDGE_CLIENT_MULTIPART_MESSAGE = 3;
 
     static SimpleNetworkWrapper getNetworkWrapper(Class<?> clazz) {
         // finding mod instance
