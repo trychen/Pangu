@@ -29,6 +29,8 @@ public class DevTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (isDevMode) return basicClass;
+        if (basicClass == null) return null;
+
         AtomicBoolean edited = new AtomicBoolean(false);
         ClassNode classNode = ASMHelper.newClassNode(basicClass);
 

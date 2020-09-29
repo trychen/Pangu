@@ -14,11 +14,7 @@ import java.util.Map;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.TransformerExclusions({"cn.mccraft.pangu.core.asm"})
-@Log4j2(topic = "Pangu Core")
 public class PanguPlugin implements IFMLLoadingPlugin {
-    public static Logger getLogger() {
-        return log;
-    }
 
     @Override
     public String[] getASMTransformerClass() {

@@ -358,7 +358,6 @@ public interface BridgeHandler {
 
         public MultiPartPacketBuffer(MultiPartPacket packet) {
             packets = new MultiPartPacket[packet.total];
-            process(packet);
         }
 
         public void process(MultiPartPacket packet) {
@@ -377,13 +376,12 @@ public interface BridgeHandler {
             byte[] bytes = new byte[size];
             int cursor = 0;
             for (MultiPartPacket packet : packets) {
-                System.arraycopy(packet.bytes, 0, bytes, cursor, cursor + packet.getBytes().length);
+                System.arraycopy(packet.bytes, 0, bytes, cursor, packet.getBytes().length);
                 cursor += packet.getBytes().length;
             }
             return bytes;
         }
     }
-
     Map<UUID, MultiPartPacketBuffer> MULTI_PART_PACKET_BUFFER = new ConcurrentHashMap<>();
 
     @AllArgsConstructor
@@ -401,8 +399,11 @@ public interface BridgeHandler {
             }
 
             MultiPartPacketBuffer buffer = MULTI_PART_PACKET_BUFFER.computeIfAbsent(message.getUuid(), it -> new MultiPartPacketBuffer(message));
+            buffer.process(message);
 
             if (!buffer.isComplete()) return null;
+
+            MULTI_PART_PACKET_BUFFER.remove(message.getUuid());
 
             if (!solution.isSync()) {
                 try {

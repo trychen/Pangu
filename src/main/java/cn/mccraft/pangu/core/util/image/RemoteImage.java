@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.Base64Utils;
 import cn.mccraft.pangu.core.util.Games;
 import cn.mccraft.pangu.core.util.Http;
 import cn.mccraft.pangu.core.util.LocalCache;
@@ -59,7 +60,7 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     @Getter
     protected String id;
     @Getter
-    protected transient boolean exception = false, loaded = false;
+    protected transient boolean exception = false, loaded = false, requested = false;
 
     @Getter
     protected File cachedFilePath;
@@ -76,10 +77,12 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     protected RemoteImage(String urlPath) throws URISyntaxException {
         this.urlPath = urlPath;
         this.url = new URI(urlPath);
-        this.id = Base64.getEncoder().encodeToString(urlPath.getBytes()).replace('/', '_').replace('\\', '_');
+        this.id = Base64Utils.safeUrlBase64Encode(urlPath.getBytes());
         this.cachedFilePath = createCachedFilePath();
         LocalCache.markFileUsed(cachedFilePath.toPath());
 
+//        requested = true;
+//        fetch();
     }
 
     public static RemoteImage deserialize(DataInput out) throws IOException {
@@ -116,6 +119,10 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     @Override
     public int getTextureID() {
         if (textureID > 0) return textureID;
+        if (!requested) {
+            requested = true;
+            fetch();
+        }
         if (!loaded) return 0;
         if (exception) return -1;
         if (imageBuffer == null) {

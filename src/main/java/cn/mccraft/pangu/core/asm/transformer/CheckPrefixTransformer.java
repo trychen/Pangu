@@ -25,6 +25,7 @@ public class CheckPrefixTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (!transformedName.equals("net.minecraftforge.registries.GameData")) return basicClass;
+        if (basicClass == null) return basicClass;
 
         ClassNode classNode = ASMHelper.newClassNode(basicClass);
 
@@ -59,12 +60,14 @@ public class CheckPrefixTransformer implements IClassTransformer {
 
                 ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
                 classNode.accept(cw);
-                PanguPlugin.getLogger().info("Hooked net.minecraftforge.registries.GameData#checkPrefix(Ljava/lang/String;)Lnet/minecraft/util/ResourceLocation;");
+                System.out.println("Hooked net.minecraftforge.registries.GameData#checkPrefix(Ljava/lang/String;)Lnet/minecraft/util/ResourceLocation;");
+//                PanguPlugin.getLogger().info("Hooked net.minecraftforge.registries.GameData#checkPrefix(Ljava/lang/String;)Lnet/minecraft/util/ResourceLocation;");
                 return cw.toByteArray();
             }
         }
 
-        PanguPlugin.getLogger().error("Couldn't hook checkPrefix!");
+        System.err.println("[Pangu Core] Couldn't hook checkPrefix!");
+//        PanguPlugin.getLogger().error("Couldn't hook checkPrefix!");
 
         return basicClass;
     }

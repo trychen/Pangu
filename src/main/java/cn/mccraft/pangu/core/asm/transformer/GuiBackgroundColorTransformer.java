@@ -34,13 +34,13 @@ public class GuiBackgroundColorTransformer implements IClassTransformer {
 
                     ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
                     classNode.accept(cw);
-                    PanguPlugin.getLogger().info("Hooked net.minecraft.client.gui.GuiScreen#drawWorldBackground(int);");
+                    System.out.println("Hooked net.minecraft.client.gui.GuiScreen#drawWorldBackground(int);");
                     return cw.toByteArray();
                 }
             }
         }
 
-        PanguPlugin.getLogger().error("Couldn't hook drawWorldBackground!");
+        System.err.println("Couldn't hook drawWorldBackground!");
 
         return basicClass;
     }

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.util.image;
 
 import cn.mccraft.pangu.core.PanguCore;
+import cn.mccraft.pangu.core.util.Base64Utils;
 import cn.mccraft.pangu.core.util.Http;
 import cn.mccraft.pangu.core.util.LocalCache;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class RemoteGif extends GifImage {
     protected RemoteGif(String urlPath) throws URISyntaxException {
         this.urlPath = urlPath;
         this.url = new URI(urlPath);
-        this.id = Base64.getEncoder().encodeToString(urlPath.getBytes());
+        this.id = Base64Utils.safeUrlBase64Encode(urlPath.getBytes());
         this.cachedFilePath = createCachedFilePath();
         LocalCache.markFileUsed(cachedFilePath.toPath());
 

@@ -31,6 +31,8 @@ public class BridgeTransformer implements IClassTransformer {
     @SuppressWarnings("Duplicates")
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        if (basicClass == null) return null;
+
         ClassNode classNode = ASMHelper.newClassNode(basicClass);
         boolean edited = false;
 
@@ -93,7 +95,7 @@ public class BridgeTransformer implements IClassTransformer {
                 }
             }
 
-            PanguPlugin.getLogger().debug("Hook @Bridge method: " + classNode.name + "#" + method.name + method.desc + "");
+//            PanguPlugin.getLogger().debug("Hook @Bridge method: " + classNode.name + "#" + method.name + method.desc + "");
         }
         if (!edited) return basicClass;
         ClassWriter cw = new PanguClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
