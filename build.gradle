@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
         maven { url 'https://jitpack.io' }
         maven { url "http://files.minecraftforge.net/maven" }
@@ -131,19 +130,6 @@ idea.workspace.iws.withXml {
         if (mainClass == 'GradleStart' || mainClass == 'GradleStartServer') {
             def jvmArg = String.join(' ', ['-Dfml.coreMods.load=' + mod_core_plugin])
             it.option.find({ it.@name == 'VM_PARAMETERS' }).@value = jvmArg
-        }
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.mineclay.com/repository/zhua-release/") {
-                authentication(userName: "$clayUsername", password: "$clayPassword")
-            }
-            pom.version = "$project.version"
-            pom.artifactId = "$project.name"
-            pom.groupId = "$project.group"
         }
     }
 }
