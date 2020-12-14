@@ -279,7 +279,7 @@ public interface Rect {
 
         color(color);
         GlStateManager.disableTexture2D();
-        GlStateManager.enableAlpha();
+        GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
 
         int zLevel = ZLEVEL[0];
@@ -343,6 +343,28 @@ public interface Rect {
         bufferbuilder.pos(x + width, y + height, zLevel).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex();
         bufferbuilder.pos(x + width, y, zLevel).tex((u + uWidth) * f, v * f1).endVertex();
         bufferbuilder.pos(x, y, zLevel).tex(u * f, (v * f1)).endVertex();
+        tessellator.draw();
+    }
+
+    static void drawFlexibleCorner(float x, float y, float width, float height, float textureWidth, float textureHeight, float top, float bottom, float left, float right) {
+        float horizontalSpacing = width - left - right;
+        float verticalSpacing = height - top - bottom;
+
+        if (horizontalSpacing < 0) horizontalSpacing = 0;
+        if (verticalSpacing < 0) verticalSpacing = 0;
+
+        float perWidth = 1.0F / textureWidth;
+        float perHeight = 1.0F / textureHeight;
+
+        int zLevel = ZLEVEL[0];
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(1, 1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(1, 0).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(0, 0).endVertex();
         tessellator.draw();
     }
 

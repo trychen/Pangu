@@ -15,6 +15,7 @@ public class Grid extends Container {
     protected float currentLineHeight;
     protected int line = 0, lineIndex = 0;
     protected boolean leadingPadding = true;
+    protected float minHeight;
 
     public Grid(float width, float height) {
         super(width, height);
@@ -66,5 +67,8 @@ public class Grid extends Container {
 
     public void rectifyHeight() {
         setHeight(currentY + currentLineHeight);
+        if (getHeight() < minHeight) {
+            setHeight(minHeight);
+        }
     }
 }

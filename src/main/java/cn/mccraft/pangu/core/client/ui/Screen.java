@@ -105,7 +105,9 @@ public abstract class Screen extends GuiScreen {
                 if (rootContainer == null) {
                     rootContainer = new Container(width, height);
                     rootContainer.setScreen(this);
+                    preInit();
                     init();
+                    postInit();
                 }
                 return;
             } else {
@@ -116,7 +118,9 @@ public abstract class Screen extends GuiScreen {
                     getModal().setSize(width, height);
                     getModal().init();
                 }
+                preInit();
                 init();
+                postInit();
             }
         } catch (Throwable e) {
             PanguCore.getLogger().error("Error while init ui " + getClass().toGenericString(), e);
@@ -294,6 +298,17 @@ public abstract class Screen extends GuiScreen {
      */
     public abstract void init();
 
+    /**
+     * Before init screen
+     */
+    public void preInit() {
+    }
+
+    /**
+     * After init screen
+     */
+    public void postInit() {
+    }
     /**
      * Draw background or else
      */

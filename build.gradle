@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id 'net.ltgt.apt' version '0.10'
-//    id 'maven'
+    id 'maven'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -135,15 +135,15 @@ idea.workspace.iws.withXml {
     }
 }
 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: "https://maven.mineclay.com/repository/zhua-release/") {
-//                authentication(userName: "$clayUsername", password: "$clayPassword")
-//            }
-//            pom.version = "$project.version"
-//            pom.artifactId = "$project.name"
-//            pom.groupId = "$project.group"
-//        }
-//    }
-//}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://maven.mineclay.com/repository/zhua-release/") {
+                authentication(userName: "$clayUsername", password: "$clayPassword")
+            }
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
+        }
+    }
+}
