@@ -10,6 +10,10 @@ public class HStack extends Stack {
         super(screen);
     }
 
+    public HStack(float width, float height) {
+        super(width, height);
+    }
+
     @Override
     public void fixSize(Component c, boolean first) {
         if (!first) wholeWidth += padding;

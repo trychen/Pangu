@@ -161,8 +161,8 @@ public abstract class Screen extends GuiScreen {
 
             // 画调试的中线框
             if (isDebug()) {
-                Rect.draw(halfWidth, 0, halfWidth + 1, height, 0xAA00FF00);
-                Rect.draw(0, halfHeight, width, halfHeight + 1, 0xAA00FF00);
+                Rect.drawBox(halfWidth, 0, 0.5F, height, 0xAA00FF00);
+                Rect.drawBox(0, halfHeight, width, 0.5F, 0xAA00FF00);
             }
 
             drawForeground();

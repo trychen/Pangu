@@ -56,6 +56,10 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Setter
     protected Set<Style> styles;
 
+    @Getter
+    @Setter
+    protected boolean passthroughClick = false;
+
     public Component() {
     }
 
@@ -148,7 +152,7 @@ public abstract class Component implements Cloneable, Comparable<Component> {
      */
     @SideOnly(Side.CLIENT)
     public void drawComponentBox(int color) {
-        Rect.drawFrameBox(getX(), getY(), getWidth(), getHeight(), 1, color);
+        Rect.drawFrameBox(getX(), getY(), getWidth(), getHeight(), 0.5F, color);
     }
 
     /**

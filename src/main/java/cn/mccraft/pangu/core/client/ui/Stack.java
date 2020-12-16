@@ -24,6 +24,10 @@ public abstract class Stack extends Container {
         setScreen(screen);
     }
 
+    public Stack(float width, float height) {
+        super(width, height);
+    }
+
     @Override
     public Stack addComponent(@Nonnull Component c) {
         super.addComponent(c);

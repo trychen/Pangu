@@ -204,7 +204,7 @@ public class Container extends Component implements Cloneable {
 
             c.onMousePressed(mouseButton, mouseX, mouseY);
 
-            if (isHasClickPriority()) break;
+            if (!c.isPassthroughClick() && !(c instanceof PassthroughClick) && isHasClickPriority()) break;
         }
 
         if (!componentClicked.get()) {
@@ -238,7 +238,7 @@ public class Container extends Component implements Cloneable {
             for (Style style : c.getStyles()) style.onMouseReleased(c, mouseButton, mouseX, mouseY);
             c.onMouseReleased(mouseButton, mouseX, mouseY);
 
-            if (isHasClickPriority()) break;
+            if (!c.isPassthroughClick() && !(c instanceof PassthroughClick) && isHasClickPriority()) break;
         }
     }
 

@@ -10,6 +10,10 @@ public class VStack extends Stack {
         super(screen);
     }
 
+    public VStack(float width, float height) {
+        super(width, height);
+    }
+
     @Override
     public void fixSize(Component c, boolean first) {
         if (!first) wholeHeight += padding;
