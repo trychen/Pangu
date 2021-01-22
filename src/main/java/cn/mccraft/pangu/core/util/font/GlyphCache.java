@@ -37,23 +37,23 @@ public class GlyphCache {
      * The width in pixels of every texture used for caching pre-rendered glyph images. Used by GlyphCache when calculating
      * floating point 0.0-1.0 texture coordinates. Must be a power of two for mip-mapping to work.
      */
-    private static final int TEXTURE_WIDTH = 256;
+    private static final int TEXTURE_WIDTH = 512;
 
     /**
      * The height in pixels of every texture used for caching pre-rendered glyph images. Used by GlyphCache when calculating
      * floating point 0.0-1.0 texture coordinates. Must be a power of two for mip-mapping to work.
      */
-    private static final int TEXTURE_HEIGHT = 256;
+    private static final int TEXTURE_HEIGHT = 512;
 
     /**
      * Initial width in pixels of the stringImage buffer used to extract individual glyph images.
      */
-    private static final int STRING_WIDTH = 256;
+    private static final int STRING_WIDTH = 512;
 
     /**
      * Initial height in pixels of the stringImage buffer used to extract individual glyph images.
      */
-    private static final int STRING_HEIGHT = 64;
+    private static final int STRING_HEIGHT = 128;
 
     /**
      * The width in pixels of a transparent border between individual glyphs in the cache texture. This border keeps neighboring
@@ -111,14 +111,14 @@ public class GlyphCache {
     private int imageData[] = new int[TEXTURE_WIDTH * TEXTURE_HEIGHT];
 
     /**
-     * A big-endian isContinue int buffer used with glTexSubImage2D() and glTexImage2D(). Used for loading the pre-rendered glyph
+     * A big-endian direct int buffer used with glTexSubImage2D() and glTexImage2D(). Used for loading the pre-rendered glyph
      * images from the glyphCacheImage BufferedImage into OpenGL textures. This buffer uses big-endian byte ordering to ensure
      * that the integers holding packed RGBA colors are stored into memory in a predictable order.
      */
     private IntBuffer imageBuffer = ByteBuffer.allocateDirect(4 * TEXTURE_WIDTH * TEXTURE_HEIGHT).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
 
     /**
-     * A single integer isContinue buffer with native byte ordering used for returning values from glGenTextures().
+     * A single integer direct buffer with native byte ordering used for returning values from glGenTextures().
      */
     private IntBuffer singleIntBuffer = GLAllocation.createDirectIntBuffer(1);
 
@@ -205,7 +205,7 @@ public class GlyphCache {
      */
     void setDefaultFont(Font font, int size, boolean antiAlias) {
         usedFonts.clear();
-        usedFonts.add(font); //size 1 > 72
+        usedFonts.add(font.deriveFont(72F)); //size 1 > 72
 
         fontSize = size;
         antiAliasEnabled = antiAlias;
@@ -468,7 +468,8 @@ public class GlyphCache {
         if (dirty != null) {
             /* Load imageBuffer with pixel data ready for transfer to OpenGL texture */
             updateImageBuffer(dirty.x, dirty.y, dirty.width, dirty.height);
-
+            
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureName);
             GlStateManager.bindTexture(textureName);
             GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, dirty.x, dirty.y, dirty.width, dirty.height,
                     GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
@@ -558,7 +559,7 @@ public class GlyphCache {
             imageData[i] = (color << 8) | (color >>> 24);
         }
 
-        /* Copy int array to isContinue buffer; big-endian order ensures a 0xRR, 0xGG, 0xBB, 0xAA byte layout */
+        /* Copy int array to direct buffer; big-endian order ensures a 0xRR, 0xGG, 0xBB, 0xAA byte layout */
         ((Buffer)imageBuffer).clear();
         imageBuffer.put(imageData);
         ((Buffer)imageBuffer).flip();

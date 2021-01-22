@@ -3,33 +3,19 @@ package cn.mccraft.pangu.core.network;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.loader.AnnotationInjector;
 import cn.mccraft.pangu.core.loader.AnnotationStream;
-import cn.mccraft.pangu.core.loader.InstanceHolder;
 import cn.mccraft.pangu.core.loader.Load;
+import cn.mccraft.pangu.core.network.bridge.*;
 import cn.mccraft.pangu.core.util.Games;
-import cn.mccraft.pangu.core.util.Sides;
 import cn.mccraft.pangu.core.util.Threads;
-import cn.mccraft.pangu.core.util.data.Persistence;
-import com.github.mouse0w0.fastreflection.FastReflection;
-import com.github.mouse0w0.fastreflection.MethodAccessor;
-import io.netty.buffer.ByteBuf;
 import lombok.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IThreadListener;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -91,6 +77,12 @@ public interface BridgeHandler {
 
         PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_SERVER_MULTIPART_MESSAGE, Side.SERVER);
         PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_CLIENT_MULTIPART_MESSAGE, Side.CLIENT);
+
+        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_SERVER_COMPRESS_MULTIPART_MESSAGE, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_CLIENT_COMPRESS_MULTIPART_MESSAGE, Side.CLIENT);
+
+        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, CompressPacket.class, Network.BRIDGE_SERVER_COMPRESS_MESSAGE, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, CompressPacket.class, Network.BRIDGE_CLIENT_COMPRESS_MESSAGE, Side.CLIENT);
     }
 
     @AllArgsConstructor
@@ -145,288 +137,5 @@ public interface BridgeHandler {
         boolean isSync();
 
         Side side();
-    }
-
-    class BaseSolution implements Solution {
-        @NonNull
-        private Bridge bridge;
-        @Getter(lazy = true)
-        private final Persistence persistence = InstanceHolder.getOrNewInstance(bridge.persistence());
-        @NonNull
-        private Method method;
-        @Getter(lazy = true)
-        private final Object ownerInstance = InstanceHolder.getInstance(method.getDeclaringClass());
-        @Getter(lazy = true)
-        private final String[] actualParameterNames = Arrays.stream(method.getParameters()).map(Parameter::getName).toArray(String[]::new);
-        @Getter
-        private boolean withEntityPlayerParameter;
-        @Getter
-        private Type[] actualParameterTypes;
-        @Getter
-        private boolean isStatic;
-        @Getter
-        private MethodAccessor methodAccessor;
-        @Getter
-        private boolean persistenceByParameterOrder;
-
-        private BaseSolution(@NonNull Bridge bridge, @NonNull Method method) throws Exception {
-            this.bridge = bridge;
-            this.method = method;
-            this.isStatic = Modifier.isStatic(method.getModifiers());
-            this.withEntityPlayerParameter = method.getParameterTypes().length > 0 && method.getParameterTypes()[0] == EntityPlayer.class;
-            this.actualParameterTypes = this.withEntityPlayerParameter ? Arrays.copyOfRange(method.getGenericParameterTypes(), 1, method.getGenericParameterTypes().length) : method.getGenericParameterTypes();
-            this.methodAccessor = FastReflection.create(method);
-            this.persistenceByParameterOrder = bridge.persistenceByParameterOrder();
-            if (method.getParameterCount() > 0 && method.getParameters()[0].isNamePresent()) {
-                this.persistenceByParameterOrder = false;
-            }
-        }
-
-        @Override
-        public void solve(EntityPlayer player, byte[] data) throws Exception {
-            Object[] objects = getPersistence().deserialize(getActualParameterNames(), data, actualParameterTypes);
-            if (isWithEntityPlayerParameter()) objects = ArrayUtils.add(objects, 0, player);
-            getMethodAccessor().invoke(getOwnerInstance(), objects);
-        }
-
-        @Override
-        public void solve(Object[] objects) throws IOException {
-            Object[] actualParameters;
-
-            //处理玩家参数
-            if (isWithEntityPlayerParameter())
-                actualParameters = Arrays.copyOfRange(objects, 1, objects.length);
-            else
-                actualParameters = objects;
-
-            // 序列化
-            byte[] bytes = getPersistence().serialize(getActualParameterNames(), actualParameters, actualParameterTypes, persistenceByParameterOrder);
-
-            if (bytes.length > 30000) {
-                MultiPartPacketBuffer buffer = new MultiPartPacketBuffer(bridge.value(), bytes);
-
-                for (MultiPartPacket packet : buffer.getPackets()) {
-                    if (side().isClient()) {
-                        if (isWithEntityPlayerParameter())
-                            PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
-                        else
-                            PanguCore.getNetwork().sendToAll(packet);
-                    } else {
-                        PanguCore.getNetwork().sendToServer(packet);
-                    }
-                }
-            } else {
-                IMessage packet = new Packet(bridge.value(), bytes);
-
-                // 发包
-                if (side().isClient()) {
-                    if (isWithEntityPlayerParameter())
-                        PanguCore.getNetwork().sendTo(packet, (EntityPlayerMP) objects[0]);
-                    else
-                        PanguCore.getNetwork().sendToAll(packet);
-                } else {
-                    PanguCore.getNetwork().sendToServer(packet);
-                }
-            }
-        }
-
-        @Override
-        public boolean isContinue() {
-            return bridge.side() == Sides.currentThreadSide();
-        }
-
-        @Override
-        public boolean isSync() {
-            return bridge.sync();
-        }
-
-        @Override
-        public Side side() {
-            return bridge.side();
-        }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    class Packet implements IMessage {
-        private String key;
-        private byte[] bytes;
-
-        @Override
-        public void fromBytes(ByteBuf buf) {
-            byte[] utf8Bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
-            buf.readBytes(utf8Bytes);
-            this.key = new String(utf8Bytes, StandardCharsets.UTF_8);
-
-            this.bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
-            buf.readBytes(bytes);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf) {
-            byte[] utf8Bytes = key.getBytes(StandardCharsets.UTF_8);
-            ByteBufUtils.writeVarInt(buf, utf8Bytes.length, 4);
-            buf.writeBytes(utf8Bytes);
-
-            ByteBufUtils.writeVarInt(buf, bytes.length, 4);
-            buf.writeBytes(bytes);
-        }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    class MultiPartPacket implements IMessage {
-        /**
-         * Unique id for every packet
-         */
-        private UUID uuid;
-
-        /**
-         * Total packet size
-         */
-        private short total;
-
-        /**
-         * Current packet index
-         */
-        private short current;
-
-        private String key;
-        private byte[] bytes;
-
-        @Override
-        public void fromBytes(ByteBuf buf) {
-            this.uuid = new UUID(buf.readLong(), buf.readLong());
-
-            this.total = buf.readShort();
-            this.current = buf.readShort();
-
-            byte[] utf8Bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
-            buf.readBytes(utf8Bytes);
-            this.key = new String(utf8Bytes, StandardCharsets.UTF_8);
-
-            this.bytes = new byte[ByteBufUtils.readVarInt(buf, 4)];
-            buf.readBytes(bytes);
-        }
-
-        @Override
-        public void toBytes(ByteBuf buf) {
-            buf.writeLong(uuid.getMostSignificantBits());
-            buf.writeLong(uuid.getLeastSignificantBits());
-
-            buf.writeShort(total);
-            buf.writeShort(current);
-
-            byte[] utf8Bytes = key.getBytes(StandardCharsets.UTF_8);
-            ByteBufUtils.writeVarInt(buf, utf8Bytes.length, 4);
-            buf.writeBytes(utf8Bytes);
-
-            ByteBufUtils.writeVarInt(buf, bytes.length, 4);
-            buf.writeBytes(bytes);
-        }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    class MultiPartPacketBuffer {
-        private MultiPartPacket[] packets;
-        private int size;
-
-        public MultiPartPacketBuffer(String key, byte[] bytes) {
-            short total = (short) ((bytes.length / 30000) + (bytes.length % 30000 > 0 ? 1 : 0));
-
-            UUID id = UUID.randomUUID();
-            packets = new MultiPartPacket[total];
-
-            for (short i = 0; i < total; i++) {
-                MultiPartPacket packet = new MultiPartPacket();
-
-                packet.setUuid(id);
-                packet.setCurrent(i);
-                packet.setTotal(total);
-                packet.setKey(key);
-                packet.setBytes(
-                        ArrayUtils.subarray(bytes, i * 30000, Math.min(bytes.length, (i + 1) * 30000))
-                );
-
-                packets[i] = packet;
-            }
-        }
-
-        public MultiPartPacketBuffer(MultiPartPacket packet) {
-            packets = new MultiPartPacket[packet.total];
-        }
-
-        public void process(MultiPartPacket packet) {
-            packets[packet.getCurrent()] = packet;
-            size += packet.getBytes().length;
-        }
-
-        public boolean isComplete() {
-            for (MultiPartPacket packet : packets) {
-                if (packet == null) return false;
-            }
-            return true;
-        }
-
-        public byte[] getBytes() {
-            byte[] bytes = new byte[size];
-            int cursor = 0;
-            for (MultiPartPacket packet : packets) {
-                System.arraycopy(packet.bytes, 0, bytes, cursor, packet.getBytes().length);
-                cursor += packet.getBytes().length;
-            }
-            return bytes;
-        }
-    }
-    Map<UUID, MultiPartPacketBuffer> MULTI_PART_PACKET_BUFFER = new ConcurrentHashMap<>();
-
-    @AllArgsConstructor
-    enum MultiPartPacketHandler implements IMessageHandler<MultiPartPacket, IMessage> {
-        INSTANCE;
-
-        @Override
-        public IMessage onMessage(MultiPartPacket message, MessageContext ctx) {
-            Solution solution = SOLUTIONS.get(message.getKey());
-
-            // 空检测
-            if (solution == null) {
-                PanguCore.getLogger().error("Couldn't find any solution to handle @Bridge message: " + message.getKey());
-                return null;
-            }
-
-            MultiPartPacketBuffer buffer = MULTI_PART_PACKET_BUFFER.computeIfAbsent(message.getUuid(), it -> new MultiPartPacketBuffer(message));
-            buffer.process(message);
-
-            if (!buffer.isComplete()) return null;
-
-            MULTI_PART_PACKET_BUFFER.remove(message.getUuid());
-
-            if (!solution.isSync()) {
-                try {
-                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), buffer.getBytes());
-                } catch (Throwable e) {
-                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
-                }
-                return null;
-            }
-
-            IThreadListener side = Threads.side(solution.side());
-            if (side == null) {
-                PanguCore.getLogger().error("Not a valid side for @Bridge message " + message.getKey());
-                return null;
-            }
-            side.addScheduledTask(() -> {
-                try {
-                    solution.solve(solution.side().isServer() ? ctx.getServerHandler().player : Games.player(), buffer.getBytes());
-                } catch (Throwable e) {
-                    PanguCore.getLogger().error("Unable to handle @Bridge for " + message.getKey(), e);
-                }
-            });
-            return null;
-        }
     }
 }

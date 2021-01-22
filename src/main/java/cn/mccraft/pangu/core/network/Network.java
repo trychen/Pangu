@@ -19,6 +19,12 @@ public interface Network {
     int BRIDGE_SERVER_MULTIPART_MESSAGE = 2;
     int BRIDGE_CLIENT_MULTIPART_MESSAGE = 3;
 
+    int BRIDGE_SERVER_COMPRESS_MESSAGE = 4;
+    int BRIDGE_CLIENT_COMPRESS_MESSAGE = 5;
+
+    int BRIDGE_SERVER_COMPRESS_MULTIPART_MESSAGE = 6;
+    int BRIDGE_CLIENT_COMPRESS_MULTIPART_MESSAGE = 7;
+
     static SimpleNetworkWrapper getNetworkWrapper(Class<?> clazz) {
         // finding mod instance
         val container = ModFinder.getModContainer(clazz);

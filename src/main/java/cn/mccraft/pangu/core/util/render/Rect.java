@@ -119,6 +119,12 @@ public interface Rect {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
 
+
+    static void normalFiltering() {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+
     static void linearMipmapLinearFiltering() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -419,7 +425,7 @@ public interface Rect {
     }
 
     static int alpha(int color, float alpha) {
-        return alpha(color, (int) alpha * 0xFF);
+        return alpha(color, (int) (alpha * 0xFF));
     }
 
     static int alpha(int color, int alpha) {
@@ -427,14 +433,14 @@ public interface Rect {
     }
 
     static int red(int color, float red) {
-        return red(color, (int) red * 0xFF);
+        return red(color, (int) (red * 0xFF));
     }
     static int red(int color, int red) {
         return (color & 0xFF00FFFF) | (red << 16);
     }
 
     static int green(int color, float green) {
-        return green(color, (int) green * 0xFF);
+        return green(color, (int) (green * 0xFF));
     }
 
     static int green(int color, int green) {
@@ -442,7 +448,7 @@ public interface Rect {
     }
 
     static int blue(int color, float blue) {
-        return blue(color, (int) blue * 0xFF);
+        return blue(color, (int) (blue * 0xFF));
     }
 
     static int blue(int color, int blue) {

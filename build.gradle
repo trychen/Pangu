@@ -133,3 +133,16 @@ idea.workspace.iws.withXml {
         }
     }
 }
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "https://maven.mineclay.com/repository/zhuapublic-release/") {
+                authentication(userName: "$clayUsername", password: "$clayPassword")
+            }
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
+        }
+    }
+}

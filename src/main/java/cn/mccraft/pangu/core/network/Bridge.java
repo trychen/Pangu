@@ -32,9 +32,20 @@ public @interface Bridge {
      */
     boolean also() default false;
 
+    /**
+     * Serializer / Deserializer
+     */
     Class<? extends Persistence> persistence() default JsonPersistence.class;
 
+    /**
+     * In some case (ex. dynamic proxy) cannot get the parameter name
+     */
     boolean persistenceByParameterOrder() default true;
 
     boolean hooked() default false;
+
+    /**
+     * Enable GZip compress
+     */
+    boolean compress() default false;
 }
