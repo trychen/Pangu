@@ -26,6 +26,10 @@ public interface RenderUtils {
 
     boolean[] LIGHT_TEXTURE2D_ENABLE = {false};
 
+    static RenderItem getRenderItem() {
+        return Games.minecraft().getRenderItem();
+    }
+
     /**
      * Render Item with {@link net.minecraft.client.renderer.RenderItem} as its on the ground
      */

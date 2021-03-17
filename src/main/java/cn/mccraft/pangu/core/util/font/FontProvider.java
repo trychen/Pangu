@@ -41,6 +41,18 @@ public interface FontProvider {
         return this.drawCenteredString(text, x, y, 0xFF000000, false);
     }
 
+    default int drawEndingString(String text, float x, float y, int color, boolean shadow) {
+        return drawString(text, x - getStringWidth(text), y, color, shadow);
+    }
+
+    default int drawEndingString(String text, float x, float y, int color) {
+        return this.drawEndingString(text, x, y, color, false);
+    }
+
+    default int drawEndingString(String text, float x, float y) {
+        return this.drawEndingString(text, x, y, 0xFF000000, false);
+    }
+
     default int drawString(String text, float x, float y, float parentWidth, int color, boolean shadow, Alignment alignment) {
         if (alignment == Alignment.LEADING) {
             return drawString(text, x, y, color, shadow);

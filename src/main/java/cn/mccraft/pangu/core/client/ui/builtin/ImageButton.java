@@ -21,22 +21,27 @@ public class ImageButton extends Button {
 
     @Getter
     @Setter
-    protected boolean hover;
+    protected boolean withHoverEffect;
 
     public ImageButton() {
         super(0F, 0);
     }
 
+    public ImageButton(TextureProvider image, float width, float height) {
+        super(width, height);
+        this.image = image;
+    }
+
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
         Rect.startDrawing();
-        Rect.color(color);
+        Rect.color(getColor());
         Rect.bind(getImage());
 
         if (isLinear()) Rect.linearFiltering();
         else Rect.nearestFiltering();
 
         Rect.drawFullTexTextured(getX(), getY(), getWidth(), getHeight());
-        if (isHovered() && isHover()) Rect.drawBox(getX(), getY(), getWidth(), getHeight(), 0x2cFFFFFF);
+        if (isHovered() && isWithHoverEffect()) Rect.drawBox(getX(), getY(), getWidth(), getHeight(), 0x2cFFFFFF);
     }
 }

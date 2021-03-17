@@ -71,4 +71,16 @@ public class Grid extends Container {
             setHeight(minHeight);
         }
     }
+
+    public void rectifyHeight(float minHeight) {
+        rectifyHeight();
+        if (getHeight() < minHeight) setHeight(minHeight);
+    }
+
+    public void rectifyHeight(float minHeight, float bottomPadding) {
+        rectifyHeight();
+        nextLine();
+        setCurrentLineHeight(bottomPadding);
+        if (getHeight() < minHeight) setHeight(minHeight);
+    }
 }

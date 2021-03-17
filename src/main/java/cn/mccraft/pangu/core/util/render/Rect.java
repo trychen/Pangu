@@ -13,6 +13,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Random;
+
 import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -256,6 +258,10 @@ public interface Rect {
         draw(x, y, x + width, y + height, color);
     }
 
+    static void drawCenterBoxInCenter(float x, float y, float width, float height, int color) {
+        drawBox(x - width / 2F, y - height / 2F, width, height, color);
+    }
+
     static void drawFrame(float left, float top, float right, float bottom, float border, int color) {
         draw(left, top, left + border, bottom, color);
         draw(right - border, top, right, bottom, color);
@@ -314,8 +320,15 @@ public interface Rect {
         tessellator.draw();
     }
 
+    static void drawFullTexTexturedInCenter(float x, float y, float width, float height) {
+        drawFullTexTextured(x - width * 0.5F, y - height * 0.5F, width, height);
+    }
     static void drawFullTexTextured(float x, float y, float width, float height, float factor) {
         drawFullTexTextured(x, y, width * factor, height * factor);
+    }
+
+    static void drawFullTexTexturedInCenter(float x, float y, float width, float height, float factor) {
+        drawFullTexTextured(x - width * factor * 0.5F, y - height * factor * 0.5F, width * factor, height * factor);
     }
 
     static void drawCustomSizeTextured(float x, float y, float width, float height) {
@@ -392,6 +405,44 @@ public interface Rect {
     }
 
 
+    static void drawFullTexTexturedVerticalProgress(float x, float y, float width, float height, float progress) {
+        int zLevel = Rect.ZLEVEL[0];
+
+        y += height * (1 - progress);
+        height *= progress;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(1, 1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(1, 1 - progress).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(0, 1 - progress).endVertex();
+        tessellator.draw();
+    }
+
+    static void drawFullTexTexturedVerticalProgress(float x, float y, float width, float height, float factor, float progress) {
+        drawFullTexTexturedVerticalProgress(x, y, width * factor, height * factor, progress);
+    }
+
+    static void drawFullTexTexturedProgress(float x, float y, float width, float height, float progress) {
+        int zLevel = Rect.ZLEVEL[0];
+        width *= progress;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(1 * progress, 1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(1 * progress, 0).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(0, 0).endVertex();
+        tessellator.draw();
+    }
+
+    static void drawFullTexTexturedProgress(float x, float y, float width, float height, float factor, float progress) {
+        drawFullTexTexturedProgress(x, y, width * factor, height * factor, progress);
+    }
+
     static float alpha(int color) {
         return (color >>> 24 & 0xFF) / 255.0F;
     }
@@ -453,5 +504,11 @@ public interface Rect {
 
     static int blue(int color, int blue) {
         return (color & 0xFFFFFF00) | blue;
+    }
+
+    Random RAND = new Random();
+
+    static int randomColor() {
+        return  (RAND.nextInt() << 8 >>> 8) | 0xFF000000;
     }
 }

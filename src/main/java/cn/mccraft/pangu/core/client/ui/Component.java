@@ -30,6 +30,9 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Setter
     protected Screen screen;
 
+    /**
+     * Rendering priority in a screen (not the same as Rect.zLevel())
+     */
     @Getter
     @Setter
     protected int zLevel = 100;
@@ -56,6 +59,9 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     @Setter
     protected Set<Style> styles;
 
+    /**
+     * Whether passthrough click event to the following components
+     */
     @Getter
     @Setter
     protected boolean passthroughClick = false;
