@@ -39,6 +39,9 @@ public abstract class Scrolling extends Component {
     @Setter
     protected boolean showScrollBar = true;
 
+    @Getter
+    @Setter
+    protected boolean canScrollOnContent = true;
 
     public Scrolling(float width, float height) {
         setSize(width, height);
@@ -90,16 +93,11 @@ public abstract class Scrolling extends Component {
 
         float mouseListY = mouseY - getY() + this.scrollDistance;
 
-        if (isShowScrollBar() && (getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
+        if ((getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
             if (this.initialMouseClickY == -1.0F) {
                 if (isHovered()) {
-                    // on element click
-                    if (mouseX - getX() <= getContentWidth()) {
-                        onContentClick(mouseX - getX(), mouseListY);
-                    }
-
                     // on scroll bar clicked
-                    if (mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {
+                    if (isShowScrollBar() && mouseX >= scrollBarLeft && mouseX <= scrollBarRight) {
                         this.scrollFactor = -1.0F;
                         float scrollHeight = this.getContentHeight() - getHeight();
                         if (scrollHeight < 1) scrollHeight = 1;
@@ -110,11 +108,12 @@ public abstract class Scrolling extends Component {
                         if (var13 > getHeight()) var13 = getHeight();
 
                         this.scrollFactor /= (getHeight() - var13) / scrollHeight;
+                        this.initialMouseClickY = mouseY;
                     } else {
                         this.scrollFactor = 1.0F;
+                        if (isCanScrollOnContent()) this.initialMouseClickY = mouseY;
                     }
 
-                    this.initialMouseClickY = mouseY;
                 } else {
                     this.initialMouseClickY = -2.0F;
                 }

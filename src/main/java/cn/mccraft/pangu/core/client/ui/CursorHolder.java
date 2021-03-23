@@ -18,6 +18,10 @@ public class CursorHolder {
         return isPresent() && type.equals(this.type);
     }
 
+    public Object peek(String type) {
+        return isPresent() && type.equals(this.type) ? object : null;
+    }
+
     public Object peek() {
         return object;
     }

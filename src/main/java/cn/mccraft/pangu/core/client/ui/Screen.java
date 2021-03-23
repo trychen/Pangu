@@ -52,6 +52,10 @@ public abstract class Screen extends GuiScreen {
     @Setter
     protected boolean debug;
 
+    @Getter
+    @Setter
+    protected boolean e2Close = true;
+
     /**
      * A screen with center origin means that
      * origin (0, 0) will be treated as screen center (halfWidth, halfHeight)
@@ -222,9 +226,11 @@ public abstract class Screen extends GuiScreen {
         try {
             if (!canInput && !ignoreKeyTypeDelay) return;
             if (Sides.isDeobfuscatedEnvironment()) debugShortcut(keyCode);
-            if (keyCode == 1) {
+            if (keyCode == Keyboard.KEY_ESCAPE) {
                 closeScreen();
-            } else {
+            } else if (getFocusedComponent() == null && isE2Close() && keyCode == Keyboard.KEY_E) {
+                closeScreen();
+            }else {
                 (getModal() == null ? rootContainer : getModal()).onKeyTyped(typedChar, keyCode);
                 typed(typedChar, keyCode);
             }

@@ -1,6 +1,7 @@
 package cn.mccraft.pangu.core.client.ui.builtin;
 
 import cn.mccraft.pangu.core.client.ui.Component;
+import cn.mccraft.pangu.core.util.Games;
 import cn.mccraft.pangu.core.util.render.Rect;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,10 @@ public class EntityShow extends Component {
     @Getter
     @Setter
     private boolean showBack = false;
+
+    public EntityShow() {
+        this(Games.player());
+    }
 
     public EntityShow(EntityLivingBase entity) {
         super();

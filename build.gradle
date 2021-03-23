@@ -73,8 +73,8 @@ dependencies {
 
     embed "com.github.depsypher:pngtastic:1.5"
 
-    compileOnly 'org.projectlombok:lombok:1.18.4'
-    apt 'org.projectlombok:lombok:1.18.4'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    apt 'org.projectlombok:lombok:1.18.16'
 
     testCompile 'junit:junit:4.12'
 }

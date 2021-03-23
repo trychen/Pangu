@@ -10,8 +10,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class CompressMultiPartPacketBuffer extends MultiPartPacketBuffer{
     public CompressMultiPartPacketBuffer(String key, byte[] raw) {

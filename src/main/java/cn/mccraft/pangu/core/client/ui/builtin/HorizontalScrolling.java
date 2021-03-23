@@ -38,6 +38,10 @@ public abstract class HorizontalScrolling extends Component {
     @Setter
     protected boolean showScrollBar = true;
 
+    @Getter
+    @Setter
+    protected boolean canScrollOnContent = true;
+
     public HorizontalScrolling(float width, float height) {
         setSize(width, height);
         this.scroller = (() -> {
@@ -85,11 +89,11 @@ public abstract class HorizontalScrolling extends Component {
         float scrollBarTop = getY() + getContentHeight();
         float scrollBarBottom = scrollBarTop + scrollBarHeight;
 
-        if (isShowScrollBar() && (getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
+        if ((getScreen() == null || getScreen().getModal() == null) && Mouse.isButtonDown(0)) {
             if (this.initialMouseClickX == -1.0F) {
                 if (isHovered()) {
                     // on scroll bar clicked
-                    if (mouseY >= scrollBarTop && mouseX <= scrollBarBottom) {
+                    if (isShowScrollBar() && mouseY >= scrollBarTop && mouseX <= scrollBarBottom) {
                         this.scrollFactor = -1.0F;
                         float scrollWidth = this.getContentWidth() - getHeight();
                         if (scrollWidth < 1) scrollWidth = 1;
@@ -100,11 +104,12 @@ public abstract class HorizontalScrolling extends Component {
                         if (var13 > getWidth()) var13 = getWidth();
 
                         this.scrollFactor /= (getWidth() - var13) / scrollWidth;
+                        this.initialMouseClickX = mouseX;
                     } else {
                         this.scrollFactor = 1.0F;
+                    if (isCanScrollOnContent()) this.initialMouseClickX = mouseX;
                     }
 
-                    this.initialMouseClickX = mouseX;
                 } else {
                     this.initialMouseClickX = -2.0F;
                 }
