@@ -79,18 +79,17 @@ public interface UI {
         return y;
     }
 
+
     static List<String> resizeStringList(FontProvider font, List<String> lines, int maxTextLength) {
+        if (maxTextLength <= 0) return lines;
         List<ITextComponent> ret = new ArrayList<>();
         for (String line : lines) {
             if (line == null) {
-                ret.add(null);
+                ret.add(new TextComponentString(""));
                 continue;
             }
 
-            ITextComponent chat = ForgeHooks.newChatWithLinks(line, false);
-            if (maxTextLength >= 0) {
-                ret.addAll(splitText(chat, maxTextLength, font, false, true));
-            }
+            ret.addAll(splitText(new TextComponentString(line), maxTextLength, font, false, true));
         }
         return ret.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
     }

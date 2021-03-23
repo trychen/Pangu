@@ -27,7 +27,6 @@ public class MultiLineText extends Component {
 
 
     @Getter
-    @Setter
     protected int padding = 3;
 
     @Getter
@@ -51,6 +50,13 @@ public class MultiLineText extends Component {
 
     public MultiLineText setContent(List<String> content) {
         this.content = UI.resizeStringList(font, content, (int) width);
+        setSize(width, this.content.size() * (font.getFontHeight() + getPadding()));
+        return this;
+    }
+
+    public MultiLineText setPadding(int padding) {
+        this.padding = padding;
+        setSize(width, this.content.size() * (font.getFontHeight() + getPadding()));
         return this;
     }
 }

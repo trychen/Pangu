@@ -78,9 +78,9 @@ public interface BridgeHandler {
         PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_SERVER_MULTIPART_MESSAGE, Side.SERVER);
         PanguCore.getNetwork().registerMessage(MultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_CLIENT_MULTIPART_MESSAGE, Side.CLIENT);
 
-        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_SERVER_COMPRESS_MULTIPART_MESSAGE, Side.SERVER);
-        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, MultiPartPacket.class, Network.BRIDGE_CLIENT_COMPRESS_MULTIPART_MESSAGE, Side.CLIENT);
-
+        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, CompressMultiPartPacket.class, Network.BRIDGE_SERVER_COMPRESS_MULTIPART_MESSAGE, Side.SERVER);
+        PanguCore.getNetwork().registerMessage(CompressMultiPartPacketHandler.INSTANCE, CompressMultiPartPacket.class, Network.BRIDGE_CLIENT_COMPRESS_MULTIPART_MESSAGE, Side.CLIENT);
+//
         PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, CompressPacket.class, Network.BRIDGE_SERVER_COMPRESS_MESSAGE, Side.SERVER);
         PanguCore.getNetwork().registerMessage(PacketHandler.INSTANCE, CompressPacket.class, Network.BRIDGE_CLIENT_COMPRESS_MESSAGE, Side.CLIENT);
     }
