@@ -13,7 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
 
 @SuppressWarnings("Duplicates")
@@ -89,14 +88,17 @@ public interface Rect {
     static void color() {
         color(1F, 1F, 1F, 1F);
     }
+
     static void color(float r, float g, float b, float a) {
-        GlStateManager.color(r,g,b,a);
+        GlStateManager.color(r, g, b, a);
     }
+
     static void color(float r, float g, float b) {
-        GlStateManager.color(r,g,b);
+        GlStateManager.color(r, g, b);
     }
+
     static void color(int r, int g, int b, int a) {
-        GlStateManager.color(r,g,b,a);
+        GlStateManager.color(r, g, b, a);
     }
 
     @Deprecated
@@ -325,9 +327,9 @@ public interface Rect {
     static void drawCustomSizeTextured(float x, float y, float width, float height, float factor) {
         Rect.drawCustomSizeTextured(x, y, 0, 0, width, height, width * factor, height * factor);
     }
-    
+
     static void drawCustomSizeTextured(float x, float y, float u, float v, float width, float height, float factor) {
-        Rect.drawCustomSizeTextured(x, y, u, v, width, height, width * factor, height * factor); 
+        Rect.drawCustomSizeTextured(x, y, u, v, width, height, width * factor, height * factor);
     }
 
     static void drawCustomSizeTextured(float x, float y, float uWidth, float vHeight, float width, float height) {
@@ -391,6 +393,27 @@ public interface Rect {
         drawCorner(x, y, width, height, 0, 0, 256, 256);
     }
 
+    static void drawRegularPolygon(double x, double y, int radius, int sides) {
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        Tessellator instance = Tessellator.getInstance();
+        BufferBuilder buffer = instance.getBuffer();
+        buffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION);
+        buffer.pos(x, y, 0).endVertex();
+
+        double pi = Math.PI * 2;
+
+        for (int i = 0; i <= sides; i++) {
+            double angle = (pi * i / sides) + Math.toRadians(180);
+            buffer.pos(x + Math.sin(angle) * radius, y + Math.cos(angle) * radius, 0).endVertex();
+        }
+        instance.draw();
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
 
     static float alpha(int color) {
         return (color >>> 24 & 0xFF) / 255.0F;
@@ -435,6 +458,7 @@ public interface Rect {
     static int red(int color, float red) {
         return red(color, (int) (red * 0xFF));
     }
+
     static int red(int color, int red) {
         return (color & 0xFF00FFFF) | (red << 16);
     }
