@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -15,13 +16,14 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-import static cn.mccraft.pangu.core.util.render.RenderUtils.*;
 import static org.lwjgl.opengl.GL11.*;
 
 @SuppressWarnings("Duplicates")
 @SideOnly(Side.CLIENT)
 public interface Rect {
     int[] ZLEVEL = {0};
+    ResourceLocation CLASSICAL_BACKGROUND = PanguResLoc.ofGui("classical_background.png");
+    Random RAND = new Random();
 
     static void startDrawing() {
         GlStateManager.enableTexture2D();
@@ -123,7 +125,6 @@ public interface Rect {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
-
 
     static void normalFiltering() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -253,7 +254,6 @@ public interface Rect {
         tessellator.draw();
     }
 
-
     /**
      * Draws a solid color rectangle with the specified coordinates and color.
      */
@@ -326,6 +326,7 @@ public interface Rect {
     static void drawFullTexTexturedInCenter(float x, float y, float width, float height) {
         drawFullTexTextured(x - width * 0.5F, y - height * 0.5F, width, height);
     }
+
     static void drawFullTexTextured(float x, float y, float width, float height, float factor) {
         drawFullTexTextured(x, y, width * factor, height * factor);
     }
@@ -399,8 +400,6 @@ public interface Rect {
         drawTextured(x + halfWidth, y + halfHeight, u + uSize - halfWidth, v + vSize - halfHeight, halfWidth, halfHeight);
     }
 
-    ResourceLocation CLASSICAL_BACKGROUND = PanguResLoc.ofGui("classical_background.png");
-
     static void drawClassicalBackground(float x, float y, float width, float height) {
         startDrawing();
         bind(CLASSICAL_BACKGROUND);
@@ -468,6 +467,21 @@ public interface Rect {
         drawFullTexTexturedProgress(x, y, width * factor, height * factor, progress);
     }
 
+    /**
+     * Draws a texture rectangle using the texture currently bound to the TextureManager
+     */
+    static void drawTextureAtlasSprite(float x, float y, TextureAtlasSprite textureSprite, float width, float height) {
+        int zLevel = Rect.ZLEVEL[0];
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(textureSprite.getMinU(), textureSprite.getMaxV()).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(textureSprite.getMaxU(), textureSprite.getMaxV()).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(textureSprite.getMaxU(), textureSprite.getMinV()).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(textureSprite.getMinU(), textureSprite.getMinV()).endVertex();
+        tessellator.draw();
+    }
+
     static float alpha(int color) {
         return (color >>> 24 & 0xFF) / 255.0F;
     }
@@ -532,9 +546,7 @@ public interface Rect {
         return (color & 0xFFFFFF00) | blue;
     }
 
-    Random RAND = new Random();
-
     static int randomColor() {
-        return  (RAND.nextInt() << 8 >>> 8) | 0xFF000000;
+        return (RAND.nextInt() << 8 >>> 8) | 0xFF000000;
     }
 }

@@ -2,7 +2,10 @@ package cn.mccraft.pangu.core.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,6 +25,14 @@ public interface Games {
 
     static Minecraft minecraft() {
         return minecraft;
+    }
+
+    static WorldClient world() {
+        return minecraft.world;
+    }
+
+    static IResourceManager resourceManager() {
+        return minecraft.getResourceManager();
     }
 
     static GuiScreen currentScreen() {

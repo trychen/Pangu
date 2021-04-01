@@ -1,16 +1,23 @@
 package cn.mccraft.pangu.core.client.ui;
 
 import cn.mccraft.pangu.core.util.Games;
+import cn.mccraft.pangu.core.util.image.TextureProvider;
 import cn.mccraft.pangu.core.util.render.Rect;
 import cn.mccraft.pangu.core.util.render.RenderUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
@@ -33,6 +40,14 @@ public class Slot extends Component {
      */
     public int slotNumber;
     protected ScreenContainer screenContainer;
+
+    @Getter
+    @Setter
+    protected String slotName;
+
+    @Getter
+    @Setter
+    protected TextureProvider background;
 
     public Slot(Container container, IInventory inventory, int index) {
         setSize(16, 16);
@@ -104,10 +119,29 @@ public class Slot extends Component {
         Rect.zLevel(100);
         RenderUtils.getRenderItem().zLevel = 100.0F;
 
+        onDrawItemBackground(itemstack);
+
         onDrawItem(itemstack, flag, flag1, s);
 
         RenderUtils.getRenderItem().zLevel = 0.0F;
         Rect.zLevel();
+    }
+
+    public void onDrawItemBackground(ItemStack itemStack) {
+        if (itemStack.isEmpty() && !isDisabled()) {
+            if (slotName != null) {
+                TextureAtlasSprite texture = Games.minecraft().getTextureMapBlocks().getAtlasSprite(slotName);
+                GlStateManager.disableLighting();
+                Rect.bind(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                Rect.drawTextureAtlasSprite(getX(), getY(), texture, getWidth(), getHeight());
+                GlStateManager.enableLighting();
+            } else if (background != null) {
+                GlStateManager.disableLighting();
+                Rect.bind(background);
+                Rect.drawFullTexTextured(getX(), getY(), getWidth(), getHeight());
+                GlStateManager.enableLighting();
+            }
+        }
     }
 
     public void onDrawItem(ItemStack itemstack, boolean valid, boolean isDragged, String altText) {
@@ -384,15 +418,19 @@ public class Slot extends Component {
         return getItemToolTip(stack);
     }
 
-    public List<String> getItemToolTip(ItemStack p_191927_1_) {
-        List<String> list = p_191927_1_.getTooltip(Games.player(), Games.minecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+    public List<String> getItemToolTip(ItemStack itemStack) {
+        List<String> list = itemStack.getTooltip(Games.player(), Games.minecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 
         for (int i = 0; i < list.size(); ++i) {
-            if (i == 0) list.set(i, p_191927_1_.getRarity().color + list.get(i));
+            if (i == 0) list.set(i, itemStack.getRarity().color + list.get(i));
             else list.set(i, TextFormatting.GRAY + list.get(i));
         }
 
         return list;
+    }
+
+    public void setEquipmentSlotTexture(EntityEquipmentSlot slot) {
+        setSlotName(ItemArmor.EMPTY_SLOT_NAMES[slot.getIndex()]);
     }
 
     public static boolean canAddItemToSlot(@Nullable Slot slotIn, ItemStack stack, boolean stackSizeMatters) {
