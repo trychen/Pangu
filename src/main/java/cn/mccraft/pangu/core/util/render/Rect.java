@@ -467,6 +467,48 @@ public interface Rect {
         drawFullTexTexturedProgress(x, y, width * factor, height * factor, progress);
     }
 
+
+    static void drawNinePaceCorner(float x, float y, float width, float height, float cornerSize) {
+        float percent = 1 / 3F;
+        float contentWidth = width - cornerSize * 2;
+        float contentHeight = height - cornerSize * 2;
+
+        // corner
+        // top left
+        drawFullTexTexturedWithUV(x, y, cornerSize, cornerSize, 0, 0, percent, percent);
+        // top right
+        drawFullTexTexturedWithUV(x + cornerSize + contentWidth, y, cornerSize, cornerSize, percent * 2, 0, percent, percent);
+        // bottom left
+        drawFullTexTexturedWithUV(x, y + cornerSize + contentHeight, cornerSize, cornerSize, 0, percent * 2, percent, percent);
+        // bottom right
+        drawFullTexTexturedWithUV(x + cornerSize + contentWidth, y + cornerSize + contentHeight, cornerSize, cornerSize, percent * 2, percent * 2, percent, percent);
+
+        // non-corner
+        // top
+        drawFullTexTexturedWithUV(x + cornerSize, y, contentWidth, cornerSize, percent, 0, percent, percent);
+        // bottom
+        drawFullTexTexturedWithUV(x + cornerSize, y + cornerSize + contentHeight, contentWidth, cornerSize, percent, percent * 2, percent, percent);
+        // center
+        drawFullTexTexturedWithUV(x + cornerSize, y + cornerSize, contentWidth, contentHeight, percent, percent, percent, percent);
+        // left
+        drawFullTexTexturedWithUV(x, y + cornerSize, cornerSize, contentHeight, 0, percent, percent, percent);
+        // right
+        drawFullTexTexturedWithUV(x + cornerSize + contentWidth, y + cornerSize, cornerSize, contentHeight, percent * 2, percent, percent, percent);
+
+    }
+
+    static void drawFullTexTexturedWithUV(float x, float y, float width, float height, float u, float v, float uWidth, float vHeight) {
+        int zLevel = Rect.ZLEVEL[0];
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(u, v + vHeight).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(u + uWidth, (v + vHeight)).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(u + uWidth, v).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(u, v).endVertex();
+        tessellator.draw();
+    }
+
     /**
      * Draws a texture rectangle using the texture currently bound to the TextureManager
      */

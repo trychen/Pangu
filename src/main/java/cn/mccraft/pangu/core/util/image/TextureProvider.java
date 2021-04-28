@@ -3,8 +3,11 @@ package cn.mccraft.pangu.core.util.image;
 import cn.mccraft.pangu.core.PanguCore;
 import cn.mccraft.pangu.core.util.render.Rect;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -95,5 +98,23 @@ public interface TextureProvider {
 
     default int getHeight() {
         return 0;
+    }
+
+    default void drawFullTexTextured(float x, float y, float width, float height) {
+        Rect.color();
+        Rect.bind(this);
+        Rect.drawFullTexTextured(x, y, width, height);
+    }
+
+    default void drawFullTexTexturedInCenter(float x, float y, float width, float height) {
+        drawFullTexTextured(x - width * 0.5F, y - height * 0.5F, width, height);
+    }
+
+    default void drawFullTexTextured(float x, float y, float width, float height, float factor) {
+        drawFullTexTextured(x, y, width * factor, height * factor);
+    }
+
+    default void drawFullTexTexturedInCenter(float x, float y, float width, float height, float factor) {
+        drawFullTexTextured(x - width * factor * 0.5F, y - height * factor * 0.5F, width * factor, height * factor);
     }
 }

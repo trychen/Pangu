@@ -71,6 +71,10 @@ public abstract class GifImage extends OpenGLTextureProvider {
         frames = null;
     }
 
+    public int getFromSequences(int frameTimeOffset) {
+        return sequences[((int) (System.currentTimeMillis() % this.duration) + frameTimeOffset) % sequences.length];
+    }
+
     public int getFromSequences() {
         return sequences[((int) (System.currentTimeMillis() % this.duration) + frameTimeOffset) % sequences.length];
     }

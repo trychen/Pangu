@@ -257,7 +257,7 @@ public interface ReflectUtils {
     static Class<?> forName(String name, String errorMessage){
         try {
             return Class.forName(name);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             PanguCore.getLogger().error(errorMessage, e);
         }
         return null;

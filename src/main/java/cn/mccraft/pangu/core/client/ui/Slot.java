@@ -72,17 +72,7 @@ public class Slot extends Component {
 
     @Override
     public void onDraw(float partialTicks, int mouseX, int mouseY) {
-        if (isHovered()) {
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            GlStateManager.colorMask(true, true, true, false);
-
-            Rect.drawBox(getX(), getY(), 16, 16, 0x80ffffff);
-
-            GlStateManager.colorMask(true, true, true, true);
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-        }
+        onDrawHovered(isHovered());
 
         ItemStack itemstack = getStack();
         boolean flag = false;
@@ -127,7 +117,22 @@ public class Slot extends Component {
         Rect.zLevel();
     }
 
+    public void onDrawHovered(boolean hovered) {
+        if (hovered) {
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
+            GlStateManager.colorMask(true, true, true, false);
+
+            Rect.drawBox(getX(), getY(), 16, 16, 0x80ffffff);
+
+            GlStateManager.colorMask(true, true, true, true);
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
+        }
+    }
+
     public void onDrawItemBackground(ItemStack itemStack) {
+
         if (itemStack.isEmpty() && !isDisabled()) {
             if (slotName != null) {
                 TextureAtlasSprite texture = Games.minecraft().getTextureMapBlocks().getAtlasSprite(slotName);
@@ -429,8 +434,9 @@ public class Slot extends Component {
         return list;
     }
 
-    public void setEquipmentSlotTexture(EntityEquipmentSlot slot) {
+    public Slot setEquipmentSlotTexture(EntityEquipmentSlot slot) {
         setSlotName(ItemArmor.EMPTY_SLOT_NAMES[slot.getIndex()]);
+        return this;
     }
 
     public static boolean canAddItemToSlot(@Nullable Slot slotIn, ItemStack stack, boolean stackSizeMatters) {
