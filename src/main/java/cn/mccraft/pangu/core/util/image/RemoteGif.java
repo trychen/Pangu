@@ -80,8 +80,14 @@ public class RemoteGif extends GifImage {
 
     @Override
     public int getTextureID() {
-        if (!loaded) return -1;
+        if (!loaded) return 0;
         return super.getTextureID();
+    }
+
+    @Override
+    public int getTextureID(long startTime, boolean loop) {
+        if (!loaded) return 0;
+        return super.getTextureID(startTime, loop);
     }
 
     protected void saveImage() throws IOException {
@@ -90,6 +96,15 @@ public class RemoteGif extends GifImage {
 
     public File createCachedFilePath() {
         return LocalCache.getCachePath("gif", id);
+    }
+
+
+    @Override
+    public void remove() {
+        cachedFilePath.delete();
+        free();
+        loaded = false;
+        PanguCore.getLogger().debug("Remove image " + url.toString());
     }
 
     @Override

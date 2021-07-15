@@ -204,6 +204,8 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
         if (textureID == 0) return true;
         GL11.glDeleteTextures(textureID);
         textureID = 0;
+        exception = false;
+        loaded = false;
         if (!isKeepBufferedImage()) imageBuffer = null;
         PanguCore.getLogger().debug("Free image " + url.toString());
         return true;
@@ -213,8 +215,6 @@ public class RemoteImage extends OpenGLTextureProvider implements ByteDeserializ
     public void remove() {
         cachedFilePath.delete();
         free();
-        exception = false;
-        loaded = false;
         PanguCore.getLogger().debug("Remove image " + url.toString());
     }
 

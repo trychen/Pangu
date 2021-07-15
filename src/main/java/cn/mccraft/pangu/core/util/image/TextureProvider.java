@@ -16,6 +16,10 @@ import java.io.File;
 public interface TextureProvider {
     int[] ID = new int[]{0};
 
+    static TextureProvider of(String path) {
+        return of(path, null);
+    }
+
     static TextureProvider of(String path, ResourceLocation missing) {
         if (path.startsWith("http://") || path.startsWith("https://")) {
             if (path.endsWith(".gif")) return RemoteGif.of(path, missing);
@@ -54,8 +58,33 @@ public interface TextureProvider {
         return error;
     }
 
+    /**
+     * With start time offset (only for animated image)
+     * @param startTime when this image start playing.
+     * @param loop loop playing
+     */
+    default ResourceLocation getTexture(long startTime, boolean loop) {
+        return getTexture(startTime, loop, null, null);
+    }
+
+    default ResourceLocation getTexture(long startTime, boolean loop, ResourceLocation loading) {
+        return getTexture(startTime, loop, loading, loading);
+    }
+
+    default ResourceLocation getTexture(long startTime, boolean loop, ResourceLocation loading, ResourceLocation error) {
+        return getTexture(loading, error);
+    }
+
     default int getTextureID() {
         return 0;
+    }
+
+    /**
+     * With start time offset (only for animated image)
+     * @param startTime when this image start playing
+     */
+    default int getTextureID(long startTime, boolean loop) {
+        return getTextureID();
     }
 
     default boolean isReady() {
@@ -69,7 +98,6 @@ public interface TextureProvider {
     default void bind() {
         Rect.bind(this.getTexture());
     }
-
     default void bind(ResourceLocation loading) {
         Rect.bind(this.getTexture(loading));
     }
@@ -77,6 +105,19 @@ public interface TextureProvider {
     default void bind(ResourceLocation loading, ResourceLocation error) {
         Rect.bind(this.getTexture(loading, error));
     }
+
+    default void bind(long startTime, boolean loop) {
+        Rect.bind(this.getTexture(startTime, loop));
+    }
+
+    default void bind(long startTime, boolean loop, ResourceLocation loading) {
+        Rect.bind(this.getTexture(startTime, loop, loading));
+    }
+
+    default void bind(long startTime, boolean loop, ResourceLocation loading, ResourceLocation error) {
+        Rect.bind(this.getTexture(startTime, loop, loading, error));
+    }
+
 
     default TextureAtlasSprite asAtlasSprite() {
         return null;

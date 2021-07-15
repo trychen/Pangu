@@ -3,6 +3,8 @@ package cn.mccraft.pangu.core.util.font;
 import cn.mccraft.pangu.core.client.ui.meta.Alignment;
 
 public interface FontProvider {
+    FontProvider DEFAULT = DefaultFontProvider.INSTANCE;
+
     int getStringWidth(String text);
 
     int drawString(String text, float x, float y, int color, boolean shadow);

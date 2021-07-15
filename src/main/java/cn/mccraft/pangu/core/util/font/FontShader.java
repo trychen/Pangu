@@ -22,7 +22,7 @@ public class FontShader {
         return INSTANCE;
     }
 
-    private void setupShader() {
+    public void setupShader() {
         if(this.enableShader) {
             String vShaderSrc = "#version 120\nvoid main(void){  gl_Position = ftransform();  gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;  gl_FrontColor = gl_Color;}";
             String fShaderSrc = "#version 120\nuniform sampler2D texture;uniform vec4 colorBias;void main(void){  vec4 color = texture2DProj(texture, gl_TexCoord[0]);  color.r = clamp(color.r + colorBias.r , 0.0, 1.0);  color.g = clamp(color.g + colorBias.g , 0.0, 1.0);  color.b = clamp(color.b + colorBias.b , 0.0, 1.0);  color.a = clamp(color.a * colorBias.a , 0.0, 1.0);  gl_FragColor = color * gl_Color;}";
@@ -33,7 +33,7 @@ public class FontShader {
         }
     }
 
-    private int getShaderProg(String vShaderSrc, String fShaderSrc) {
+    public int getShaderProg(String vShaderSrc, String fShaderSrc) {
         int shader = GL20.glCreateProgram();
         int vShaderId = GL20.glCreateShader('\u8b31');
         int fShaderId = GL20.glCreateShader('\u8b30');

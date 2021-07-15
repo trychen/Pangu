@@ -35,5 +35,4 @@ public class FileGif extends GifImage {
             exception = true;
         }
     }
-
 }

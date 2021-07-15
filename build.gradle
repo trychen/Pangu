@@ -18,11 +18,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = mod_version
 
-//adds build number if on a CI server
-if (System.getenv().BUILD_NUMBER != null) {
-    version += ".${System.getenv().BUILD_NUMBER}"
-}
-
 group = mod_group
 
 // Build name as
@@ -81,12 +76,10 @@ dependencies {
 
 // Either Forge and Project required Java 8
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = targetCompatibility = 1.8
 
 compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = targetCompatibility = 1.8
 }
 
 jar {
@@ -134,15 +127,15 @@ idea.workspace.iws.withXml {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.mineclay.com/repository/zhuapublic-release/") {
-                authentication(userName: "$clayUsername", password: "$clayPassword")
-            }
-            pom.version = "$project.version"
-            pom.artifactId = "$project.name"
-            pom.groupId = "$project.group"
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: "https://maven.mineclay.com/repository/zhuapublic-release/") {
+//                authentication(userName: "$clayUsername", password: "$clayPassword")
+//            }
+//            pom.version = "$project.version"
+//            pom.artifactId = "$project.name"
+//            pom.groupId = "$project.group"
+//        }
+//    }
+//}

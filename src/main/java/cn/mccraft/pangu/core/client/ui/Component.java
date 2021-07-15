@@ -1,8 +1,8 @@
 package cn.mccraft.pangu.core.client.ui;
 
+import cn.mccraft.pangu.core.client.ui.meta.PositionAlignment;
 import cn.mccraft.pangu.core.client.ui.style.Style;
 import cn.mccraft.pangu.core.util.render.Rect;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,6 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Accessors(chain = true)
@@ -124,6 +123,12 @@ public abstract class Component implements Cloneable, Comparable<Component> {
     }
 
     public Component setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    public Component setPosition(PositionAlignment pos, float x, float y) {
         this.x = x;
         this.y = y;
         return this;

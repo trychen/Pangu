@@ -39,6 +39,14 @@ public interface Rect {
         GlStateManager.disableTexture2D();
     }
 
+    static void bind(int textureID) {
+        if (textureID > 0) {
+            GlStateManager.bindTexture(textureID);
+        } else {
+            GlStateManager.bindTexture(TextureUtil.MISSING_TEXTURE.getGlTextureId());
+        }
+    }
+
     static void bind(ResourceLocation resourceLocation) {
         if (resourceLocation != null) Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
     }
@@ -49,6 +57,14 @@ public interface Rect {
             return;
         }
         textureProvider.bind();
+    }
+
+    static void bind(TextureProvider textureProvider, long startTime, boolean loop) {
+        if (textureProvider == null) {
+            GlStateManager.bindTexture(TextureUtil.MISSING_TEXTURE.getGlTextureId());
+            return;
+        }
+        textureProvider.bind(startTime, loop);
     }
 
     static void bind(TextureProvider textureProvider, ResourceLocation defaultTexture) {
@@ -522,6 +538,39 @@ public interface Rect {
         bufferbuilder.pos(x + width, y, zLevel).tex(textureSprite.getMaxU(), textureSprite.getMinV()).endVertex();
         bufferbuilder.pos(x, y, zLevel).tex(textureSprite.getMinU(), textureSprite.getMinV()).endVertex();
         tessellator.draw();
+    }
+
+    static void drawFullTexTexturedWithHorizontalFlip(float x, float y, float width, float height) {
+        int zLevel = Rect.ZLEVEL[0];
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(1, 1).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(0, 1).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(0, 0).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(1, 0).endVertex();
+        tessellator.draw();
+    }
+
+
+    static void drawFullTexTexturedWithHorizontalFlip(float x, float y, float width, float height, float factor) {
+        drawFullTexTexturedWithHorizontalFlip(x, y, width * factor, height * factor);
+    }
+
+    static void drawFullTexTexturedWithVerticalFlip(float x, float y, float width, float height) {
+        int zLevel = ZLEVEL[0];
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(x, y + height, zLevel).tex(0, 0).endVertex();
+        bufferbuilder.pos(x + width, y + height, zLevel).tex(1, 0).endVertex();
+        bufferbuilder.pos(x + width, y, zLevel).tex(1, 1).endVertex();
+        bufferbuilder.pos(x, y, zLevel).tex(0, 1).endVertex();
+        tessellator.draw();
+    }
+
+    static void drawFullTexTexturedWithVerticalFlip(float x, float y, float width, float height, float factor) {
+        drawFullTexTexturedWithVerticalFlip(x, y, width * factor, height * factor);
     }
 
     static float alpha(int color) {

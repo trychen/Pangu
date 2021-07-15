@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public abstract class GifImage extends OpenGLTextureProvider {
-    protected static final ExecutorService LOADING_EXECUTOR = Executors.newFixedThreadPool(5, new ThreadFactory() {
+    protected static final ExecutorService LOADING_EXECUTOR = Executors.newSingleThreadExecutor(new ThreadFactory() {
         private ThreadGroup group = new ThreadGroup("Pangu Gif Loader Threads");
-        private int index = 1;
 
         public Thread newThread(Runnable r) {
-            return new Thread(this.group, r, "Pangu Gif Loader #" + this.index++);
+            return new Thread(this.group, r, "Pangu Gif Loader");
         }
     });
 
@@ -44,41 +43,84 @@ public abstract class GifImage extends OpenGLTextureProvider {
     protected int duration;
 
     @Getter
-    @Setter
-    protected int frameTimeOffset;
-
-    @Getter
     protected transient int width, height;
 
     /**
      * 解码 GIF
      */
     public void decode() {
-        frames = LOADING_EXECUTOR.submit(this::decodeFrames);
+        frames = LOADING_EXECUTOR.submit(() -> {
+            try {
+                return decodeFrames();
+            } catch (Exception e) {
+                PanguCore.getLogger().error("Error while decode GifImage " + id, e);
+                exception = true;
+                return null;
+            }
+        });
     }
 
     /**
      * 加载到 TextureManager
      */
     public void upload() throws ExecutionException, InterruptedException {
-        sequences = new int[duration];
-        int index = 0;
-        for (Frame frame : frames.get()) {
-            int id = OpenGL.uploadTexture(frame.getImage(), width, height);
-            Arrays.fill(sequences, index, index + frame.delay, id);
-            index += frame.delay;
+        if (duration == 0 && frames.get().isEmpty()) throw new IllegalArgumentException("GIF duration can not be zero " + id);
+        else if (duration == 0 && !frames.get().isEmpty()) {
+            // zero duration single frame picture
+            sequences = new int[1];
+            for (Frame frame : frames.get()) {
+                sequences[0] = OpenGL.uploadTexture(frame.getImage(), width, height);
+                break;
+            }
+            frames = null;
+        } else {
+            sequences = new int[duration];
+            int index = 0;
+            for (Frame frame : frames.get()) {
+                int id = OpenGL.uploadTexture(frame.getImage(), width, height);
+                Arrays.fill(sequences, index, index + frame.delay, id);
+                index += frame.delay;
+            }
+            frames = null;
         }
-        frames = null;
     }
 
-    public int getFromSequences(int frameTimeOffset) {
-        return sequences[((int) (System.currentTimeMillis() % this.duration) + frameTimeOffset) % sequences.length];
+    public int getFromSequences(long startTime, boolean loop) {
+        long offset = (System.currentTimeMillis() - startTime);
+
+        if (!loop && offset >= this.duration) {
+            return sequences[sequences.length - 1];
+        } else {
+            return sequences[(int) (offset % this.duration)];
+        }
     }
 
     public int getFromSequences() {
-        return sequences[((int) (System.currentTimeMillis() % this.duration) + frameTimeOffset) % sequences.length];
+        return sequences[(int) (System.currentTimeMillis() % this.duration)];
     }
 
+    @Override
+    public int getTextureID(long startTime, boolean loop) {
+        if (sequences != null) {
+            return getFromSequences(startTime, loop);
+        }
+        if (exception) return -1;
+        if (frames == null) {
+            decode();
+            return 0;
+        }
+        if (!frames.isDone()) return 0;
+        try {
+            upload();
+        } catch (Exception e) {
+            PanguCore.getLogger().error("Couldn't load gif for " + id, e);
+            exception = true;
+            return -1;
+        }
+        return getFromSequences(startTime, loop);
+    }
+
+    @Override
     public int getTextureID() {
         if (sequences != null) {
             return getFromSequences();
@@ -119,14 +161,7 @@ public abstract class GifImage extends OpenGLTextureProvider {
         width = d.getFrameSize().width;
         height = d.getFrameSize().height;
         duration = time;
-        if (duration == 0) throw new IllegalArgumentException("GIF duration can not be zero " + id);
         return frames;
-    }
-
-    public void restart() {
-        if (sequences == null) return;
-        int currentFrame = (int) (System.currentTimeMillis() % this.duration);
-        setFrameTimeOffset(duration - currentFrame);
     }
 
     @Override
@@ -135,8 +170,9 @@ public abstract class GifImage extends OpenGLTextureProvider {
         for (int sequence : sequences) {
             GL11.glDeleteTextures(sequence);
         }
+        exception = false;
         sequences = null;
-        return false;
+        return true;
     }
 
     @Getter

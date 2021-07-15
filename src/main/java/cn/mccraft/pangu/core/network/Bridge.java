@@ -48,4 +48,6 @@ public @interface Bridge {
      * Enable GZip compress
      */
     boolean compress() default false;
+
+    boolean obfuscatedKeyName() default false;
 }
