@@ -65,4 +65,41 @@ public interface FontProvider {
         }
         return -1;
     }
+
+    default int drawStringWithBorder(String text, float x, float y, int color, int borderColor, float borderWidth, Alignment alignment) {
+        int width = getStringWidth(text);
+
+        if (alignment == Alignment.CENTER) {
+            x -= width / 2F;
+        } else if (alignment == Alignment.ENDING) {
+            x -= width;
+        }
+
+        drawString(text, x + borderWidth, y, borderColor);
+        drawString(text, x - borderWidth, y, borderColor);
+        drawString(text, x, y + borderWidth, borderColor);
+        drawString(text, x, y - borderWidth, borderColor);
+
+        return drawString(text, x, y, color);
+    }
+
+    default int drawStringWithBorder(String text, float x, float y, Alignment alignment) {
+        return drawStringWithBorder(text, x, y, 0xFFFFFFFF, 0xFF000000, 0.7F, alignment);
+    }
+
+    default int drawStringWithBorder(String text, float x, float y) {
+        return drawStringWithBorder(text, x, y, 0xFFFFFFFF, 0xFF000000, 0.7F, Alignment.LEADING);
+    }
+
+    default int drawStringWithBorder(String text, float x, float y, int color) {
+        return drawStringWithBorder(text, x, y, color, 0xFF000000, 0.7F, Alignment.LEADING);
+    }
+
+    default int drawStringWithBorder(String text, float x, float y, int color, int borderColor) {
+        return drawStringWithBorder(text, x, y, color, borderColor, 0.7F, Alignment.LEADING);
+    }
+
+    default int drawStringWithBorder(String text, float x, float y, int color, float borderWidth) {
+        return drawStringWithBorder(text, x, y, color, 0xFF000000, borderWidth, Alignment.LEADING);
+    }
 }

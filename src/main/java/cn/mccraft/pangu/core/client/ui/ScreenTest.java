@@ -18,7 +18,7 @@ public class ScreenTest extends Screen {
     private static Random RAND = new Random();
     private static long startTime;
 
-    @BindKeyPress(value = Keyboard.KEY_O, devOnly = true, enableInGUI = true)
+//    @BindKeyPress(value = Keyboard.KEY_O, devOnly = true, enableInGUI = true)
     public static void openScreen() {
         new ScreenTest().open();
     }
