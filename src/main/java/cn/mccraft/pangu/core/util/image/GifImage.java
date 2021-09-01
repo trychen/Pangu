@@ -73,6 +73,7 @@ public abstract class GifImage extends OpenGLTextureProvider {
                 break;
             }
             frames = null;
+            duration = 1;
         } else {
             sequences = new int[duration];
             int index = 0;
@@ -91,12 +92,12 @@ public abstract class GifImage extends OpenGLTextureProvider {
         if (!loop && offset >= this.duration) {
             return sequences[sequences.length - 1];
         } else {
-            return sequences[(int) (offset % this.duration)];
+            return sequences[(int) (offset % sequences.length)];
         }
     }
 
     public int getFromSequences() {
-        return sequences[(int) (System.currentTimeMillis() % this.duration)];
+        return sequences[(int) (System.currentTimeMillis() % sequences.length)];
     }
 
     @Override
@@ -117,6 +118,14 @@ public abstract class GifImage extends OpenGLTextureProvider {
             exception = true;
             return -1;
         }
+
+        if (sequences.length == 0) {
+            PanguCore.getLogger().error("GIF duration can not be zero " + id);
+            exception = true;
+            sequences = null;
+            return -1;
+        }
+
         return getFromSequences(startTime, loop);
     }
 
@@ -138,6 +147,14 @@ public abstract class GifImage extends OpenGLTextureProvider {
             exception = true;
             return -1;
         }
+
+        if (sequences.length == 0) {
+            PanguCore.getLogger().error("GIF duration can not be zero " + id);
+            exception = true;
+            sequences = null;
+            return -1;
+        }
+
         return getFromSequences();
     }
 
@@ -156,7 +173,8 @@ public abstract class GifImage extends OpenGLTextureProvider {
         for (int i = 0; i < d.getFrameCount(); i++) {
             BufferedImage frame = d.getFrame(i);
             frames.add(new Frame(OpenGL.buildARGB(frame), d.getDelay(i)));
-            time += d.getDelay(i);
+            int delay = d.getDelay(i);
+            time += delay == 0 ? 1 : delay;
         }
         width = d.getFrameSize().width;
         height = d.getFrameSize().height;

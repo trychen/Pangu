@@ -24,13 +24,13 @@ public class ScreenContainer extends Screen {
     /**
      * Used when touchscreen is enabled
      */
-    private ItemStack draggedStack = ItemStack.EMPTY;
+    protected ItemStack draggedStack = ItemStack.EMPTY;
     /**
      * Used when touchscreen is enabled
      */
-    private ItemStack returningStack = ItemStack.EMPTY;
-    private boolean ignoreMouseUp;
-    private ItemStack shiftClickedSlot = ItemStack.EMPTY;
+    protected ItemStack returningStack = ItemStack.EMPTY;
+    protected boolean ignoreMouseUp;
+    protected ItemStack shiftClickedSlot = ItemStack.EMPTY;
     /**
      * A list of the players inventory slots
      */
@@ -39,28 +39,28 @@ public class ScreenContainer extends Screen {
     /**
      * holds the slot currently hovered
      */
-    private Slot hoveredSlot;
+    protected Slot hoveredSlot;
     /**
      * Used when touchscreen is enabled.
      */
-    private Slot clickedSlot;
+    protected Slot clickedSlot;
     /**
      * Used when touchscreen is enabled.
      */
-    private boolean isRightMouseClick;
-    private int touchUpX;
-    private int touchUpY;
-    private Slot returningStackDestSlot;
-    private long returningStackTime;
-    private Slot currentDragTargetSlot;
-    private long dragItemDropDelay;
-    private int dragSplittingLimit;
-    private int dragSplittingButton;
-    private int dragSplittingRemnant;
-    private long lastClickTime;
-    private Slot lastClickSlot;
-    private int lastClickButton;
-    private boolean doubleClick;
+    protected boolean isRightMouseClick;
+    protected int touchUpX;
+    protected int touchUpY;
+    protected Slot returningStackDestSlot;
+    protected long returningStackTime;
+    protected Slot currentDragTargetSlot;
+    protected long dragItemDropDelay;
+    protected int dragSplittingLimit;
+    protected int dragSplittingButton;
+    protected int dragSplittingRemnant;
+    protected long lastClickTime;
+    protected Slot lastClickSlot;
+    protected int lastClickButton;
+    protected boolean doubleClick;
 
     public ScreenContainer(Container inventorySlotsIn) {
         this.inventorySlots = inventorySlotsIn;

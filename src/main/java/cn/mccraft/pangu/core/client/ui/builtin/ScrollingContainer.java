@@ -12,13 +12,18 @@ import javax.annotation.Nonnull;
 
 public class ScrollingContainer extends Scrolling implements TransformHover {
     @Getter
-    @Setter
     protected Container container;
 
     public ScrollingContainer(@Nonnull Container container, float height) {
         super(container.getWidth(), height);
         this.container = container;
         this.container.setParent(this);
+    }
+
+    public void setContainer(Container container) {
+        container.setScreen(getScreen());
+        container.setParent(this);
+        this.container = container;
     }
 
     @Override

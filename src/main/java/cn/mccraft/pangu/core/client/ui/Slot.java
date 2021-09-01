@@ -53,19 +53,24 @@ public class Slot extends Component {
         setSize(16, 16);
         this.inventory = inventory;
         this.index = index;
-        for (net.minecraft.inventory.Slot inventorySlot : container.inventorySlots) {
+    }
+
+    @Override
+    public Component setScreen(Screen screen) {
+        if (screen == null)
+            return super.setScreen(screen);
+
+        if (!(screen instanceof ScreenContainer)) {
+            throw new RuntimeException("Slot only support with ScreenContainer");
+        }
+
+        for (net.minecraft.inventory.Slot inventorySlot : ((ScreenContainer) screen).getInventorySlots().inventorySlots) {
             if (inventorySlot.inventory == inventory && inventorySlot.getSlotIndex() == index) {
                 this.slotNumber = inventorySlot.slotNumber;
                 this.nativeSlot = inventorySlot;
             }
         }
-    }
 
-    @Override
-    public Component setScreen(Screen screen) {
-        if (!(screen instanceof ScreenContainer)) {
-            throw new RuntimeException("Slot only support with ScreenContainer");
-        }
         this.screenContainer = (ScreenContainer) screen;
         return super.setScreen(screen);
     }
