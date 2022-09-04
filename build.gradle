@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://jitpack.io' }
         maven { url "http://files.minecraftforge.net/maven" }
     }
     dependencies {
@@ -11,7 +10,7 @@ buildscript {
 
 plugins {
     id 'net.ltgt.apt' version '0.10'
-    id 'maven'
+    id 'maven-publish'
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -123,6 +122,30 @@ idea.workspace.iws.withXml {
         if (mainClass == 'GradleStart' || mainClass == 'GradleStartServer') {
             def jvmArg = String.join(' ', ['-Dfml.coreMods.load=' + mod_core_plugin])
             it.option.find({ it.@name == 'VM_PARAMETERS' }).@value = jvmArg
+        }
+    }
+}
+
+publishing {
+    publications {
+        support(MavenPublication) {
+            from components.java
+            groupId "$project.group"
+            artifactId archivesBaseName
+            version "$project.version"
+
+            artifact deobfJar
+            artifact sourcesJar
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username "$trychenRepoUsername"
+                password "$trychenRepoPassword"
+            }
+            url "https://repo.trychen.com/"
         }
     }
 }
