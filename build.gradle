@@ -142,8 +142,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username "$trychenRepoUsername"
-                password "$trychenRepoPassword"
+                username System.getenv("TRYCHEN_REPO_USERNAME") ?: "$trychenRepoUsername"
+                password System.getenv("TRYCHEN_REPO_PASSWORD") ?: "$trychenRepoPassword"
             }
             url "https://repo.trychen.com/"
         }
